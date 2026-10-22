@@ -59,7 +59,7 @@ body {
 }
 header, main { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
 header { padding-top: 20px; padding-bottom: 8px; }
-.topbar { display: flex; justify-content: flex-end; margin-bottom: 12px; }
+.topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .lang-switch {
   border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px;
   padding: 3px 14px; font-size: 0.88rem; text-decoration: none;
@@ -67,6 +67,7 @@ header { padding-top: 20px; padding-bottom: 8px; }
 .lang-switch:hover, .lang-switch:focus-visible { border-color: var(--accent); color: var(--accent); }
 h1 { font-size: clamp(1.6rem, 3.5vw, 2.3rem); line-height: 1.25; margin: 0 0 8px; letter-spacing: 0.01em; }
 .lede { color: var(--muted); max-width: 46em; margin: 0; }
+.lede + .lede { margin-top: 0.7em; }
 h2 { font-size: 1.3rem; margin: 2.2em 0 0.5em; }
 h3 { font-size: 1.02rem; margin: 0 0 6px; }
 p { margin: 0.6em 0; }
@@ -127,14 +128,24 @@ tbody tr:hover td { background: color-mix(in srgb, var(--accent) 12%, transparen
 .explain .step { border-left: 3px solid var(--line); padding-left: 14px; margin: 1.2em 0; }
 .explain .step h3 { font-size: 1.05rem; }
 .note { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; margin: 1em 0; }
+.courant { margin-top: 2.4em; padding-bottom: 0; }
+.quote {
+  margin: 1em 0; padding: 4px 16px; border-left: 3px solid var(--accent);
+  background: var(--surface); border-radius: 0 8px 8px 0; font-size: 0.95rem;
+}
+.quote + .quote { margin-top: 0.6em; }
+.cite { font-size: 0.85rem; color: var(--muted); text-align: right; margin-top: -0.2em; }
 .katex-display { overflow-x: auto; overflow-y: hidden; padding: 2px 0; }
 </style>
 </head>
 <body>
 <header>
-  <div class="topbar"><a class="lang-switch" href="../" hreflang="zh-Hant" lang="zh-Hant">中文</a></div>
+  <div class="topbar"><a class="lang-switch" href="../../">← Home</a><a class="lang-switch" href="../" hreflang="zh-Hant" lang="zh-Hant">中文</a></div>
   <h1>Why Lagrange Multipliers?</h1>
-  <p class="lede">Find the extrema of \(F(x,y)\) on the constraint curve \(g(x,y)=0\). Eliminating a variable really means first choosing a local function representation of the curve. Which one to choose depends on where the extrema are, and that is exactly what we are trying to find. Drag the point \(P\) below and rotate the ellipse and the level curves to see where each approach gets stuck.</p>
+  <p class="lede">Let us return to the problem we have been working on all along: <b>find the extrema of \(F(x,y)\) on a constraint curve \(g(x,y)=0\).</b> The most direct idea is to use the constraint to eliminate one variable, turning the problem into a single-variable extremum problem. Simple as it looks, this method rests on an easily overlooked assumption: you must first write the constraint curve locally as \(y=y(x)\) or \(x=x(y)\).</p>
+  <p class="lede">The question is, <b>which representation should you choose?</b> That depends on where on the curve the extremum lies; but that location is precisely the answer we do not yet know and are trying to find. So a step meant only to make the calculation easier, "eliminating a variable", leads us into a dilemma: we would need to know the answer before we could choose the method.</p>
+  <p class="lede">Lagrange multipliers offer a different approach: <b>instead of first solving the constraint curve as a function of one variable, work directly in the \(x,y\) space and handle the function \(F\) and the constraint \(g=0\) together.</b></p>
+  <p class="lede">Drag the point \(P\) below and rotate the ellipse and the level curves to see where each of the two approaches gets stuck.</p>
 </header>
 
 <main>
@@ -199,6 +210,28 @@ tbody tr:hover td { background: color-mix(in srgb, var(--accent) 12%, transparen
   </div>
   <p class="summary" id="summary"></p>
   <p class="caption">Click a row to move P to that extremum.</p>
+</section>
+
+<section class="explain courant">
+  <p>In "Maxima and Minima with Subsidiary Conditions", Courant opens the discussion of this problem with a concrete example:</p>
+    <blockquote class="quote" lang="en">
+      <p><b>Maxima and Minima with Subsidiary Conditions</b></p>
+      <p>The problem of determining the maxima and minima of functions of several variables frequently presents itself in a different form. For example, we may wish to find the point of a given surface</p>
+      \[ \phi(x,y,z)=0 \]
+      <p>closest to the origin. We then have to minimize the function</p>
+      \[ f(x,y,z)=\sqrt{x^2+y^2+z^2}, \]
+      <p>where the quantities \(x,y,z\), however, are no longer three independent variables but are connected by the equation of the surface</p>
+      \[ \phi(x,y,z)=0 \]
+      <p>as a subsidiary condition. Such maxima and minima with subsidiary conditions do not, indeed, represent a fundamentally new problem. Thus in our example we only need solve for one of the variables, say \(z\), as a function of the other two, to reduce the problem to that of determining the stationary values of a function of the two independent variables \(x,y\).</p>
+    </blockquote>
+    <blockquote class="quote" lang="en">
+      <p>It is, however, more convenient, and also more elegant, to express the conditions for a stationary value in a symmetrical form, in which no preference is given to anyone of the variables.</p>
+    </blockquote>
+    <p class="cite" lang="en">R. Courant and F. John, <i>Introduction to Calculus and Analysis</i>, Vol. II (Springer, 1989), p. 330.</p>
+  <p>This passage from Courant sets the two approaches we have just seen clearly side by side.</p>
+  <p>The first approach is <b>eliminating a variable</b>: use the constraint \(\phi(x,y,z)=0\) to solve for \(z=z(x,y)\), and the problem reduces to a familiar multivariable extremum problem. Nothing is wrong with this method, and in principle it gets the job done.</p>
+  <p>But Courant then offers another option: since \(x,y,z\) play symmetric roles in the original problem, why must we single out \(z\) as the one to be eliminated? If we can <b>express the stationary condition directly in a symmetric form, without favoring any one variable</b>, the structure of the problem actually becomes clearer.</p>
+  <p>This is exactly the direction we explore next: <b>how do Lagrange multipliers let us express the condition for a constrained extremum directly in the original variables, without first eliminating any of them?</b></p>
 </section>
 
 <section class="explain">

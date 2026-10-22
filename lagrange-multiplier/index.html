@@ -59,7 +59,7 @@ body {
 }
 header, main { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
 header { padding-top: 20px; padding-bottom: 8px; }
-.topbar { display: flex; justify-content: flex-end; margin-bottom: 12px; }
+.topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .lang-switch {
   border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px;
   padding: 3px 14px; font-size: 0.88rem; text-decoration: none;
@@ -67,6 +67,7 @@ header { padding-top: 20px; padding-bottom: 8px; }
 .lang-switch:hover, .lang-switch:focus-visible { border-color: var(--accent); color: var(--accent); }
 h1 { font-size: clamp(1.6rem, 3.5vw, 2.3rem); line-height: 1.25; margin: 0 0 8px; letter-spacing: 0.01em; }
 .lede { color: var(--muted); max-width: 46em; margin: 0; }
+.lede + .lede { margin-top: 0.7em; }
 h2 { font-size: 1.3rem; margin: 2.2em 0 0.5em; }
 h3 { font-size: 1.02rem; margin: 0 0 6px; }
 p { margin: 0.6em 0; }
@@ -127,14 +128,24 @@ tbody tr:hover td { background: color-mix(in srgb, var(--accent) 12%, transparen
 .explain .step { border-left: 3px solid var(--line); padding-left: 14px; margin: 1.2em 0; }
 .explain .step h3 { font-size: 1.05rem; }
 .note { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; margin: 1em 0; }
+.courant { margin-top: 2.4em; padding-bottom: 0; }
+.quote {
+  margin: 1em 0; padding: 4px 16px; border-left: 3px solid var(--accent);
+  background: var(--surface); border-radius: 0 8px 8px 0; font-size: 0.95rem;
+}
+.quote + .quote { margin-top: 0.6em; }
+.cite { font-size: 0.85rem; color: var(--muted); text-align: right; margin-top: -0.2em; }
 .katex-display { overflow-x: auto; overflow-y: hidden; padding: 2px 0; }
 </style>
 </head>
 <body>
 <header>
-  <div class="topbar"><a class="lang-switch" href="en/" hreflang="en" lang="en">English</a></div>
+  <div class="topbar"><a class="lang-switch" href="../">← 首頁</a><a class="lang-switch" href="en/" hreflang="en" lang="en">English</a></div>
   <h1>為什麼需要 Lagrange Multipliers？</h1>
-  <p class="lede">在約束曲線 \(g(x,y)=0\) 上求 \(F(x,y)\) 的極值。消去變數的作法，其實是先替曲線選一個局部的函數表示；但該選哪一個，要看極值點的位置，而那正是我們要求的答案。拖動下圖的點 \(P\)，旋轉橢圓與等值線，看看兩種作法各自會在哪裡卡住。</p>
+  <p class="lede">我們先回到前面一直在處理的問題：<b>在一條約束曲線 \(g(x,y)=0\) 上，尋找 \(F(x,y)\) 的極值。</b>最直接的想法，是利用約束把一個變數消去，把問題化成單變數的極值問題。這個方法看似簡單，卻有一個容易被忽略的前提：你必須先把約束曲線局部寫成 \(y=y(x)\) 或 \(x=x(y)\)。</p>
+  <p class="lede">問題是，<b>究竟應該選哪一種表示？</b>這取決於你要找的極值點位於曲線的哪個位置；但那個位置本身，正是我們還不知道、正在尋找的答案。於是，一個原本只是為了方便計算的「消去變數」步驟，反而把我們帶進了必須預先知道答案才能選擇方法的困境。</p>
+  <p class="lede">Lagrange multipliers 提供了另一種思路：<b>不必先把約束曲線解成某一個變數的函數，而是直接在 \(x,y\) 的空間中，同時處理函數 \(F\) 與約束 \(g=0\)。</b></p>
+  <p class="lede">拖動下圖的點 \(P\)，旋轉橢圓與等值線，看看這兩種作法各自會在哪裡卡住。</p>
 </header>
 
 <main>
@@ -199,6 +210,28 @@ tbody tr:hover td { background: color-mix(in srgb, var(--accent) 12%, transparen
   </div>
   <p class="summary" id="summary"></p>
   <p class="caption">點選任一列可把 P 移到該極值點。</p>
+</section>
+
+<section class="explain courant">
+  <p>Courant 在〈Maxima and Minima with Subsidiary Conditions〉中，從一個具體的例子開始討論這個問題：</p>
+    <blockquote class="quote" lang="en">
+      <p><b>Maxima and Minima with Subsidiary Conditions</b></p>
+      <p>The problem of determining the maxima and minima of functions of several variables frequently presents itself in a different form. For example, we may wish to find the point of a given surface</p>
+      \[ \phi(x,y,z)=0 \]
+      <p>closest to the origin. We then have to minimize the function</p>
+      \[ f(x,y,z)=\sqrt{x^2+y^2+z^2}, \]
+      <p>where the quantities \(x,y,z\), however, are no longer three independent variables but are connected by the equation of the surface</p>
+      \[ \phi(x,y,z)=0 \]
+      <p>as a subsidiary condition. Such maxima and minima with subsidiary conditions do not, indeed, represent a fundamentally new problem. Thus in our example we only need solve for one of the variables, say \(z\), as a function of the other two, to reduce the problem to that of determining the stationary values of a function of the two independent variables \(x,y\).</p>
+    </blockquote>
+    <blockquote class="quote" lang="en">
+      <p>It is, however, more convenient, and also more elegant, to express the conditions for a stationary value in a symmetrical form, in which no preference is given to anyone of the variables.</p>
+    </blockquote>
+    <p class="cite" lang="en">R. Courant and F. John, <i>Introduction to Calculus and Analysis</i>, Vol. II (Springer, 1989), p. 330.</p>
+  <p>Courant 的這段話，其實把我們剛才看到的兩種做法很清楚地並列了起來。</p>
+  <p>第一種做法，就是<b>消去變數</b>：利用約束 \(\phi(x,y,z)=0\)，解出 \(z=z(x,y)\)，於是問題就回到熟悉的多變數極值問題。這個方法沒有錯，而且原則上可以完成任務。</p>
+  <p>但 Courant 接著提出另一個選擇：既然 \(x,y,z\) 原本在問題中具有對稱的地位，為什麼一定要先挑出 \(z\)，讓它成為被消去的那一個？如果能夠<b>不偏袒任何一個變數，以對稱的形式直接表達 stationary condition</b>，問題的結構反而會更清楚。</p>
+  <p>這正是我們接下來要探索的方向：<b>Lagrange multipliers 如何讓我們不必先消去變數，而能直接在原來的變數中表達約束下的極值條件？</b></p>
 </section>
 
 <section class="explain">
