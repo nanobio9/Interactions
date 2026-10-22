@@ -38,11 +38,11 @@
    Loaded after each page's own style.css → overrides page-level variables.
    Colour channels are restricted to {00,33,66,99,cc,ff} (web-safe palette).
    ═══════════════════════════════════════════════════════════════════════════ */
-:root {
+:root:root {
   /* ── Page structure ────────────────────────────────────────────────────── */
   --bg:         #003300;   /* deep dark green (page background)   */
-  --surface:    #003600;   /* cards / panels                      */
-  --panel-bg:   #003600;   /* alias used by conical-boundary      */
+  --surface:    #004200;   /* cards / panels                      */
+  --panel-bg:   #004200;   /* alias used by conical-boundary      */
   --ink:        #ffffff;   /* primary text                        */
   --text:       #ffffff;   /* alias used by conical-boundary      */
   --muted:      #99cc99;   /* secondary / muted text              */
