@@ -58,7 +58,13 @@ body {
   line-height: 1.7; font-size: 16px;
 }
 header, main { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
-header { padding-top: 40px; padding-bottom: 8px; }
+header { padding-top: 20px; padding-bottom: 8px; }
+.topbar { display: flex; justify-content: flex-end; margin-bottom: 12px; }
+.lang-switch {
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px;
+  padding: 3px 14px; font-size: 0.88rem; text-decoration: none;
+}
+.lang-switch:hover, .lang-switch:focus-visible { border-color: var(--accent); color: var(--accent); }
 h1 { font-size: clamp(1.6rem, 3.5vw, 2.3rem); line-height: 1.25; margin: 0 0 8px; letter-spacing: 0.01em; }
 .lede { color: var(--muted); max-width: 46em; margin: 0; }
 h2 { font-size: 1.3rem; margin: 2.2em 0 0.5em; }
@@ -126,6 +132,7 @@ tbody tr:hover td { background: color-mix(in srgb, var(--accent) 12%, transparen
 </head>
 <body>
 <header>
+  <div class="topbar"><a class="lang-switch" href="en/" hreflang="en" lang="en">English</a></div>
   <h1>為什麼需要 Lagrange Multipliers？</h1>
   <p class="lede">在約束曲線 \(g(x,y)=0\) 上求 \(F(x,y)\) 的極值。消去變數的作法，其實是先替曲線選一個局部的函數表示；但該選哪一個，要看極值點的位置，而那正是我們要求的答案。拖動下圖的點 \(P\)，旋轉橢圓與等值線，看看兩種作法各自會在哪裡卡住。</p>
 </header>

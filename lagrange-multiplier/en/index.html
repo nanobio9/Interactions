@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why Lagrange Multipliers?</title>
+<meta name="description" content="Interactive lesson: the geometric reason why Lagrange multipliers are more natural than eliminating variables in constrained extremum problems.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+:root {
+  --bg: #f7f6f2;
+  --surface: #ffffff;
+  --ink: #1d1f24;
+  --muted: #5d636e;
+  --line: #d9d7d0;
+  --grid: #ebe9e3;
+  --axis: #b9b6ad;
+  --b1: #2a74b5;        /* branch + */
+  --b2: #c47a12;        /* branch − */
+  --bad: #cf3434;
+  --warn: #b7791f;
+  --ok: #2f8a4f;
+  --gradF: #1f9d6b;
+  --gradG: #7a56d0;
+  --level: #9aa59f;
+  --level-hi: #1f9d6b;
+  --ext: #1d1f24;
+  --accent: #2a74b5;
+  --chip-ok-bg: #e3f3e8;
+  --chip-warn-bg: #fbf0dc;
+  --chip-bad-bg: #fbe3e3;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15171b; --surface: #1e2127; --ink: #e8e9ec; --muted: #a0a6b1;
+    --line: #343843; --grid: #252932; --axis: #4a505c;
+    --b1: #5aa3e6; --b2: #e6a24a; --bad: #f06464; --warn: #e0a84a; --ok: #5cc581;
+    --gradF: #44cf94; --gradG: #a68af0; --level: #5f6a66; --level-hi: #44cf94;
+    --ext: #e8e9ec; --accent: #5aa3e6;
+    --chip-ok-bg: #1d3a28; --chip-warn-bg: #3d3018; --chip-bad-bg: #432222;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15171b; --surface: #1e2127; --ink: #e8e9ec; --muted: #a0a6b1;
+  --line: #343843; --grid: #252932; --axis: #4a505c;
+  --b1: #5aa3e6; --b2: #e6a24a; --bad: #f06464; --warn: #e0a84a; --ok: #5cc581;
+  --gradF: #44cf94; --gradG: #a68af0; --level: #5f6a66; --level-hi: #44cf94;
+  --ext: #e8e9ec; --accent: #5aa3e6;
+  --chip-ok-bg: #1d3a28; --chip-warn-bg: #3d3018; --chip-bad-bg: #432222;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  line-height: 1.65; font-size: 16px;
+}
+header, main { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
+header { padding-top: 20px; padding-bottom: 8px; }
+.topbar { display: flex; justify-content: flex-end; margin-bottom: 12px; }
+.lang-switch {
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px;
+  padding: 3px 14px; font-size: 0.88rem; text-decoration: none;
+}
+.lang-switch:hover, .lang-switch:focus-visible { border-color: var(--accent); color: var(--accent); }
+h1 { font-size: clamp(1.6rem, 3.5vw, 2.3rem); line-height: 1.25; margin: 0 0 8px; letter-spacing: 0.01em; }
+.lede { color: var(--muted); max-width: 46em; margin: 0; }
+h2 { font-size: 1.3rem; margin: 2.2em 0 0.5em; }
+h3 { font-size: 1.02rem; margin: 0 0 6px; }
+p { margin: 0.6em 0; }
+
+.lab {
+  display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 20px; margin-top: 24px; align-items: start;
+}
+@media (max-width: 900px) { .lab { grid-template-columns: minmax(0, 1fr); } }
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px;
+}
+.plane-card { padding: 10px; }
+canvas { display: block; width: 100%; touch-action: none; }
+#plane { aspect-ratio: 1 / 1; cursor: grab; }
+#plane.dragging { cursor: grabbing; }
+#oned { height: 230px; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 0.82rem; color: var(--muted); padding: 8px 4px 2px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 18px; height: 3px; border-radius: 2px; display: inline-block; }
+.dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+
+.side { display: grid; gap: 14px; }
+.ctrl { display: grid; grid-template-columns: 7.2em 1fr 3.6em; align-items: center; gap: 8px; margin: 4px 0; font-size: 0.92rem; }
+.ctrl output { text-align: right; font-variant-numeric: tabular-nums; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.row { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-top: 8px; font-size: 0.92rem; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
+.seg button { border: 0; background: transparent; color: var(--ink); padding: 4px 12px; font: inherit; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+label.chk { display: inline-flex; gap: 5px; align-items: center; cursor: pointer; }
+.presets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.presets button, .btn {
+  border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 6px;
+  padding: 3px 10px; font: inherit; font-size: 0.85rem; cursor: pointer;
+}
+.presets button:hover, .btn:hover { border-color: var(--accent); }
+.caption { font-size: 0.83rem; color: var(--muted); margin: 6px 2px 0; }
+
+.readout { font-size: 0.9rem; font-variant-numeric: tabular-nums; display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; }
+.readout dt { color: var(--muted); }
+.readout dd { margin: 0; }
+.chip { display: inline-block; padding: 0 8px; border-radius: 999px; font-size: 0.8rem; line-height: 1.6; white-space: nowrap; }
+.chip.ok { background: var(--chip-ok-bg); color: var(--ok); }
+.chip.warn { background: var(--chip-warn-bg); color: var(--warn); }
+.chip.bad { background: var(--chip-bad-bg); color: var(--bad); }
+
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.86rem; font-variant-numeric: tabular-nums; }
+th, td { padding: 5px 6px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+th { color: var(--muted); font-weight: 500; }
+th.cur, td.cur { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+tbody tr { cursor: pointer; }
+tbody tr:hover td { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.summary { font-size: 0.88rem; margin: 8px 2px 0; }
+
+.explain { max-width: 50em; padding-bottom: 60px; }
+.explain .step { border-left: 3px solid var(--line); padding-left: 14px; margin: 1.2em 0; }
+.explain .step h3 { font-size: 1.05rem; }
+.note { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; margin: 1em 0; }
+.katex-display { overflow-x: auto; overflow-y: hidden; padding: 2px 0; }
+</style>
+</head>
+<body>
+<header>
+  <div class="topbar"><a class="lang-switch" href="../" hreflang="zh-Hant" lang="zh-Hant">中文</a></div>
+  <h1>Why Lagrange Multipliers?</h1>
+  <p class="lede">Find the extrema of \(F(x,y)\) on the constraint curve \(g(x,y)=0\). Eliminating a variable really means first choosing a local function representation of the curve. Which one to choose depends on where the extrema are, and that is exactly what we are trying to find. Drag the point \(P\) below and rotate the ellipse and the level curves to see where each approach gets stuck.</p>
+</header>
+
+<main>
+<section class="lab">
+  <div class="card plane-card">
+    <canvas id="plane" aria-label="xy plane: constraint ellipse, level curves of the objective function, and gradient vectors"></canvas>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--b1)"></i><span id="lg-b1">branch y₊(x)</span></span>
+      <span><i class="sw" style="background:var(--b2)"></i><span id="lg-b2">branch y₋(x)</span></span>
+      <span><i class="dot" style="border:2px solid var(--bad)"></i><span id="lg-bad">y(x) breaks down</span></span>
+      <span>▲ maximum　▼ minimum</span>
+      <span><i class="sw" style="background:var(--gradF)"></i>∇F</span>
+      <span><i class="sw" style="background:var(--gradG)"></i>∇g</span>
+      <span><i class="sw" style="background:var(--level)"></i>level curves of F</span>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <div class="ctrl"><label for="theta">Ellipse θ</label><input id="theta" type="range" min="-90" max="90" step="1"><output id="theta-o"></output></div>
+      <div class="ctrl"><label for="phi">Level curves φ</label><input id="phi" type="range" min="-90" max="90" step="1"><output id="phi-o"></output></div>
+      <div class="ctrl"><label for="tpar">Point P</label><input id="tpar" type="range" min="0" max="360" step="0.5"><output id="tpar-o"></output></div>
+      <div class="row">
+        <span>Independent variable</span>
+        <span class="seg" role="group" aria-label="Independent variable">
+          <button type="button" data-indep="x">x: y = y(x)</button>
+          <button type="button" data-indep="y">y: x = x(y)</button>
+        </span>
+      </div>
+      <div class="row">
+        <label class="chk"><input type="checkbox" id="show-grad">Gradients</label>
+        <label class="chk"><input type="checkbox" id="show-tan">Tangent</label>
+        <label class="chk"><input type="checkbox" id="show-lev">Level curves</label>
+      </div>
+      <div class="presets">
+        <button type="button" data-preset="30,-20">Generic case</button>
+        <button type="button" data-preset="0,0">Axis-aligned (both fail)</button>
+        <button type="button" data-preset="35,35">Both rotated 35°</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 id="oned-title">After eliminating y: f(x) = F(x, y(x))</h3>
+      <canvas id="oned" aria-label="One-dimensional function after eliminating a variable"></canvas>
+      <p class="caption" id="oned-cap"></p>
+    </div>
+
+    <div class="card">
+      <h3>Point P</h3>
+      <dl class="readout" id="readout"></dl>
+    </div>
+  </div>
+</section>
+
+<section class="card" style="margin-top:20px">
+  <h3>Extrema: two eliminations vs. Lagrange</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Point</th><th>(x, y)</th><th>F = λ</th><th id="th-x">x independent</th><th id="th-y">y independent</th><th>∇F = λ∇g</th></tr></thead>
+      <tbody id="ext-body"></tbody>
+    </table>
+  </div>
+  <p class="summary" id="summary"></p>
+  <p class="caption">Click a row to move P to that extremum.</p>
+</section>
+
+<section class="explain">
+  <h2>From eliminating variables to parallel gradients</h2>
+
+  <p>The constraint curve here is an ellipse rotated by \(\theta\), and the objective function is a family of hyperbolas rotated by \(\varphi\):</p>
+  \[
+  g(x,y)=\frac{u^2}{a^2}+\frac{v^2}{b^2}-1=0,\qquad F(x,y)=p^2-q^2,
+  \]
+  \[
+  \begin{pmatrix}u\\v\end{pmatrix}=\begin{pmatrix}\cos\theta&\sin\theta\\-\sin\theta&\cos\theta\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix},\qquad
+  \begin{pmatrix}p\\q\end{pmatrix}=\begin{pmatrix}\cos\varphi&\sin\varphi\\-\sin\varphi&\cos\varphi\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix},
+  \]
+  <p>with \(a=2,\ b=1\). Every point, curve and number on this page is computed live from these parameters.</p>
+
+  <div class="step">
+    <h3>1. Eliminating a variable means writing the curve locally as y = y(x)</h3>
+    <p>"Solve the constraint for \(y\) and substitute" amounts to picking a piece of the curve and representing it as a function \(y=y(x)\). Substituting gives a single-variable function \(f(x)=F(x,y(x))\), whose extremum condition is</p>
+    \[
+    f'(x)=F_x+F_y\,\frac{dy}{dx}=0,\qquad \frac{dy}{dx}=-\frac{g_x}{g_y}.
+    \]
+    <p>The implicit function theorem guarantees that such a local representation exists wherever \(g_y\neq 0\). Where \(g_y=0\), it does not.</p>
+  </div>
+
+  <div class="step">
+    <h3>2. The tangent direction decides which representation works</h3>
+    <p>\(g_y=0\) means \(\nabla g\) is horizontal, so the tangent is <b>vertical</b>. At such a point the curve turns back in \(x\): the two branches \(y_\pm(x)\) meet there and \(dy/dx\to\infty\). A closed curve like the ellipse always has two such points, and also two points with a horizontal tangent, where \(x=x(y)\) breaks down. The red circles in the plot mark the breakdown points for the chosen independent variable; in the one-dimensional plot on the right, the two branches meet at the red points with infinite slope.</p>
+  </div>
+
+  <div class="step">
+    <h3>3. You don't know which one to pick until you've found the extrema</h3>
+    <p>If an extremum lies exactly where \(g_y=0\), it is an endpoint of the domain of \(f(x)\), not a root of \(f'(x)=0\), so solving \(f'(x)=0\) misses it. Press "Axis-aligned": now \(F=x^2-y^2\) and the constraint is \(x^2/4+y^2=1\).</p>
+    <ul>
+      <li>With \(x\) independent: \(f(x)=\tfrac54x^2-1\), and \(f'(x)=0\) gives only the minimum at \(x=0\). The maximum sits at the endpoints \(x=\pm2\) and is missed.</li>
+      <li>With \(y\) independent: \(f(y)=4-5y^2\), and \(f'(y)=0\) gives only the maximum at \(y=0\). The minimum sits at the endpoints \(y=\pm1\) and is also missed.</li>
+    </ul>
+    <p>Whichever variable you pick, one pair of extrema is lost. Now press "Both rotated 35°": the geometry is exactly the same, just rotated as a whole, and neither representation hits a breakdown point. So the breakdown is not a property of the problem itself; it comes from the choice of coordinates.</p>
+  </div>
+
+  <div class="step">
+    <h3>4. Lagrange: write down the geometric condition directly</h3>
+    <p>At an extremum, \(F\) does not change as you move along the curve: \(\nabla F\cdot\hat T=0\). Since \(\nabla g\) is also perpendicular to the tangent \(\hat T\), the two gradients must be parallel:</p>
+    \[
+    \nabla F=\lambda\,\nabla g,\qquad g(x,y)=0 .
+    \]
+    <p>These three equations treat \(x\) and \(y\) on an equal footing, so no independent variable has to be chosen in advance. The only requirement is \(\nabla g\neq 0\), i.e. the curve itself is smooth. As you drag \(P\), watch the angle between \(\nabla F\) and \(\nabla g\): it is 0° or 180° only at the extrema, no matter which representation breaks down there.</p>
+    <p>In this example both \(F=\mathbf r^{\mathsf T}M\mathbf r\) and \(g=\mathbf r^{\mathsf T}G\mathbf r-1\) are quadratic forms, so the Lagrange condition becomes the generalized eigenvalue problem \(M\mathbf r=\lambda G\mathbf r\). Multiplying both sides by \(\mathbf r^{\mathsf T}\) and using \(\mathbf r^{\mathsf T}G\mathbf r=1\) gives \(F=\lambda\): the multiplier itself is the extreme value.</p>
+  </div>
+
+  <div class="note">
+    <b>Connection to mechanics.</b> Think of \(g=0\) as a constraint on a particle (say, a bead sliding on a wire) and of \(-\nabla F\) as the applied force. In equilibrium, the component of the applied force along the wire must vanish, and the part perpendicular to the wire is balanced by the constraint force \(\lambda\nabla g\). The Lagrange multiplier is the magnitude of the constraint force (up to a factor of \(|\nabla g|\)), and it appears in exactly the same way in Lagrange's equations of motion.
+  </div>
+</section>
+</main>
+
+<script>
+(() => {
+  const A = 2, B = 1;            // ellipse semi-axes
+  const VIEW = 2.7;              // half-width of the plane view (world units)
+  const DEG = Math.PI / 180;
+  const $ = id => document.getElementById(id);
+
+  const state = { theta: 30, phi: -20, indep: 'x', t: 60 * DEG, grad: true, tan: true, levels: true };
+  let model = null;
+
+  // ---------- math ----------
+  const quad = (Q, v) => Q[0][0] * v[0] * v[0] + 2 * Q[0][1] * v[0] * v[1] + Q[1][1] * v[1] * v[1];
+  const mul = (Q, v) => [Q[0][0] * v[0] + Q[0][1] * v[1], Q[1][0] * v[0] + Q[1][1] * v[1]];
+  const dot = (a, b) => a[0] * b[0] + a[1] * b[1];
+  const norm = v => Math.hypot(v[0], v[1]);
+
+  function buildModel() {
+    const th = state.theta * DEG, ph = state.phi * DEG;
+    const c = Math.cos(th), s = Math.sin(th);
+    const gxy = c * s * (1 / (A * A) - 1 / (B * B));
+    const G = [[c * c / (A * A) + s * s / (B * B), gxy], [gxy, s * s / (A * A) + c * c / (B * B)]];
+    const c2 = Math.cos(2 * ph), s2 = Math.sin(2 * ph);
+    const M = [[c2, s2], [s2, -c2]];
+    const detG = G[0][0] * G[1][1] - G[0][1] ** 2;
+    const detM = M[0][0] * M[1][1] - M[0][1] ** 2;
+    const tr = M[0][0] * G[1][1] + M[1][1] * G[0][0] - 2 * M[0][1] * G[0][1];
+    // det(M − λG) = 0 ⇒ detG λ² − tr λ + detM = 0
+    const disc = Math.sqrt(Math.max(0, tr * tr - 4 * detG * detM));
+    const lams = [(tr + disc) / (2 * detG), (tr - disc) / (2 * detG)];
+    const extrema = [];
+    lams.forEach((lam, k) => {
+      const r0 = [M[0][0] - lam * G[0][0], M[0][1] - lam * G[0][1]];
+      const r1 = [M[1][0] - lam * G[1][0], M[1][1] - lam * G[1][1]];
+      const row = norm(r0) >= norm(r1) ? r0 : r1;
+      let v = [-row[1], row[0]];
+      const n = Math.sqrt(quad(G, v));
+      v = [v[0] / n, v[1] / n];
+      if (v[0] < -1e-12 || (Math.abs(v[0]) <= 1e-12 && v[1] < 0)) v = [-v[0], -v[1]];
+      const kind = k === 0 ? 'max' : 'min';
+      extrema.push({ kind, lam, r: v }, { kind, lam, r: [-v[0], -v[1]] });
+    });
+    return { c, s, G, M, detG, lams, extrema };
+  }
+
+  const point = t => {
+    const u = A * Math.cos(t), v = B * Math.sin(t);
+    return [u * model.c - v * model.s, u * model.s + v * model.c];
+  };
+  const tangent = t => {
+    const du = -A * Math.sin(t), dv = B * Math.cos(t);
+    const T = [du * model.c - dv * model.s, du * model.s + dv * model.c];
+    const n = norm(T);
+    return [T[0] / n, T[1] / n];
+  };
+  const tOf = r => {
+    const u = r[0] * model.c + r[1] * model.s, v = -r[0] * model.s + r[1] * model.c;
+    return Math.atan2(v / B, u / A);
+  };
+  const F = r => quad(model.M, r);
+  const gradF = r => mul(model.M, r).map(x => 2 * x);
+  const gradG = r => mul(model.G, r).map(x => 2 * x);
+
+  // Validity of the local representation: with indep as independent variable we need ∂g/∂(dep) ≠ 0
+  function repInfo(r, indep) {
+    const i = indep === 'x' ? 0 : 1, j = 1 - i;
+    const g = gradG(r);
+    const ratio = Math.abs(g[j]) / norm(g);           // = |component of unit tangent along indep|
+    const slope = Math.abs(g[j]) < 1e-12 ? Infinity : -g[i] / g[j];
+    const branch = g[j] >= 0 ? '+' : '−';
+    let cls = 'ok', text = 'OK';
+    if (ratio < 0.02) { cls = 'bad'; text = 'Breaks down'; }
+    else if (ratio < 0.25) { cls = 'warn'; text = 'Near breakdown'; }
+    return { ratio, slope, branch, cls, text };
+  }
+
+  // Domain half-width, the two branches and the breakdown points for the given independent variable
+  function branchSetup(indep) {
+    const i = indep === 'x' ? 0 : 1, j = 1 - i;
+    const G = model.G, Gii = G[i][i], Gjj = G[j][j], Gij = G[0][1];
+    const m = Math.sqrt(Gjj / model.detG);
+    const make = (sv, w) => (i === 0 ? [sv, w] : [w, sv]);
+    const dep = (sv, sign) => {
+      const d = Math.max(0, Gij * Gij * sv * sv - Gjj * (Gii * sv * sv - 1));
+      return (-Gij * sv + sign * Math.sqrt(d)) / Gjj;
+    };
+    const turning = [m, -m].map(sv => make(sv, -Gij * sv / Gjj));
+    return { i, j, m, make, dep, turning };
+  }
+
+  // ---------- drawing helpers ----------
+  let colors = {};
+  function readColors() {
+    const cs = getComputedStyle(document.documentElement);
+    for (const k of ['ink', 'muted', 'grid', 'axis', 'b1', 'b2', 'bad', 'gradF', 'gradG', 'level', 'level-hi', 'ext', 'surface', 'line'])
+      colors[k] = cs.getPropertyValue('--' + k).trim();
+  }
+
+  function fitCanvas(cv) {
+    const dpr = window.devicePixelRatio || 1;
+    const w = cv.clientWidth, h = cv.clientHeight;
+    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) {
+      cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+    }
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    return { ctx, w, h };
+  }
+
+  function arrow(ctx, x0, y0, x1, y1, color, label) {
+    const ang = Math.atan2(y1 - y0, x1 - x0), hl = 10;
+    ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 2.4;
+    ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1 - Math.cos(ang) * hl * 0.6, y1 - Math.sin(ang) * hl * 0.6); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x1 - hl * Math.cos(ang - 0.4), y1 - hl * Math.sin(ang - 0.4));
+    ctx.lineTo(x1 - hl * Math.cos(ang + 0.4), y1 - hl * Math.sin(ang + 0.4));
+    ctx.closePath(); ctx.fill();
+    if (label) {
+      ctx.font = '600 14px system-ui, sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(label, x1 + Math.cos(ang) * 16, y1 + Math.sin(ang) * 16);
+    }
+  }
+
+  function marker(ctx, x, y, kind, size = 7) {
+    ctx.fillStyle = colors.ext; ctx.strokeStyle = colors.surface; ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    if (kind === 'max') { ctx.moveTo(x, y - size); ctx.lineTo(x + size, y + size * 0.75); ctx.lineTo(x - size, y + size * 0.75); }
+    else { ctx.moveTo(x, y + size); ctx.lineTo(x + size, y - size * 0.75); ctx.lineTo(x - size, y - size * 0.75); }
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+  }
+
+  function ring(ctx, x, y, color, r = 7) {
+    ctx.strokeStyle = color; ctx.lineWidth = 2.2;
+    ctx.beginPath(); ctx.arc(x, y, r, 0, 2 * Math.PI); ctx.stroke();
+  }
+
+  // ---------- plane plot ----------
+  const plane = $('plane');
+  let planeTf = null;
+
+  function drawPlane() {
+    const { ctx, w, h } = fitCanvas(plane);
+    const sc = Math.min(w, h) / (2 * VIEW), cx = w / 2, cy = h / 2;
+    const X = x => cx + x * sc, Y = y => cy - y * sc;
+    planeTf = { sc, cx, cy };
+
+    // grid and axes
+    ctx.lineWidth = 1; ctx.strokeStyle = colors.grid;
+    for (let k = -Math.floor(VIEW); k <= Math.floor(VIEW); k++) {
+      if (k === 0) continue;
+      ctx.beginPath(); ctx.moveTo(X(k), 0); ctx.lineTo(X(k), h); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, Y(k)); ctx.lineTo(w, Y(k)); ctx.stroke();
+    }
+    ctx.strokeStyle = colors.axis; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(0, Y(0)); ctx.lineTo(w, Y(0)); ctx.moveTo(X(0), 0); ctx.lineTo(X(0), h); ctx.stroke();
+    ctx.fillStyle = colors.muted; ctx.font = 'italic 14px "Times New Roman", serif';
+    ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText('x', w - 6, Y(0) - 4);
+    ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText('y', X(0) + 6, 4);
+
+    // level curves of F (hyperbolas)
+    const ph = state.phi * DEG, cp = Math.cos(ph), sp = Math.sin(ph);
+    const toXY = (p, q) => [p * cp - q * sp, p * sp + q * cp];
+    const hyper = (cval, color, width, dash) => {
+      ctx.strokeStyle = color; ctx.lineWidth = width; ctx.setLineDash(dash);
+      const k = Math.sqrt(Math.abs(cval)), T = Math.asinh(2 * VIEW / k);
+      for (const sg of [1, -1]) {
+        ctx.beginPath();
+        for (let n = 0; n <= 160; n++) {
+          const tau = -T + 2 * T * n / 160;
+          const [p, q] = cval > 0 ? [sg * k * Math.cosh(tau), k * Math.sinh(tau)] : [k * Math.sinh(tau), sg * k * Math.cosh(tau)];
+          const [x, y] = toXY(p, q);
+          n === 0 ? ctx.moveTo(X(x), Y(y)) : ctx.lineTo(X(x), Y(y));
+        }
+        ctx.stroke();
+      }
+      ctx.setLineDash([]);
+    };
+    if (state.levels) {
+      for (const cval of [-4, -2.5, -1.5, -0.6, 0.6, 1.5, 2.5, 4]) hyper(cval, colors.level, 1, []);
+      ctx.strokeStyle = colors.level; ctx.lineWidth = 1; ctx.setLineDash([4, 4]);
+      for (const sg of [1, -1]) {
+        const [x0, y0] = toXY(-2 * VIEW, -sg * 2 * VIEW), [x1, y1] = toXY(2 * VIEW, sg * 2 * VIEW);
+        ctx.beginPath(); ctx.moveTo(X(x0), Y(y0)); ctx.lineTo(X(x1), Y(y1)); ctx.stroke();
+      }
+      ctx.setLineDash([]);
+      for (const lam of model.lams) hyper(lam, colors['level-hi'], 1.6, [7, 4]);
+    }
+
+    // constraint ellipse, colored by branch for the current independent variable
+    const N = 360;
+    ctx.lineWidth = 3.2; ctx.lineCap = 'round';
+    for (let n = 0; n < N; n++) {
+      const t0 = 2 * Math.PI * n / N, t1 = 2 * Math.PI * (n + 1) / N;
+      const p0 = point(t0), p1 = point(t1), pm = point((t0 + t1) / 2);
+      ctx.strokeStyle = repInfo(pm, state.indep).branch === '+' ? colors.b1 : colors.b2;
+      ctx.beginPath(); ctx.moveTo(X(p0[0]), Y(p0[1])); ctx.lineTo(X(p1[0]), Y(p1[1])); ctx.stroke();
+    }
+    ctx.lineCap = 'butt';
+
+    // breakdown points
+    const bs = branchSetup(state.indep);
+    for (const tp of bs.turning) ring(ctx, X(tp[0]), Y(tp[1]), colors.bad, 8);
+
+    // extrema
+    for (const e of model.extrema) marker(ctx, X(e.r[0]), Y(e.r[1]), e.kind, 7);
+
+    // point P
+    const P = point(state.t), T = tangent(state.t);
+    if (state.tan) {
+      ctx.strokeStyle = colors.muted; ctx.lineWidth = 1.4; ctx.setLineDash([6, 4]);
+      const L = 1.4;
+      ctx.beginPath(); ctx.moveTo(X(P[0] - L * T[0]), Y(P[1] - L * T[1])); ctx.lineTo(X(P[0] + L * T[0]), Y(P[1] + L * T[1])); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    if (state.grad) {
+      const L = 0.85;
+      const gG = gradG(P), gF = gradF(P), nG = norm(gG), nF = norm(gF);
+      arrow(ctx, X(P[0]), Y(P[1]), X(P[0] + L * gG[0] / nG), Y(P[1] + L * gG[1] / nG), colors.gradG, '∇g');
+      if (nF > 1e-9) arrow(ctx, X(P[0]), Y(P[1]), X(P[0] + L * gF[0] / nF), Y(P[1] + L * gF[1] / nF), colors.gradF, '∇F');
+    }
+    ctx.fillStyle = colors.ink; ctx.strokeStyle = colors.surface; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(X(P[0]), Y(P[1]), 6.5, 0, 2 * Math.PI); ctx.fill(); ctx.stroke();
+    ctx.font = 'italic 600 15px "Times New Roman", serif'; ctx.fillStyle = colors.ink;
+    ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+    ctx.fillText('P', X(P[0]) + 8, Y(P[1]) - 6);
+  }
+
+  // ---------- 1D plot ----------
+  const oned = $('oned');
+  function drawOned() {
+    const { ctx, w, h } = fitCanvas(oned);
+    const bs = branchSetup(state.indep);
+    const iv = state.indep, dv = iv === 'x' ? 'y' : 'x';
+    const ml = 40, mr = 12, mt = 12, mb = 26;
+    const smax = bs.m * 1.1;
+    const fmin = model.lams[1], fmax = model.lams[0], pad = 0.12 * (fmax - fmin);
+    const X = s => ml + (s + smax) / (2 * smax) * (w - ml - mr);
+    const Y = f => mt + (fmax + pad - f) / (fmax - fmin + 2 * pad) * (h - mt - mb);
+
+    ctx.strokeStyle = colors.axis; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(ml, Y(0)); ctx.lineTo(w - mr, Y(0)); ctx.moveTo(X(0), mt); ctx.lineTo(X(0), h - mb); ctx.stroke();
+    ctx.strokeStyle = colors.grid; ctx.setLineDash([3, 3]);
+    for (const f of [fmin, fmax]) { ctx.beginPath(); ctx.moveTo(ml, Y(f)); ctx.lineTo(w - mr, Y(f)); ctx.stroke(); }
+    for (const s of [-bs.m, bs.m]) { ctx.beginPath(); ctx.moveTo(X(s), mt); ctx.lineTo(X(s), h - mb); ctx.stroke(); }
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = colors.muted; ctx.font = '12px system-ui, sans-serif';
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    ctx.fillText(fmax.toFixed(2), ml - 5, Y(fmax)); ctx.fillText(fmin.toFixed(2), ml - 5, Y(fmin));
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText((-bs.m).toFixed(2), X(-bs.m), h - mb + 5); ctx.fillText(bs.m.toFixed(2), X(bs.m), h - mb + 5);
+    ctx.font = 'italic 14px "Times New Roman", serif';
+    ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText(iv, w - mr, Y(0) - 3);
+
+    const N = 300;
+    for (const [sign, col] of [[1, colors.b1], [-1, colors.b2]]) {
+      ctx.strokeStyle = col; ctx.lineWidth = 2.6; ctx.beginPath();
+      for (let n = 0; n <= N; n++) {
+        const sv = bs.m * Math.cos(Math.PI * n / N);
+        const r = bs.make(sv, bs.dep(sv, sign));
+        n === 0 ? ctx.moveTo(X(sv), Y(F(r))) : ctx.lineTo(X(sv), Y(F(r)));
+      }
+      ctx.stroke();
+    }
+    for (const tp of bs.turning) ring(ctx, X(tp[bs.i]), Y(F(tp)), colors.bad, 6);
+    for (const e of model.extrema) marker(ctx, X(e.r[bs.i]), Y(e.lam), e.kind, 6);
+    const P = point(state.t);
+    ctx.fillStyle = colors.ink; ctx.strokeStyle = colors.surface; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(X(P[bs.i]), Y(F(P)), 5.5, 0, 2 * Math.PI); ctx.fill(); ctx.stroke();
+
+    $('oned-title').textContent = `After eliminating ${dv}: f(${iv}) = F(${iv === 'x' ? 'x, y(x)' : 'x(y), y'})`;
+    $('oned-cap').textContent =
+      `Blue and orange use ${dv}₊(${iv}) and ${dv}₋(${iv}) respectively. Red circles mark ∂g/∂${dv} = 0: ` +
+      `the two branches meet there with infinite slope, and an extremum located there is an endpoint of the domain, ` +
+      `so it does not satisfy f′(${iv}) = 0.`;
+  }
+
+  // ---------- readouts ----------
+  const fmt = (v, d = 3) => (Math.abs(v) < 0.5 * 10 ** -d ? 0 : v).toFixed(d);
+  const fmtPt = r => `(${fmt(r[0], 2)}, ${fmt(r[1], 2)})`;
+  const chip = info => `<span class="chip ${info.cls}">${info.text}</span>`;
+  const slopeText = (info, indep) => {
+    const dv = indep === 'x' ? 'y' : 'x';
+    const s = Number.isFinite(info.slope) && Math.abs(info.slope) < 1e4 ? fmt(info.slope, 2) : '∞';
+    return `d${dv}/d${indep} = ${s}`;
+  };
+
+  function updatePanels() {
+    const P = point(state.t), T = tangent(state.t);
+    const gF = gradF(P), gG = gradG(P);
+    const nF = norm(gF);
+    const ang = nF < 1e-9 ? 0 : Math.acos(Math.max(-1, Math.min(1, dot(gF, gG) / (nF * norm(gG))))) / DEG;
+    const info = repInfo(P, state.indep);
+    const lamEst = dot(gF, gG) / dot(gG, gG);
+    const iv = state.indep;
+    $('readout').innerHTML = `
+      <dt>Position</dt><dd>${fmtPt(P)}</dd>
+      <dt>F(P)</dt><dd>${fmt(F(P))}</dd>
+      <dt>Angle between ∇F and ∇g</dt><dd>${fmt(ang, 1)}°　${Math.min(ang, 180 - ang) < 0.5 ? '<span class="chip ok">parallel</span>' : ''}</dd>
+      <dt>Rate along curve ∇F·T̂</dt><dd>${fmt(dot(gF, T))}</dd>
+      <dt>∇F·∇g / |∇g|²</dt><dd>${fmt(lamEst)}　<span style="color:var(--muted)">(equals λ at an extremum)</span></dd>
+      <dt>${iv} independent</dt><dd>${chip(info)}　${slopeText(info, iv)}</dd>`;
+
+    const labels = { max: '▲ max', min: '▼ min' };
+    let bad = { x: 0, y: 0 };
+    $('ext-body').innerHTML = model.extrema.map((e, k) => {
+      const ix = repInfo(e.r, 'x'), iy = repInfo(e.r, 'y');
+      if (ix.cls !== 'ok') bad.x++;
+      if (iy.cls !== 'ok') bad.y++;
+      return `<tr data-k="${k}">
+        <td>${labels[e.kind]}</td><td>${fmtPt(e.r)}</td><td>${fmt(e.lam)}</td>
+        <td class="${iv === 'x' ? 'cur' : ''}">${chip(ix)} <span style="color:var(--muted)">${slopeText(ix, 'x')}</span></td>
+        <td class="${iv === 'y' ? 'cur' : ''}">${chip(iy)} <span style="color:var(--muted)">${slopeText(iy, 'y')}</span></td>
+        <td><span class="chip ok">✓ found</span></td></tr>`;
+    }).join('');
+    $('th-x').className = iv === 'x' ? 'cur' : '';
+    $('th-y').className = iv === 'y' ? 'cur' : '';
+    const desc = n => (n === 0 ? 'all 4 extrema are in the usable region'
+      : `${n} of the 4 extrema ${n === 1 ? 'is' : 'are'} at or near a breakdown point`);
+    $('summary').innerHTML =
+      `With x independent: ${desc(bad.x)}. With y independent: ${desc(bad.y)}. ` +
+      `Lagrange condition ∇F = λ∇g: all 4 are found, λ₁ = ${fmt(model.lams[0])}, λ₂ = ${fmt(model.lams[1])}.`;
+
+    const dv = iv === 'x' ? 'y' : 'x';
+    $('lg-b1').textContent = `branch ${dv}₊(${iv})`;
+    $('lg-b2').textContent = `branch ${dv}₋(${iv})`;
+    $('lg-bad').textContent = `${dv}(${iv}) breaks down`;
+  }
+
+  // ---------- state sync ----------
+  function syncControls() {
+    $('theta').value = state.theta; $('theta-o').textContent = state.theta + '°';
+    $('phi').value = state.phi; $('phi-o').textContent = state.phi + '°';
+    const tdeg = ((state.t / DEG) % 360 + 360) % 360;
+    $('tpar').value = tdeg; $('tpar-o').textContent = tdeg.toFixed(0) + '°';
+    document.querySelectorAll('[data-indep]').forEach(b => b.setAttribute('aria-pressed', b.dataset.indep === state.indep));
+    $('show-grad').checked = state.grad; $('show-tan').checked = state.tan; $('show-lev').checked = state.levels;
+  }
+
+  function render() {
+    model = buildModel();
+    syncControls();
+    drawPlane();
+    drawOned();
+    updatePanels();
+  }
+
+  // Changing θ keeps P's parameter t, so P rotates with the ellipse
+  $('theta').addEventListener('input', e => { state.theta = +e.target.value; render(); });
+  $('phi').addEventListener('input', e => { state.phi = +e.target.value; render(); });
+  $('tpar').addEventListener('input', e => { state.t = +e.target.value * DEG; render(); });
+  document.querySelectorAll('[data-indep]').forEach(b => b.addEventListener('click', () => { state.indep = b.dataset.indep; render(); }));
+  $('show-grad').addEventListener('change', e => { state.grad = e.target.checked; render(); });
+  $('show-tan').addEventListener('change', e => { state.tan = e.target.checked; render(); });
+  $('show-lev').addEventListener('change', e => { state.levels = e.target.checked; render(); });
+  document.querySelectorAll('[data-preset]').forEach(b => b.addEventListener('click', () => {
+    const [th, ph] = b.dataset.preset.split(',').map(Number);
+    state.theta = th; state.phi = ph; render();
+  }));
+  $('ext-body').addEventListener('click', e => {
+    const tr = e.target.closest('tr[data-k]');
+    if (!tr) return;
+    state.t = tOf(model.extrema[+tr.dataset.k].r); render();
+  });
+
+  // Dragging P: project onto the nearest point of the ellipse
+  function projectPointer(ev) {
+    const rect = plane.getBoundingClientRect();
+    const x = (ev.clientX - rect.left - planeTf.cx) / planeTf.sc;
+    const y = -(ev.clientY - rect.top - planeTf.cy) / planeTf.sc;
+    let best = 0, bd = Infinity;
+    for (let n = 0; n < 720; n++) {
+      const t = 2 * Math.PI * n / 720, p = point(t), d = (p[0] - x) ** 2 + (p[1] - y) ** 2;
+      if (d < bd) { bd = d; best = t; }
+    }
+    let lo = best - Math.PI / 360, hi = best + Math.PI / 360;
+    for (let k = 0; k < 30; k++) {
+      const m1 = lo + (hi - lo) / 3, m2 = hi - (hi - lo) / 3;
+      const d = t => { const p = point(t); return (p[0] - x) ** 2 + (p[1] - y) ** 2; };
+      d(m1) < d(m2) ? (hi = m2) : (lo = m1);
+    }
+    state.t = (lo + hi) / 2;
+    render();
+  }
+  plane.addEventListener('pointerdown', ev => {
+    plane.setPointerCapture(ev.pointerId); plane.classList.add('dragging'); projectPointer(ev);
+  });
+  plane.addEventListener('pointermove', ev => { if (plane.hasPointerCapture(ev.pointerId)) projectPointer(ev); });
+  const endDrag = ev => { if (plane.hasPointerCapture(ev.pointerId)) plane.releasePointerCapture(ev.pointerId); plane.classList.remove('dragging'); };
+  plane.addEventListener('pointerup', endDrag);
+  plane.addEventListener('pointercancel', endDrag);
+
+  new ResizeObserver(() => render()).observe(plane);
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { readColors(); render(); });
+
+  readColors();
+  render();
+
+  window.addEventListener('DOMContentLoaded', () => {
+    if (window.renderMathInElement) {
+      renderMathInElement(document.body, {
+        delimiters: [{ left: '\\[', right: '\\]', display: true }, { left: '\\(', right: '\\)', display: false }],
+        throwOnError: false
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>
