@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>왜 라그랑주 승수가 필요한가?</title>
+<meta name="description" content="대화형 학습: 제약 조건이 있는 극값 문제에서 라그랑주 승수법이 변수 소거보다 더 자연스러운 기하학적 이유.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="ko" data-ai-translated>
+<header>
+  <nav class="topbar" id="topbar"></nav>
+  <div id="ai-notice"></div>
+  <h1>왜 라그랑주 승수가 필요한가?</h1>
+  <p class="lede">앞에서 계속 다루어 온 문제로 돌아가 봅시다. <b>제약 곡선 \(g(x,y)=0\) 위에서 \(F(x,y)\)의 극값을 찾는 문제입니다.</b> 가장 직접적인 생각은 제약 조건을 이용해 변수 하나를 소거하여, 문제를 일변수 극값 문제로 바꾸는 것입니다. 이 방법은 간단해 보이지만, 간과하기 쉬운 전제가 하나 있습니다. 먼저 제약 곡선을 국소적으로 \(y=y(x)\) 또는 \(x=x(y)\)의 꼴로 써야 한다는 것입니다.</p>
+  <p class="lede">그런데 <b>도대체 어느 표현을 골라야 할까요?</b> 그것은 찾으려는 극값점이 곡선의 어디에 있는지에 달려 있습니다. 하지만 그 위치야말로 우리가 아직 모르는, 지금 찾고 있는 답입니다. 결국 계산을 편하게 하려고 도입한 '변수 소거'라는 단계가, 오히려 답을 미리 알아야만 방법을 고를 수 있는 곤경으로 우리를 이끕니다.</p>
+  <p class="lede">라그랑주 승수는 다른 길을 제시합니다. <b>제약 곡선을 먼저 어느 한 변수의 함수로 풀 필요 없이, \(x,y\) 공간에서 직접 함수 \(F\)와 제약 조건 \(g=0\)을 동시에 다루는 것입니다.</b></p>
+  <p class="lede">아래 그림의 점 \(P\)를 끌고 타원과 등위선을 회전시키면서, 두 방법이 각각 어디에서 막히는지 살펴보세요.</p>
+</header>
+
+<main>
+<section class="lab">
+  <div class="card plane-card">
+    <canvas id="plane" aria-label="xy 평면: 제약 타원, 목적 함수의 등위선과 기울기 벡터"></canvas>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--b1)"></i><span id="lg-b1">가지 y₊(x)</span></span>
+      <span><i class="sw" style="background:var(--b2)"></i><span id="lg-b2">가지 y₋(x)</span></span>
+      <span><i class="dot" style="border:2px solid var(--bad)"></i><span id="lg-bad">y(x) 실패점</span></span>
+      <span>▲ 최댓값　▼ 최솟값</span>
+      <span><i class="sw" style="background:var(--gradF)"></i>∇F</span>
+      <span><i class="sw" style="background:var(--gradG)"></i>∇g</span>
+      <span><i class="sw" style="background:var(--level)"></i>F의 등위선</span>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <div class="ctrl"><label for="theta">타원 θ</label><input id="theta" type="range" min="-90" max="90" step="1"><output id="theta-o"></output></div>
+      <div class="ctrl"><label for="phi">등위선 φ</label><input id="phi" type="range" min="-90" max="90" step="1"><output id="phi-o"></output></div>
+      <div class="ctrl"><label for="tpar">점 P 위치</label><input id="tpar" type="range" min="0" max="360" step="0.5"><output id="tpar-o"></output></div>
+      <div class="row">
+        <span>독립변수</span>
+        <span class="seg" role="group" aria-label="독립변수">
+          <button type="button" data-indep="x">x: y = y(x)</button>
+          <button type="button" data-indep="y">y: x = x(y)</button>
+        </span>
+      </div>
+      <div class="row">
+        <label class="chk"><input type="checkbox" id="show-grad">기울기 벡터</label>
+        <label class="chk"><input type="checkbox" id="show-tan">접선</label>
+        <label class="chk"><input type="checkbox" id="show-lev">등위선</label>
+      </div>
+      <div class="presets">
+        <button type="button" data-preset="30,-20">일반적인 경우</button>
+        <button type="button" data-preset="0,0">좌표축 정렬 (둘 다 실패)</button>
+        <button type="button" data-preset="35,35">함께 35° 회전</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 id="oned-title">y 소거 후: f(x) = F(x, y(x))</h3>
+      <canvas id="oned" aria-label="변수 소거 후의 일변수 함수 그래프"></canvas>
+      <p class="caption" id="oned-cap"></p>
+    </div>
+
+    <div class="card">
+      <h3>점 P</h3>
+      <dl class="readout" id="readout"></dl>
+    </div>
+  </div>
+</section>
+
+<section class="card" style="margin-top:20px">
+  <h3>극값점: 두 가지 소거법 vs. 라그랑주</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>점</th><th>(x, y)</th><th>F = λ</th><th id="th-x">x를 독립변수로</th><th id="th-y">y를 독립변수로</th><th>∇F = λ∇g</th></tr></thead>
+      <tbody id="ext-body"></tbody>
+    </table>
+  </div>
+  <p class="summary" id="summary"></p>
+  <p class="caption">아무 행이나 클릭하면 P가 해당 극값점으로 이동합니다.</p>
+</section>
+
+<section class="explain courant">
+  <p>쿠란트는 "Maxima and Minima with Subsidiary Conditions"에서 구체적인 예로부터 이 문제에 대한 논의를 시작합니다.</p>
+    <blockquote class="quote" lang="en">
+      <p><b>Maxima and Minima with Subsidiary Conditions</b></p>
+      <p>The problem of determining the maxima and minima of functions of several variables frequently presents itself in a different form. For example, we may wish to find the point of a given surface</p>
+      \[ \phi(x,y,z)=0 \]
+      <p>closest to the origin. We then have to minimize the function</p>
+      \[ f(x,y,z)=\sqrt{x^2+y^2+z^2}, \]
+      <p>where the quantities \(x,y,z\), however, are no longer three independent variables but are connected by the equation of the surface</p>
+      \[ \phi(x,y,z)=0 \]
+      <p>as a subsidiary condition. Such maxima and minima with subsidiary conditions do not, indeed, represent a fundamentally new problem. Thus in our example we only need solve for one of the variables, say \(z\), as a function of the other two, to reduce the problem to that of determining the stationary values of a function of the two independent variables \(x,y\).</p>
+    </blockquote>
+    <blockquote class="quote" lang="en">
+      <p>It is, however, more convenient, and also more elegant, to express the conditions for a stationary value in a symmetrical form, in which no preference is given to anyone of the variables.</p>
+    </blockquote>
+    <p class="cite" lang="en">R. Courant and F. John, <i>Introduction to Calculus and Analysis</i>, Vol. II (Springer, 1989), p. 330.</p>
+  <p>쿠란트의 이 글은 우리가 방금 본 두 가지 방법을 아주 분명하게 나란히 놓고 있습니다.</p>
+  <p>첫 번째 방법은 <b>변수 소거</b>입니다. 제약 조건 \(\phi(x,y,z)=0\)을 이용해 \(z=z(x,y)\)를 풀면, 문제는 익숙한 다변수 극값 문제로 돌아갑니다. 이 방법은 틀리지 않았고, 원칙적으로 문제를 해결할 수 있습니다.</p>
+  <p>그러나 쿠란트는 이어서 또 다른 선택지를 제시합니다. \(x,y,z\)는 원래 문제에서 대칭적인 지위를 가지는데, 왜 굳이 \(z\)를 골라 소거되는 변수로 삼아야 할까요? <b>어느 변수도 편애하지 않고 대칭적인 형태로 정류 조건(stationary condition)을 직접 표현</b>할 수 있다면, 문제의 구조가 오히려 더 분명해집니다.</p>
+  <p>이것이 바로 우리가 다음에 탐구할 방향입니다. <b>라그랑주 승수는 어떻게 변수를 먼저 소거하지 않고도, 원래의 변수들로 제약 조건하의 극값 조건을 직접 표현할 수 있게 해 줄까요?</b></p>
+</section>
+
+<section class="explain">
+  <h2>변수 소거에서 기울기 벡터의 평행으로</h2>
+
+  <p>이 페이지의 제약 곡선은 각도 \(\theta\)만큼 회전한 타원이고, 목적 함수는 각도 \(\varphi\)만큼 회전한 쌍곡선족입니다.</p>
+  \[
+  g(x,y)=\frac{u^2}{a^2}+\frac{v^2}{b^2}-1=0,\qquad F(x,y)=p^2-q^2,
+  \]
+  \[
+  \begin{pmatrix}u\\v\end{pmatrix}=\begin{pmatrix}\cos\theta&\sin\theta\\-\sin\theta&\cos\theta\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix},\qquad
+  \begin{pmatrix}p\\q\end{pmatrix}=\begin{pmatrix}\cos\varphi&\sin\varphi\\-\sin\varphi&\cos\varphi\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix},
+  \]
+  <p>여기서 \(a=2,\ b=1\)입니다. 페이지의 모든 점, 곡선, 수치는 이 매개변수들로부터 실시간으로 계산됩니다.</p>
+
+  <div class="step">
+    <h3>1. 변수 소거란 곡선을 국소적으로 y = y(x)로 쓰는 것이다</h3>
+    <p>'제약 조건에서 \(y\)를 풀어 대입한다'는 것은 곡선의 한 부분을 골라 함수 \(y=y(x)\)로 나타내는 것과 같습니다. 대입하면 일변수 함수 \(f(x)=F(x,y(x))\)를 얻고, 극값 조건은 다음과 같습니다.</p>
+    \[
+    f'(x)=F_x+F_y\,\frac{dy}{dx}=0,\qquad \frac{dy}{dx}=-\frac{g_x}{g_y}.
+    \]
+    <p>음함수 정리는 \(g_y\neq 0\)이기만 하면 이러한 국소 표현이 존재함을 보장합니다. \(g_y=0\)인 곳에서는 그렇지 않습니다.</p>
+  </div>
+
+  <div class="step">
+    <h3>2. 어떤 표현이 유효한지는 접선 방향이 결정한다</h3>
+    <p>\(g_y=0\)은 \(\nabla g\)가 수평, 즉 접선이 <b>수직</b>이라는 뜻입니다. 이런 점에서 곡선은 \(x\)에 대해 되꺾여 돌아옵니다. 두 가지 \(y_\pm(x)\)가 여기서 만나고 \(dy/dx\to\infty\)가 됩니다. 타원 같은 닫힌곡선에는 이런 점이 반드시 두 개 있고, 접선이 수평이어서 \(x=x(y)\)가 실패하는 점도 반드시 두 개 있습니다. 위 그림에서 빨간 원으로 표시한 것이 현재 선택한 독립변수의 실패점이며, 오른쪽 일변수 그래프에서는 두 가지가 빨간 점에서 무한대의 기울기로 만납니다.</p>
+  </div>
+
+  <div class="step">
+    <h3>3. 극값을 구하기 전에는 어느 쪽을 골라야 할지 모른다</h3>
+    <p>극값점이 하필 \(g_y=0\)인 곳에 있으면, 그 점은 \(f(x)\)에서 정의역의 끝점이지 \(f'(x)=0\)의 근이 아니므로, \(f'(x)=0\)을 풀 때 놓치게 됩니다. '좌표축 정렬'을 눌러 보세요. 이때 \(F=x^2-y^2\)이고 제약 조건은 \(x^2/4+y^2=1\)입니다.</p>
+    <ul>
+      <li>\(x\)를 독립변수로 하면: \(f(x)=\tfrac54x^2-1\)이고, \(f'(x)=0\)은 \(x=0\)에서의 최솟값만 줍니다. 최댓값은 끝점 \(x=\pm2\)에 있어 놓치게 됩니다.</li>
+      <li>\(y\)를 독립변수로 하면: \(f(y)=4-5y^2\)이고, \(f'(y)=0\)은 \(y=0\)에서의 최댓값만 줍니다. 최솟값은 끝점 \(y=\pm1\)에 있어 역시 놓치게 됩니다.</li>
+    </ul>
+    <p>어느 변수를 고르든 극값 한 쌍을 놓칩니다. 이번에는 '함께 35° 회전'을 눌러 보세요. 기하는 완전히 같고 전체가 한 각도만큼 회전했을 뿐인데, 두 표현 모두 실패점을 만나지 않습니다. 따라서 실패 여부는 문제 자체의 성질이 아니라 좌표 선택에서 생기는 것입니다.</p>
+  </div>
+
+  <div class="step">
+    <h3>4. 라그랑주: 기하학적 조건을 직접 쓴다</h3>
+    <p>극값점에서는 곡선을 따라 움직일 때 \(F\)의 변화율이 0입니다: \(\nabla F\cdot\hat T=0\). \(\nabla g\)도 접선 \(\hat T\)에 수직이므로, 두 기울기 벡터는 평행해야 합니다.</p>
+    \[
+    \nabla F=\lambda\,\nabla g,\qquad g(x,y)=0 .
+    \]
+    <p>이 세 방정식은 \(x\)와 \(y\)를 동등하게 다루므로, 독립변수를 미리 고를 필요가 없습니다. 요구되는 것은 \(\nabla g\neq 0\), 즉 곡선 자체가 매끄럽다는 것뿐입니다. \(P\)를 끌면서 \(\nabla F\)와 \(\nabla g\) 사이의 각을 살펴보세요. 그 점이 어느 표현의 실패점에 놓이든 상관없이, 극값점에서만 0° 또는 180°가 됩니다.</p>
+    <p>이 예에서 \(F=\mathbf r^{\mathsf T}M\mathbf r\)와 \(g=\mathbf r^{\mathsf T}G\mathbf r-1\)은 모두 이차 형식이므로, 라그랑주 조건은 일반화된 고유값 문제 \(M\mathbf r=\lambda G\mathbf r\)가 됩니다. 양변에 \(\mathbf r^{\mathsf T}\)를 곱하고 \(\mathbf r^{\mathsf T}G\mathbf r=1\)을 이용하면 \(F=\lambda\)를 얻습니다. 승수 자체가 바로 극값입니다.</p>
+  </div>
+
+  <div class="note">
+    <b>역학과의 연결.</b> \(g=0\)을 질점이 받는 구속 조건(예를 들어 레일 위를 미끄러지는 운동)으로, \(-\nabla F\)를 외력으로 생각해 봅시다. 평형 상태에서는 외력의 레일 방향 성분이 0이어야 하고, 레일에 수직인 나머지 부분은 구속력 \(\lambda\nabla g\)가 상쇄합니다. 라그랑주 승수는 바로 구속력의 크기이며(\(|\nabla g|\) 인자 차이를 제외하면), 라그랑주 운동 방정식을 쓸 때에도 같은 방식으로 나타납니다.
+  </div>
+</section>
+</main>
+
+<script id="strings" type="application/json">
+{
+ "statusOk": "사용 가능",
+ "statusWarn": "실패 근접",
+ "statusBad": "실패",
+ "branchPlus": "가지 {dv}₊({iv})",
+ "branchMinus": "가지 {dv}₋({iv})",
+ "breakdown": "{dv}({iv}) 실패점",
+ "onedTitle": "{dv} 소거 후: f({iv}) = F({args})",
+ "onedCaption": "파란 선과 주황 선은 각각 {dv}₊({iv})와 {dv}₋({iv})를 대입한 것입니다. 빨간 원은 ∂g/∂{dv} = 0인 점으로, 두 가지가 여기서 만나며 기울기가 발산합니다. 이곳에 있는 극값은 정의역의 끝점이므로 f′({iv}) = 0을 만족하지 않습니다.",
+ "rPosition": "위치",
+ "rAngle": "∇F와 ∇g 사이의 각",
+ "rParallel": "평행",
+ "rRate": "곡선 방향 변화율 ∇F·T̂",
+ "rLambdaNote": "(극값점에서 λ와 같음)",
+ "rIndep": "{iv}를 독립변수로",
+ "max": "▲ 최대",
+ "min": "▼ 최소",
+ "found": "✓ 찾음",
+ "allOk": "극값점 4개가 모두 사용 가능한 영역에 있음",
+ "someBadOne": "극값점 4개 중 {n}개가 실패점 또는 그 근처에 있음",
+ "someBad": "극값점 4개 중 {n}개가 실패점 또는 그 근처에 있음",
+ "summary": "x를 독립변수로: {dx}. y를 독립변수로: {dy}. 라그랑주 조건 ∇F = λ∇g: 4개 모두 찾음, λ₁ = {l1}, λ₂ = {l2}."
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

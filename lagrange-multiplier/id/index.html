@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mengapa Pengali Lagrange?</title>
+<meta name="description" content="Pelajaran interaktif: alasan geometris mengapa metode pengali Lagrange lebih alami daripada mengeliminasi variabel dalam masalah ekstrem berkendala.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="id" data-ai-translated>
+<header>
+  <nav class="topbar" id="topbar"></nav>
+  <div id="ai-notice"></div>
+  <h1>Mengapa Pengali Lagrange?</h1>
+  <p class="lede">Mari kita kembali ke masalah yang sejak tadi kita tangani: <b>mencari nilai ekstrem \(F(x,y)\) pada sebuah kurva kendala \(g(x,y)=0\).</b> Gagasan yang paling langsung adalah memakai kendala untuk mengeliminasi satu variabel, sehingga masalahnya menjadi masalah ekstrem satu variabel. Cara ini tampak sederhana, tetapi bertumpu pada satu prasyarat yang mudah terlewatkan: kurva kendala harus lebih dahulu dituliskan secara lokal sebagai \(y=y(x)\) atau \(x=x(y)\).</p>
+  <p class="lede">Masalahnya, <b>representasi mana yang seharusnya dipilih?</b> Itu bergantung pada letak titik ekstrem pada kurva; padahal letak itu sendiri justru jawaban yang belum kita ketahui dan sedang kita cari. Akibatnya, langkah "eliminasi variabel" yang semula hanya dimaksudkan untuk mempermudah perhitungan malah menjebak kita dalam dilema: kita harus sudah tahu jawabannya sebelum dapat memilih metodenya.</p>
+  <p class="lede">Pengali Lagrange menawarkan cara berpikir lain: <b>tanpa perlu lebih dahulu menyelesaikan kurva kendala sebagai fungsi dari salah satu variabel, kita bekerja langsung di ruang \(x,y\) dan menangani fungsi \(F\) serta kendala \(g=0\) secara bersamaan.</b></p>
+  <p class="lede">Seret titik \(P\) pada gambar di bawah, putar elips dan kurva ketinggian, lalu lihat di mana masing-masing cara tersebut menemui jalan buntu.</p>
+</header>
+
+<main>
+<section class="lab">
+  <div class="card plane-card">
+    <canvas id="plane" aria-label="Bidang xy: elips kendala, kurva ketinggian fungsi objektif, dan vektor gradien"></canvas>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--b1)"></i><span id="lg-b1">cabang y₊(x)</span></span>
+      <span><i class="sw" style="background:var(--b2)"></i><span id="lg-b2">cabang y₋(x)</span></span>
+      <span><i class="dot" style="border:2px solid var(--bad)"></i><span id="lg-bad">titik gagal y(x)</span></span>
+      <span>▲ maksimum　▼ minimum</span>
+      <span><i class="sw" style="background:var(--gradF)"></i>∇F</span>
+      <span><i class="sw" style="background:var(--gradG)"></i>∇g</span>
+      <span><i class="sw" style="background:var(--level)"></i>kurva ketinggian F</span>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <div class="ctrl"><label for="theta">Elips θ</label><input id="theta" type="range" min="-90" max="90" step="1"><output id="theta-o"></output></div>
+      <div class="ctrl"><label for="phi">Kurva ketinggian φ</label><input id="phi" type="range" min="-90" max="90" step="1"><output id="phi-o"></output></div>
+      <div class="ctrl"><label for="tpar">Posisi titik P</label><input id="tpar" type="range" min="0" max="360" step="0.5"><output id="tpar-o"></output></div>
+      <div class="row">
+        <span>Variabel bebas</span>
+        <span class="seg" role="group" aria-label="Variabel bebas">
+          <button type="button" data-indep="x">x: y = y(x)</button>
+          <button type="button" data-indep="y">y: x = x(y)</button>
+        </span>
+      </div>
+      <div class="row">
+        <label class="chk"><input type="checkbox" id="show-grad">Gradien</label>
+        <label class="chk"><input type="checkbox" id="show-tan">Garis singgung</label>
+        <label class="chk"><input type="checkbox" id="show-lev">Kurva ketinggian</label>
+      </div>
+      <div class="presets">
+        <button type="button" data-preset="30,-20">Kasus umum</button>
+        <button type="button" data-preset="0,0">Sejajar sumbu (keduanya gagal)</button>
+        <button type="button" data-preset="35,35">Keduanya diputar 35°</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 id="oned-title">Setelah mengeliminasi y: f(x) = F(x, y(x))</h3>
+      <canvas id="oned" aria-label="Grafik fungsi satu dimensi setelah eliminasi variabel"></canvas>
+      <p class="caption" id="oned-cap"></p>
+    </div>
+
+    <div class="card">
+      <h3>Titik P</h3>
+      <dl class="readout" id="readout"></dl>
+    </div>
+  </div>
+</section>
+
+<section class="card" style="margin-top:20px">
+  <h3>Titik ekstrem: dua cara eliminasi vs. Lagrange</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Titik</th><th>(x, y)</th><th>F = λ</th><th id="th-x">x sebagai variabel bebas</th><th id="th-y">y sebagai variabel bebas</th><th>∇F = λ∇g</th></tr></thead>
+      <tbody id="ext-body"></tbody>
+    </table>
+  </div>
+  <p class="summary" id="summary"></p>
+  <p class="caption">Klik salah satu baris untuk memindahkan P ke titik ekstrem tersebut.</p>
+</section>
+
+<section class="explain courant">
+  <p>Dalam "Maxima and Minima with Subsidiary Conditions", Courant memulai pembahasan masalah ini dengan sebuah contoh konkret:</p>
+    <blockquote class="quote" lang="en">
+      <p><b>Maxima and Minima with Subsidiary Conditions</b></p>
+      <p>The problem of determining the maxima and minima of functions of several variables frequently presents itself in a different form. For example, we may wish to find the point of a given surface</p>
+      \[ \phi(x,y,z)=0 \]
+      <p>closest to the origin. We then have to minimize the function</p>
+      \[ f(x,y,z)=\sqrt{x^2+y^2+z^2}, \]
+      <p>where the quantities \(x,y,z\), however, are no longer three independent variables but are connected by the equation of the surface</p>
+      \[ \phi(x,y,z)=0 \]
+      <p>as a subsidiary condition. Such maxima and minima with subsidiary conditions do not, indeed, represent a fundamentally new problem. Thus in our example we only need solve for one of the variables, say \(z\), as a function of the other two, to reduce the problem to that of determining the stationary values of a function of the two independent variables \(x,y\).</p>
+    </blockquote>
+    <blockquote class="quote" lang="en">
+      <p>It is, however, more convenient, and also more elegant, to express the conditions for a stationary value in a symmetrical form, in which no preference is given to anyone of the variables.</p>
+    </blockquote>
+    <p class="cite" lang="en">R. Courant and F. John, <i>Introduction to Calculus and Analysis</i>, Vol. II (Springer, 1989), p. 330.</p>
+  <p>Kutipan dari Courant ini sebenarnya menyandingkan dengan jelas kedua cara yang baru saja kita lihat.</p>
+  <p>Cara pertama adalah <b>eliminasi variabel</b>: dengan memakai kendala \(\phi(x,y,z)=0\), kita selesaikan \(z=z(x,y)\), sehingga masalahnya kembali menjadi masalah ekstrem fungsi banyak variabel yang sudah kita kenal. Cara ini tidak salah, dan pada prinsipnya dapat menyelesaikan tugasnya.</p>
+  <p>Namun Courant kemudian mengajukan pilihan lain: karena \(x,y,z\) semula berkedudukan simetris dalam masalah ini, mengapa kita harus lebih dahulu memilih \(z\) sebagai variabel yang dieliminasi? Jika kita dapat <b>menyatakan syarat stasioner secara langsung dalam bentuk simetris, tanpa mengistimewakan variabel mana pun</b>, struktur masalahnya justru akan menjadi lebih jelas.</p>
+  <p>Inilah arah yang akan kita jelajahi selanjutnya: <b>bagaimana pengali Lagrange memungkinkan kita menyatakan syarat ekstrem berkendala secara langsung dalam variabel-variabel semula, tanpa harus mengeliminasi variabel terlebih dahulu?</b></p>
+</section>
+
+<section class="explain">
+  <h2>Dari eliminasi variabel ke gradien yang sejajar</h2>
+
+  <p>Kurva kendala di halaman ini adalah elips yang diputar sebesar sudut \(\theta\), dan fungsi objektifnya adalah keluarga hiperbola yang diputar sebesar sudut \(\varphi\):</p>
+  \[
+  g(x,y)=\frac{u^2}{a^2}+\frac{v^2}{b^2}-1=0,\qquad F(x,y)=p^2-q^2,
+  \]
+  \[
+  \begin{pmatrix}u\\v\end{pmatrix}=\begin{pmatrix}\cos\theta&\sin\theta\\-\sin\theta&\cos\theta\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix},\qquad
+  \begin{pmatrix}p\\q\end{pmatrix}=\begin{pmatrix}\cos\varphi&\sin\varphi\\-\sin\varphi&\cos\varphi\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix},
+  \]
+  <p>dengan \(a=2,\ b=1\). Semua titik, kurva, dan nilai di halaman ini dihitung secara langsung dari parameter-parameter tersebut.</p>
+
+  <div class="step">
+    <h3>1. Eliminasi variabel berarti menuliskan kurva secara lokal sebagai y = y(x)</h3>
+    <p>"Menyelesaikan \(y\) dari kendala lalu menyubstitusikannya" sama dengan memilih sepotong kurva dan menyatakannya sebagai fungsi \(y=y(x)\). Setelah substitusi diperoleh fungsi satu variabel \(f(x)=F(x,y(x))\), dengan syarat ekstrem</p>
+    \[
+    f'(x)=F_x+F_y\,\frac{dy}{dx}=0,\qquad \frac{dy}{dx}=-\frac{g_x}{g_y}.
+    \]
+    <p>Teorema fungsi implisit menjamin bahwa representasi lokal seperti ini ada asalkan \(g_y\neq 0\). Di tempat dengan \(g_y=0\), hal itu tidak berlaku.</p>
+  </div>
+
+  <div class="step">
+    <h3>2. Arah garis singgung menentukan representasi mana yang dapat dipakai</h3>
+    <p>\(g_y=0\) berarti \(\nabla g\) mendatar, yaitu garis singgungnya <b>tegak</b>. Di titik seperti ini kurva berbalik arah terhadap \(x\): kedua cabang \(y_\pm(x)\) bertemu di sini, dan \(dy/dx\to\infty\). Kurva tertutup seperti elips pasti memiliki dua titik semacam itu, dan pasti juga memiliki dua titik dengan garis singgung mendatar, tempat \(x=x(y)\) gagal. Lingkaran merah pada gambar di atas menandai titik gagal untuk variabel bebas yang sedang dipilih; pada grafik satu dimensi di sebelah kanan, kedua cabang bertemu di titik merah dengan kemiringan tak hingga.</p>
+  </div>
+
+  <div class="step">
+    <h3>3. Sebelum titik ekstrem ditemukan, kita tidak tahu harus memilih yang mana</h3>
+    <p>Jika sebuah titik ekstrem kebetulan terletak di tempat \(g_y=0\), titik itu merupakan titik ujung domain \(f(x)\), bukan akar dari \(f'(x)=0\), sehingga ia akan terlewat ketika kita menyelesaikan \(f'(x)=0\). Tekan "Sejajar sumbu" dan perhatikan: sekarang \(F=x^2-y^2\), dan kendalanya \(x^2/4+y^2=1\).</p>
+    <ul>
+      <li>Dengan \(x\) sebagai variabel bebas: \(f(x)=\tfrac54x^2-1\), dan \(f'(x)=0\) hanya memberikan nilai minimum di \(x=0\); nilai maksimumnya berada di titik ujung \(x=\pm2\) dan terlewat.</li>
+      <li>Dengan \(y\) sebagai variabel bebas: \(f(y)=4-5y^2\), dan \(f'(y)=0\) hanya memberikan nilai maksimum di \(y=0\); nilai minimumnya berada di titik ujung \(y=\pm1\) dan juga terlewat.</li>
+    </ul>
+    <p>Variabel mana pun yang dipilih, sepasang titik ekstrem akan terlewat. Sekarang tekan "Keduanya diputar 35°": geometrinya persis sama, hanya diputar secara keseluruhan, dan kedua representasi tidak menemui titik gagal. Jadi, gagal atau tidaknya bukan sifat masalah itu sendiri, melainkan akibat pemilihan koordinat.</p>
+  </div>
+
+  <div class="step">
+    <h3>4. Lagrange: tuliskan syarat geometrisnya secara langsung</h3>
+    <p>Di titik ekstrem, laju perubahan \(F\) ketika bergerak sepanjang kurva adalah nol: \(\nabla F\cdot\hat T=0\). Karena \(\nabla g\) juga tegak lurus terhadap garis singgung \(\hat T\), kedua gradien harus sejajar:</p>
+    \[
+    \nabla F=\lambda\,\nabla g,\qquad g(x,y)=0 .
+    \]
+    <p>Ketiga persamaan ini memperlakukan \(x\) dan \(y\) secara setara, sehingga tidak perlu memilih variabel bebas terlebih dahulu; syaratnya hanya \(\nabla g\neq 0\), yaitu kurvanya sendiri mulus. Saat menyeret \(P\), perhatikan sudut antara \(\nabla F\) dan \(\nabla g\): sudut itu bernilai 0° atau 180° hanya di titik ekstrem, tidak peduli titik tersebut merupakan titik gagal bagi representasi yang mana.</p>
+    <p>Dalam contoh ini, \(F=\mathbf r^{\mathsf T}M\mathbf r\) dan \(g=\mathbf r^{\mathsf T}G\mathbf r-1\) keduanya berbentuk kuadratik, sehingga syarat Lagrange menjadi masalah nilai eigen umum \(M\mathbf r=\lambda G\mathbf r\). Dengan mengalikan kedua ruas dengan \(\mathbf r^{\mathsf T}\) dan memakai \(\mathbf r^{\mathsf T}G\mathbf r=1\), diperoleh \(F=\lambda\): pengalinya sendiri adalah nilai ekstremnya.</p>
+  </div>
+
+  <div class="note">
+    <b>Kaitan dengan mekanika.</b> Bayangkan \(g=0\) sebagai kendala yang dialami sebuah partikel (misalnya manik-manik yang meluncur pada kawat), dan \(-\nabla F\) sebagai gaya luar. Dalam kesetimbangan, komponen gaya luar sepanjang kawat harus nol, sedangkan bagian yang tegak lurus kawat diimbangi oleh gaya kendala \(\lambda\nabla g\). Pengali Lagrange adalah besar gaya kendala tersebut (berbeda sebuah faktor \(|\nabla g|\)); ketika menuliskan persamaan gerak Lagrange, ia muncul dengan cara yang sama.
+  </div>
+</section>
+</main>
+
+<script id="strings" type="application/json">
+{
+ "statusOk": "Dapat dipakai",
+ "statusWarn": "Hampir gagal",
+ "statusBad": "Gagal",
+ "branchPlus": "cabang {dv}₊({iv})",
+ "branchMinus": "cabang {dv}₋({iv})",
+ "breakdown": "titik gagal {dv}({iv})",
+ "onedTitle": "Setelah mengeliminasi {dv}: f({iv}) = F({args})",
+ "onedCaption": "Kurva biru dan oranye masing-masing memakai {dv}₊({iv}) dan {dv}₋({iv}). Lingkaran merah adalah titik dengan ∂g/∂{dv} = 0: kedua cabang bertemu di sana dengan kemiringan tak hingga, dan titik ekstrem di sana merupakan titik ujung domain sehingga tidak memenuhi f′({iv}) = 0.",
+ "rPosition": "Posisi",
+ "rAngle": "Sudut antara ∇F dan ∇g",
+ "rParallel": "sejajar",
+ "rRate": "Laju sepanjang kurva ∇F·T̂",
+ "rLambdaNote": "(sama dengan λ di titik ekstrem)",
+ "rIndep": "{iv} sebagai variabel bebas",
+ "max": "▲ maks",
+ "min": "▼ min",
+ "found": "✓ ditemukan",
+ "allOk": "keempat titik ekstrem berada di daerah yang dapat dipakai",
+ "someBadOne": "{n} dari 4 titik ekstrem berada di atau dekat titik gagal",
+ "someBad": "{n} dari 4 titik ekstrem berada di atau dekat titik gagal",
+ "summary": "Dengan x sebagai variabel bebas: {dx}. Dengan y sebagai variabel bebas: {dy}. Syarat Lagrange ∇F = λ∇g: keempatnya ditemukan, λ₁ = {l1}, λ₂ = {l2}."
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

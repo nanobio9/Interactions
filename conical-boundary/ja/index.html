@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>円錐境界：固有値スペクトル</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.27.0/plotly.min.js"></script>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['\\(','\\)']],
+    displayMath: [['\\[','\\]']],
+    tags: 'none',
+  },
+  chtml: {
+    fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2',
+    scale: 1.05,
+    minScale: 0.5,
+  },
+  options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="ja" data-ai-translated>
+
+<nav class="topbar" id="topbar"></nav>
+<div id="ai-notice"></div>
+
+<h1>円錐境界問題：固有値スペクトルと固有関数</h1>
+<p class="subtitle">
+  Jackson §3.4 · 境界条件 \(P_\nu(\cos\beta) = 0\) がスペクトル \(\{\nu_k\}\) をどのように決めるか
+</p>
+
+<!-- PANEL 1 -->
+<div class="panel">
+  <div class="panel-title">スペクトル \(\nu_k(\beta)\)、\(k = 1,2,3,4\)</div>
+  <div class="panel-desc">
+    \(P_\nu(\cos\beta)=0\) の \(k\) 番目の根を、円錐の半頂角 \(\beta\) の関数として示す。
+    水平の点線：整数値（全球面の極限 \(\beta\to 180°\)）。
+    鉛直の破線：\(\beta=90°\)（平面導体。\(\nu_1=1\) が厳密に成り立つ）。
+  </div>
+  <div id="plot1" class="plot-div"></div>
+  <p class="plot-note">
+    \(\beta\to 180°\) では各 \(\nu_k\) が整数に近づき、
+    おなじみのルジャンドルのスペクトルが再現される。
+    円錐形のくぼみ（\(\beta<90°\)）では \(\nu_1>1\) となり、先端で場は 0 になる。
+    円錐形の突起（\(\beta>90°\)）では \(\nu_1<1\) となり、場は発散する。
+    これが避雷針の数学的な根拠である。
+  </p>
+</div>
+
+<!-- PANEL 2 -->
+<div class="panel">
+  <div class="panel-title">
+    選んだ \(\beta\) に対する固有関数 \(P_{\nu_k}(\cos\theta)\)
+  </div>
+  <div class="panel-desc">
+    <b>上のグラフ：</b>\(\theta\) 軸を \([0,\beta]\) に合わせて縮尺。
+    零点は常に区間を一様に埋めるように見える（スツルムの振動定理）。<br>
+    <b>下のグラフ：</b>\(\theta\) 軸を \([0°,180°]\) に固定。
+    \(\beta\) を変えたとき零点が実際にどこにあるかがわかる。<br>
+    色付きの細線は各零点を示す。上側の軸は \(\cos\theta\)。
+    赤い破線：\(\theta=\beta\) にある導体表面。
+  </div>
+
+  <div class="plot-wrap">
+    <div class="plot-label">
+      縮尺表示：\(\theta\in[0,\beta]\)
+    </div>
+    <div id="plot2T" class="plot-div"></div>
+  </div>
+
+  <div class="slider-row" style="margin-top:0.6rem;">
+    <label>円錐の半頂角 \(\beta\)</label>
+    <input type="range" id="betaSlider" min="5" max="175" value="60" step="1">
+    <span class="slider-val" id="betaVal">\(\beta=60°\)</span>
+  </div>
+
+  <div class="plot-wrap">
+    <div class="plot-label">
+      絶対表示：\(\theta\in[0°,180°]\)
+    </div>
+    <div id="plot2B" class="plot-div"></div>
+  </div>
+
+  <div id="nuRow" class="nu-row"></div>
+  <p class="plot-note">
+    縮尺表示（上）では零点はほとんど動かないように見える。
+    零点は常にほぼ同じ相対位置で \([0,\beta]\) を分割している。
+    絶対表示（下）を見ると、\(\beta\) の変化に伴って零点が実際に移動していることがわかる。
+    \(\theta=\beta\) より外側でも関数は微分方程式の解として続いていくが、
+    それらを整える境界条件はもはや存在しない。
+  </p>
+</div>
+
+<!-- FURTHER DISCUSSION -->
+<div class="discussion">
+  <h2>さらなる考察</h2>
+
+  <p>
+    <b>なぜ零点は \([0,\beta]\) の内部でほぼ等間隔に並ぶのか？</b>
+    関数 \(P_{\nu_k}(\cos\theta)\) は、\([0,\beta]\) 上のスツルム–リウヴィル問題の固有関数であり、
+    境界条件は \(\theta=0\) での \(P_{\nu_k}(1)=1\) と、
+    導体表面での \(P_{\nu_k}(\cos\beta)=0\) である。
+    <em>スツルムの振動定理</em>により、\(k\) 番目の固有関数は
+    開区間 \((0,\beta)\) の内部にちょうど \(k-1\) 個の零点をもつことが保証される。
+    これはルジャンドル関数に特有の性質ではなく、
+    <em>あらゆる</em>スツルム–リウヴィル問題で成り立つ。
+  </p>
+
+  <p>
+    ただし、等間隔になるのは<em>漸近的</em>にすぎない。\(k\to\infty\) では
+    隣り合う零点の間隔は \(\beta/k\) に近づくが、
+    \(k\) が小さいときには零点は厳密に等間隔ではない。
+    これは上の図で直接確かめられる。
+    \(\beta\) を \(90°\) までドラッグし、\(k=3\) の固有関数の零点の位置を読み取ってみよう。
+    零点は \(25.3°\) と \(57.5°\) 付近にあり、等間隔の値
+    \(30°\) と \(60°\) にはならない。
+    このずれは数値誤差ではなく、
+    低次の固有関数がもつ本物の特徴である。
+  </p>
+
+  <p>
+    その物理的な理由は示唆に富んでいる。
+    短波長の極限（\(k\) が大きい場合）では、固有関数は速く振動し、
+    局所的には三角関数のようにふるまう。
+    三角関数の零点はちょうど等間隔である。
+    これは量子力学の無限に深い井戸型ポテンシャルと同じ現象である：
+    高エネルギーの固有状態 \(\psi_n(x) \propto \sin(n\pi x/L)\)
+    の零点は完全に等間隔だが、
+    より一般的なポテンシャル中の低エネルギー状態ではそうはならない。
+    等間隔性は<em>半古典極限</em>の性質であって、
+    有限の \(k\) における厳密な固有関数の性質ではない。
+  </p>
+
+  <p>
+    この構造を区間 \([0,\beta]\) に<em>閉じ込めて</em>いるのが、
+    \(\beta\) での境界条件である。
+    境界条件は、各固有関数が指定された領域の中で向きを変え、
+    0 に戻ってくることを強いる。
+    それがなければ、零点は閉じ込められることも、特定の形に整えられることもない。
+  </p>
+
+  <p>
+    <b>なぜ \(\theta=\beta\) の外側ではこのパターンが崩れるのか？</b>
+    \(\theta>\beta\) では、関数 \(P_{\nu_k}(\cos\theta)\) はルジャンドル方程式の
+    解として続いていくが、もはやどの境界値問題の固有関数でもない。
+    \((\beta,\pi]\) ではそれを拘束する条件が何もないため、
+    振動定理はそこでの零点について何も述べない。
+    等間隔の零点や秩序だった振動といった構造は、
+    外から課されたものだったのである。境界を取り除けば、それは消えてしまう。
+  </p>
+
+  <p>
+    <b>類似例：原子物理におけるスプライン補間。</b>
+    古典的な数値計算手法の一つに、原子のポテンシャル \(V(r)\) を
+    有限区間 \([r_{\min},r_{\max}]\) 上でスプライン曲線によって近似するものがある。
+    この区間の内部では、スプラインは各節点で連続性と滑らかさの条件を満たし、
+    シュレーディンガー方程式
+    \[
+      -\frac{\hbar^2}{2m}\psi'' + V(r)\,\psi = E\psi
+    \]
+    を信頼性よく解くことができる。
+    しかし、定義区間の外まで延長したスプラインには何の拘束もなく、
+    激しく振動するか発散してしまう。そこから計算した
+    \(r_{\max}\) より外側の波動関数には意味がない。
+    これは \(\theta=\beta\) の外側の \(P_{\nu_k}(\cos\theta)\) とまったく対応している：
+    どちらの場合も、境界条件をもつ有限区間が秩序だった
+    構造のある解を生み出し、その区間の外では秩序は消え去る。
+  </p>
+
+  <p>
+    ただし、重要な違いが一つある。
+    スツルム–リウヴィル問題の固有関数は、スプラインにはない<em>大域的</em>な構造をもつ：
+    直交性
+    \[
+      \int_0^\beta P_{\nu_k}(\cos\theta)\,P_{\nu_j}(\cos\theta)\,\sin\theta\,d\theta = 0
+      \qquad (k\neq j),
+    \]
+    と、振動定理が保証する一様な零点の間隔である。
+    これらは微分演算子の自己共役な構造から導かれるものであり、
+    単に両端点での接続条件から来るのではない。
+    スプラインは節点での局所的な条件を満たすように構成されるもので、
+    その大域的なふるまいは副次的なものにすぎない。
+    固有関数は演算子と境界によって<em>大域的に決定される</em>のであり、
+    局所的なふるまいはその結果であって、設計上の選択ではない。
+  </p>
+
+  <p class="source">
+    参考文献：Jackson §3.4；
+    スツルム–リウヴィル理論：Courant &amp; Hilbert,
+    <em>Methods of Mathematical Physics</em>, Vol. I, Ch. VI；
+    原子構造におけるスプライン法：Fischer,
+    <em>The Hartree–Fock Method for Atoms</em>.
+  </p>
+</div>
+
+<script id="strings" type="application/json">
+{
+ "axisBeta": "円錐の半頂角 β（度）",
+ "axisNu": "固有値 ν",
+ "axisTheta": "θ（度）"
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

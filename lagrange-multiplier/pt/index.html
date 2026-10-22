@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Por que multiplicadores de Lagrange?</title>
+<meta name="description" content="Aula interativa: a razão geométrica pela qual o método dos multiplicadores de Lagrange é mais natural do que eliminar variáveis em problemas de extremos com restrição.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="pt" data-ai-translated>
+<header>
+  <nav class="topbar" id="topbar"></nav>
+  <div id="ai-notice"></div>
+  <h1>Por que multiplicadores de Lagrange?</h1>
+  <p class="lede">Voltemos ao problema com que estamos trabalhando desde o início: <b>encontrar os extremos de \(F(x,y)\) sobre uma curva de restrição \(g(x,y)=0\).</b> A ideia mais direta é usar a restrição para eliminar uma variável, reduzindo o problema a um problema de extremos em uma única variável. Embora pareça simples, esse método depende de uma premissa fácil de passar despercebida: é preciso primeiro escrever a curva de restrição localmente como \(y=y(x)\) ou \(x=x(y)\).</p>
+  <p class="lede">A questão é: <b>qual representação devemos escolher?</b> Isso depende de onde, na curva, está o ponto de extremo; mas essa posição é justamente a resposta que ainda não conhecemos e estamos procurando. Assim, um passo pensado apenas para facilitar as contas, “eliminar uma variável”, acaba nos levando a um impasse: seria preciso conhecer a resposta antes de poder escolher o método.</p>
+  <p class="lede">Os multiplicadores de Lagrange oferecem outro caminho: <b>em vez de primeiro resolver a curva de restrição como função de uma das variáveis, trabalhar diretamente no espaço \(x,y\), tratando ao mesmo tempo a função \(F\) e a restrição \(g=0\).</b></p>
+  <p class="lede">Arraste o ponto \(P\) abaixo e gire a elipse e as curvas de nível para ver onde cada uma das duas abordagens emperra.</p>
+</header>
+
+<main>
+<section class="lab">
+  <div class="card plane-card">
+    <canvas id="plane" aria-label="plano xy: elipse de restrição, curvas de nível da função objetivo e vetores gradiente"></canvas>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--b1)"></i><span id="lg-b1">ramo y₊(x)</span></span>
+      <span><i class="sw" style="background:var(--b2)"></i><span id="lg-b2">ramo y₋(x)</span></span>
+      <span><i class="dot" style="border:2px solid var(--bad)"></i><span id="lg-bad">y(x) falha</span></span>
+      <span>▲ máximo　▼ mínimo</span>
+      <span><i class="sw" style="background:var(--gradF)"></i>∇F</span>
+      <span><i class="sw" style="background:var(--gradG)"></i>∇g</span>
+      <span><i class="sw" style="background:var(--level)"></i>curvas de nível de F</span>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <div class="ctrl"><label for="theta">Elipse θ</label><input id="theta" type="range" min="-90" max="90" step="1"><output id="theta-o"></output></div>
+      <div class="ctrl"><label for="phi">Curvas de nível φ</label><input id="phi" type="range" min="-90" max="90" step="1"><output id="phi-o"></output></div>
+      <div class="ctrl"><label for="tpar">Posição de P</label><input id="tpar" type="range" min="0" max="360" step="0.5"><output id="tpar-o"></output></div>
+      <div class="row">
+        <span>Variável independente</span>
+        <span class="seg" role="group" aria-label="Variável independente">
+          <button type="button" data-indep="x">x: y = y(x)</button>
+          <button type="button" data-indep="y">y: x = x(y)</button>
+        </span>
+      </div>
+      <div class="row">
+        <label class="chk"><input type="checkbox" id="show-grad">Gradientes</label>
+        <label class="chk"><input type="checkbox" id="show-tan">Tangente</label>
+        <label class="chk"><input type="checkbox" id="show-lev">Curvas de nível</label>
+      </div>
+      <div class="presets">
+        <button type="button" data-preset="30,-20">Caso genérico</button>
+        <button type="button" data-preset="0,0">Alinhado aos eixos (ambas falham)</button>
+        <button type="button" data-preset="35,35">Ambos girados 35°</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 id="oned-title">Após eliminar y: f(x) = F(x, y(x))</h3>
+      <canvas id="oned" aria-label="Função unidimensional após eliminar uma variável"></canvas>
+      <p class="caption" id="oned-cap"></p>
+    </div>
+
+    <div class="card">
+      <h3>Ponto P</h3>
+      <dl class="readout" id="readout"></dl>
+    </div>
+  </div>
+</section>
+
+<section class="card" style="margin-top:20px">
+  <h3>Extremos: duas eliminações vs. Lagrange</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Ponto</th><th>(x, y)</th><th>F = λ</th><th id="th-x">x independente</th><th id="th-y">y independente</th><th>∇F = λ∇g</th></tr></thead>
+      <tbody id="ext-body"></tbody>
+    </table>
+  </div>
+  <p class="summary" id="summary"></p>
+  <p class="caption">Clique em uma linha para mover P até esse extremo.</p>
+</section>
+
+<section class="explain courant">
+  <p>Em “Maxima and Minima with Subsidiary Conditions”, Courant começa a discussão deste problema com um exemplo concreto:</p>
+    <blockquote class="quote" lang="en">
+      <p><b>Maxima and Minima with Subsidiary Conditions</b></p>
+      <p>The problem of determining the maxima and minima of functions of several variables frequently presents itself in a different form. For example, we may wish to find the point of a given surface</p>
+      \[ \phi(x,y,z)=0 \]
+      <p>closest to the origin. We then have to minimize the function</p>
+      \[ f(x,y,z)=\sqrt{x^2+y^2+z^2}, \]
+      <p>where the quantities \(x,y,z\), however, are no longer three independent variables but are connected by the equation of the surface</p>
+      \[ \phi(x,y,z)=0 \]
+      <p>as a subsidiary condition. Such maxima and minima with subsidiary conditions do not, indeed, represent a fundamentally new problem. Thus in our example we only need solve for one of the variables, say \(z\), as a function of the other two, to reduce the problem to that of determining the stationary values of a function of the two independent variables \(x,y\).</p>
+    </blockquote>
+    <blockquote class="quote" lang="en">
+      <p>It is, however, more convenient, and also more elegant, to express the conditions for a stationary value in a symmetrical form, in which no preference is given to anyone of the variables.</p>
+    </blockquote>
+    <p class="cite" lang="en">R. Courant and F. John, <i>Introduction to Calculus and Analysis</i>, Vol. II (Springer, 1989), p. 330.</p>
+  <p>Esse trecho de Courant coloca lado a lado, com muita clareza, as duas abordagens que acabamos de ver.</p>
+  <p>A primeira abordagem é <b>eliminar uma variável</b>: usar a restrição \(\phi(x,y,z)=0\) para obter \(z=z(x,y)\), e o problema volta a ser um problema familiar de extremos em várias variáveis. Não há nada de errado com esse método e, em princípio, ele resolve a questão.</p>
+  <p>Mas Courant propõe em seguida outra opção: já que \(x,y,z\) desempenham papéis simétricos no problema original, por que precisamos escolher justamente \(z\) para ser eliminada? Se conseguirmos <b>exprimir a condição de estacionariedade diretamente em forma simétrica, sem privilegiar nenhuma variável</b>, a estrutura do problema fica, na verdade, mais clara.</p>
+  <p>É exatamente essa a direção que vamos explorar a seguir: <b>como os multiplicadores de Lagrange nos permitem exprimir a condição de extremo com restrição diretamente nas variáveis originais, sem eliminar nenhuma delas antes?</b></p>
+</section>
+
+<section class="explain">
+  <h2>Da eliminação de variáveis aos gradientes paralelos</h2>
+
+  <p>A curva de restrição desta página é uma elipse girada de um ângulo \(\theta\), e a função objetivo é uma família de hipérboles girada de um ângulo \(\varphi\):</p>
+  \[
+  g(x,y)=\frac{u^2}{a^2}+\frac{v^2}{b^2}-1=0,\qquad F(x,y)=p^2-q^2,
+  \]
+  \[
+  \begin{pmatrix}u\\v\end{pmatrix}=\begin{pmatrix}\cos\theta&\sin\theta\\-\sin\theta&\cos\theta\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix},\qquad
+  \begin{pmatrix}p\\q\end{pmatrix}=\begin{pmatrix}\cos\varphi&\sin\varphi\\-\sin\varphi&\cos\varphi\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix},
+  \]
+  <p>com \(a=2,\ b=1\). Todos os pontos, curvas e valores da página são calculados em tempo real a partir desses parâmetros.</p>
+
+  <div class="step">
+    <h3>1. Eliminar uma variável é escrever a curva localmente como y = y(x)</h3>
+    <p>“Isolar \(y\) na restrição e substituir” equivale a escolher um trecho da curva e representá-lo como uma função \(y=y(x)\). A substituição fornece a função de uma variável \(f(x)=F(x,y(x))\), cuja condição de extremo é</p>
+    \[
+    f'(x)=F_x+F_y\,\frac{dy}{dx}=0,\qquad \frac{dy}{dx}=-\frac{g_x}{g_y}.
+    \]
+    <p>O teorema da função implícita garante que essa representação local existe sempre que \(g_y\neq 0\). Onde \(g_y=0\), isso não acontece.</p>
+  </div>
+
+  <div class="step">
+    <h3>2. A direção da tangente decide qual representação funciona</h3>
+    <p>\(g_y=0\) significa que \(\nabla g\) é horizontal, ou seja, a tangente é <b>vertical</b>. Num ponto assim, a curva volta para trás em relação a \(x\): os dois ramos \(y_\pm(x)\) se encontram ali e \(dy/dx\to\infty\). Uma curva fechada como a elipse sempre tem dois pontos desse tipo, e também dois pontos de tangente horizontal, onde \(x=x(y)\) falha. Os círculos vermelhos no gráfico acima marcam os pontos de falha da variável independente escolhida; no gráfico unidimensional à direita, os dois ramos se encontram nos pontos vermelhos com inclinação infinita.</p>
+  </div>
+
+  <div class="step">
+    <h3>3. Antes de achar os extremos, não se sabe qual escolher</h3>
+    <p>Se um extremo cai exatamente onde \(g_y=0\), ele é uma extremidade do domínio de \(f(x)\), e não uma raiz de \(f'(x)=0\); ao resolver \(f'(x)=0\), ele se perde. Clique em “Alinhado aos eixos”: agora \(F=x^2-y^2\) e a restrição é \(x^2/4+y^2=1\).</p>
+    <ul>
+      <li>Com \(x\) como variável independente: \(f(x)=\tfrac54x^2-1\), e \(f'(x)=0\) fornece apenas o mínimo em \(x=0\); o máximo está nas extremidades \(x=\pm2\) e se perde.</li>
+      <li>Com \(y\) como variável independente: \(f(y)=4-5y^2\), e \(f'(y)=0\) fornece apenas o máximo em \(y=0\); o mínimo está nas extremidades \(y=\pm1\) e também se perde.</li>
+    </ul>
+    <p>Qualquer que seja a variável escolhida, um par de extremos se perde. Agora clique em “Ambos girados 35°”: a geometria é exatamente a mesma, apenas girada como um todo, e nenhuma das duas representações encontra pontos de falha. Ou seja, a falha não é uma propriedade do problema em si, mas consequência da escolha de coordenadas.</p>
+  </div>
+
+  <div class="step">
+    <h3>4. Lagrange: escrever diretamente a condição geométrica</h3>
+    <p>Num ponto de extremo, a taxa de variação de \(F\) ao longo da curva é nula: \(\nabla F\cdot\hat T=0\). Como \(\nabla g\) também é perpendicular à tangente \(\hat T\), os dois gradientes têm de ser paralelos:</p>
+    \[
+    \nabla F=\lambda\,\nabla g,\qquad g(x,y)=0 .
+    \]
+    <p>Essas três equações tratam \(x\) e \(y\) em pé de igualdade, de modo que não é preciso escolher de antemão uma variável independente; a única exigência é \(\nabla g\neq 0\), isto é, que a própria curva seja suave. Ao arrastar \(P\), observe o ângulo entre \(\nabla F\) e \(\nabla g\): ele vale 0° ou 180° somente nos extremos, não importa em qual representação esse ponto seja um ponto de falha.</p>
+    <p>Neste exemplo, \(F=\mathbf r^{\mathsf T}M\mathbf r\) e \(g=\mathbf r^{\mathsf T}G\mathbf r-1\) são formas quadráticas, e a condição de Lagrange se torna o problema de autovalores generalizado \(M\mathbf r=\lambda G\mathbf r\). Multiplicando os dois lados por \(\mathbf r^{\mathsf T}\) e usando \(\mathbf r^{\mathsf T}G\mathbf r=1\), obtemos \(F=\lambda\): o próprio multiplicador é o valor extremo.</p>
+  </div>
+
+  <div class="note">
+    <b>Conexão com a mecânica.</b> Pense em \(g=0\) como um vínculo imposto a uma partícula (por exemplo, uma conta deslizando num arame) e em \(-\nabla F\) como a força aplicada. No equilíbrio, a componente da força aplicada ao longo do arame deve se anular, e a parte perpendicular ao arame é compensada pela força de vínculo \(\lambda\nabla g\). O multiplicador de Lagrange é a intensidade da força de vínculo (a menos de um fator \(|\nabla g|\)); ele aparece exatamente da mesma forma nas equações de movimento de Lagrange.
+  </div>
+</section>
+</main>
+
+<script id="strings" type="application/json">
+{
+ "statusOk": "OK",
+ "statusWarn": "Quase falha",
+ "statusBad": "Falha",
+ "branchPlus": "ramo {dv}₊({iv})",
+ "branchMinus": "ramo {dv}₋({iv})",
+ "breakdown": "{dv}({iv}) falha",
+ "onedTitle": "Após eliminar {dv}: f({iv}) = F({args})",
+ "onedCaption": "As curvas azul e laranja usam {dv}₊({iv}) e {dv}₋({iv}), respectivamente. Os círculos vermelhos marcam ∂g/∂{dv} = 0: os dois ramos se encontram ali com inclinação infinita, e um extremo localizado ali é uma extremidade do domínio, portanto não satisfaz f′({iv}) = 0.",
+ "rPosition": "Posição",
+ "rAngle": "Ângulo entre ∇F e ∇g",
+ "rParallel": "paralelos",
+ "rRate": "Taxa ao longo da curva ∇F·T̂",
+ "rLambdaNote": "(igual a λ num extremo)",
+ "rIndep": "{iv} independente",
+ "max": "▲ máx",
+ "min": "▼ mín",
+ "found": "✓ encontrado",
+ "allOk": "os 4 extremos estão na região utilizável",
+ "someBadOne": "{n} dos 4 extremos está num ponto de falha ou perto dele",
+ "someBad": "{n} dos 4 extremos estão em pontos de falha ou perto deles",
+ "summary": "Com x independente: {dx}. Com y independente: {dy}. Condição de Lagrange ∇F = λ∇g: os 4 são encontrados, λ₁ = {l1}, λ₂ = {l2}."
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

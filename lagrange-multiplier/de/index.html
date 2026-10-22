@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Warum Lagrange-Multiplikatoren?</title>
+<meta name="description" content="Interaktive Lektion: der geometrische Grund, warum Lagrange-Multiplikatoren bei Extremwertproblemen mit Nebenbedingungen natürlicher sind als das Eliminieren von Variablen.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="de" data-ai-translated>
+<header>
+  <nav class="topbar" id="topbar"></nav>
+  <div id="ai-notice"></div>
+  <h1>Warum Lagrange-Multiplikatoren?</h1>
+  <p class="lede">Kehren wir zu dem Problem zurück, mit dem wir uns die ganze Zeit beschäftigt haben: <b>Gesucht sind die Extrema von \(F(x,y)\) auf einer Nebenbedingungskurve \(g(x,y)=0\).</b> Der naheliegendste Gedanke ist, mithilfe der Nebenbedingung eine Variable zu eliminieren und so das Problem auf ein Extremwertproblem in einer Variablen zurückzuführen. So einfach diese Methode aussieht, beruht sie doch auf einer leicht übersehenen Voraussetzung: Man muss die Nebenbedingungskurve zunächst lokal als \(y=y(x)\) oder \(x=x(y)\) schreiben.</p>
+  <p class="lede">Die Frage ist: <b>Welche Darstellung soll man wählen?</b> Das hängt davon ab, wo auf der Kurve das gesuchte Extremum liegt; doch genau diese Lage ist die Antwort, die wir noch nicht kennen und erst suchen. So führt uns ein Schritt, der eigentlich nur die Rechnung erleichtern sollte – das „Eliminieren einer Variablen“ –, in ein Dilemma: Wir müssten die Antwort schon kennen, um die Methode wählen zu können.</p>
+  <p class="lede">Lagrange-Multiplikatoren bieten einen anderen Weg: <b>Statt die Nebenbedingungskurve zuerst nach einer Variablen aufzulösen, arbeitet man direkt im \(x,y\)-Raum und behandelt die Funktion \(F\) und die Nebenbedingung \(g=0\) gemeinsam.</b></p>
+  <p class="lede">Verschieben Sie unten den Punkt \(P\) und drehen Sie die Ellipse und die Niveaulinien, um zu sehen, wo jeder der beiden Ansätze stecken bleibt.</p>
+</header>
+
+<main>
+<section class="lab">
+  <div class="card plane-card">
+    <canvas id="plane" aria-label="xy-Ebene: Nebenbedingungsellipse, Niveaulinien der Zielfunktion und Gradientenvektoren"></canvas>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--b1)"></i><span id="lg-b1">Zweig y₊(x)</span></span>
+      <span><i class="sw" style="background:var(--b2)"></i><span id="lg-b2">Zweig y₋(x)</span></span>
+      <span><i class="dot" style="border:2px solid var(--bad)"></i><span id="lg-bad">y(x) versagt</span></span>
+      <span>▲ Maximum　▼ Minimum</span>
+      <span><i class="sw" style="background:var(--gradF)"></i>∇F</span>
+      <span><i class="sw" style="background:var(--gradG)"></i>∇g</span>
+      <span><i class="sw" style="background:var(--level)"></i>Niveaulinien von F</span>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <div class="ctrl"><label for="theta">Ellipse θ</label><input id="theta" type="range" min="-90" max="90" step="1"><output id="theta-o"></output></div>
+      <div class="ctrl"><label for="phi">Niveaulinien φ</label><input id="phi" type="range" min="-90" max="90" step="1"><output id="phi-o"></output></div>
+      <div class="ctrl"><label for="tpar">Punkt P</label><input id="tpar" type="range" min="0" max="360" step="0.5"><output id="tpar-o"></output></div>
+      <div class="row">
+        <span>Unabhängige Variable</span>
+        <span class="seg" role="group" aria-label="Unabhängige Variable">
+          <button type="button" data-indep="x">x: y = y(x)</button>
+          <button type="button" data-indep="y">y: x = x(y)</button>
+        </span>
+      </div>
+      <div class="row">
+        <label class="chk"><input type="checkbox" id="show-grad">Gradienten</label>
+        <label class="chk"><input type="checkbox" id="show-tan">Tangente</label>
+        <label class="chk"><input type="checkbox" id="show-lev">Niveaulinien</label>
+      </div>
+      <div class="presets">
+        <button type="button" data-preset="30,-20">Allgemeiner Fall</button>
+        <button type="button" data-preset="0,0">Achsenparallel (beide versagen)</button>
+        <button type="button" data-preset="35,35">Beide um 35° gedreht</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 id="oned-title">Nach Elimination von y: f(x) = F(x, y(x))</h3>
+      <canvas id="oned" aria-label="Eindimensionale Funktion nach Elimination einer Variablen"></canvas>
+      <p class="caption" id="oned-cap"></p>
+    </div>
+
+    <div class="card">
+      <h3>Punkt P</h3>
+      <dl class="readout" id="readout"></dl>
+    </div>
+  </div>
+</section>
+
+<section class="card" style="margin-top:20px">
+  <h3>Extrema: zwei Eliminationen vs. Lagrange</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Punkt</th><th>(x, y)</th><th>F = λ</th><th id="th-x">x unabhängig</th><th id="th-y">y unabhängig</th><th>∇F = λ∇g</th></tr></thead>
+      <tbody id="ext-body"></tbody>
+    </table>
+  </div>
+  <p class="summary" id="summary"></p>
+  <p class="caption">Klicken Sie auf eine Zeile, um P zu diesem Extremum zu verschieben.</p>
+</section>
+
+<section class="explain courant">
+  <p>In „Maxima and Minima with Subsidiary Conditions“ beginnt Courant die Diskussion dieses Problems mit einem konkreten Beispiel:</p>
+    <blockquote class="quote" lang="en">
+      <p><b>Maxima and Minima with Subsidiary Conditions</b></p>
+      <p>The problem of determining the maxima and minima of functions of several variables frequently presents itself in a different form. For example, we may wish to find the point of a given surface</p>
+      \[ \phi(x,y,z)=0 \]
+      <p>closest to the origin. We then have to minimize the function</p>
+      \[ f(x,y,z)=\sqrt{x^2+y^2+z^2}, \]
+      <p>where the quantities \(x,y,z\), however, are no longer three independent variables but are connected by the equation of the surface</p>
+      \[ \phi(x,y,z)=0 \]
+      <p>as a subsidiary condition. Such maxima and minima with subsidiary conditions do not, indeed, represent a fundamentally new problem. Thus in our example we only need solve for one of the variables, say \(z\), as a function of the other two, to reduce the problem to that of determining the stationary values of a function of the two independent variables \(x,y\).</p>
+    </blockquote>
+    <blockquote class="quote" lang="en">
+      <p>It is, however, more convenient, and also more elegant, to express the conditions for a stationary value in a symmetrical form, in which no preference is given to anyone of the variables.</p>
+    </blockquote>
+    <p class="cite" lang="en">R. Courant and F. John, <i>Introduction to Calculus and Analysis</i>, Vol. II (Springer, 1989), p. 330.</p>
+  <p>Diese Passage bei Courant stellt die beiden Ansätze, die wir gerade gesehen haben, klar nebeneinander.</p>
+  <p>Der erste Ansatz ist das <b>Eliminieren einer Variablen</b>: Man löst die Nebenbedingung \(\phi(x,y,z)=0\) nach \(z=z(x,y)\) auf, und das Problem wird auf ein vertrautes Extremwertproblem in mehreren Variablen zurückgeführt. An dieser Methode ist nichts falsch, und im Prinzip führt sie zum Ziel.</p>
+  <p>Courant bietet dann aber eine andere Möglichkeit an: Da \(x,y,z\) im ursprünglichen Problem symmetrische Rollen spielen, warum sollten wir ausgerechnet \(z\) als die zu eliminierende Variable herausgreifen? Wenn wir <b>die Stationaritätsbedingung direkt in symmetrischer Form ausdrücken, ohne eine Variable zu bevorzugen</b>, wird die Struktur des Problems sogar klarer.</p>
+  <p>Genau in diese Richtung gehen wir als Nächstes: <b>Wie erlauben es Lagrange-Multiplikatoren, die Bedingung für ein Extremum unter Nebenbedingungen direkt in den ursprünglichen Variablen auszudrücken, ohne zuvor eine davon zu eliminieren?</b></p>
+</section>
+
+<section class="explain">
+  <h2>Vom Eliminieren von Variablen zu parallelen Gradienten</h2>
+
+  <p>Die Nebenbedingungskurve ist hier eine um \(\theta\) gedrehte Ellipse, und die Zielfunktion ist eine um \(\varphi\) gedrehte Hyperbelschar:</p>
+  \[
+  g(x,y)=\frac{u^2}{a^2}+\frac{v^2}{b^2}-1=0,\qquad F(x,y)=p^2-q^2,
+  \]
+  \[
+  \begin{pmatrix}u\\v\end{pmatrix}=\begin{pmatrix}\cos\theta&\sin\theta\\-\sin\theta&\cos\theta\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix},\qquad
+  \begin{pmatrix}p\\q\end{pmatrix}=\begin{pmatrix}\cos\varphi&\sin\varphi\\-\sin\varphi&\cos\varphi\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix},
+  \]
+  <p>mit \(a=2,\ b=1\). Alle Punkte, Kurven und Zahlen auf dieser Seite werden laufend aus diesen Parametern berechnet.</p>
+
+  <div class="step">
+    <h3>1. Eine Variable eliminieren heißt, die Kurve lokal als y = y(x) zu schreiben</h3>
+    <p>„Die Nebenbedingung nach \(y\) auflösen und einsetzen“ bedeutet, ein Stück der Kurve auszuwählen und es als Funktion \(y=y(x)\) darzustellen. Einsetzen liefert eine Funktion einer Variablen \(f(x)=F(x,y(x))\) mit der Extremwertbedingung</p>
+    \[
+    f'(x)=F_x+F_y\,\frac{dy}{dx}=0,\qquad \frac{dy}{dx}=-\frac{g_x}{g_y}.
+    \]
+    <p>Der Satz über implizite Funktionen garantiert, dass eine solche lokale Darstellung überall dort existiert, wo \(g_y\neq 0\) gilt. Wo \(g_y=0\) ist, gilt das nicht.</p>
+  </div>
+
+  <div class="step">
+    <h3>2. Die Tangentenrichtung entscheidet, welche Darstellung funktioniert</h3>
+    <p>\(g_y=0\) bedeutet, dass \(\nabla g\) waagerecht ist, die Tangente also <b>senkrecht</b> steht. An einem solchen Punkt kehrt die Kurve in \(x\) um: Die beiden Zweige \(y_\pm(x)\) treffen sich dort, und \(dy/dx\to\infty\). Eine geschlossene Kurve wie die Ellipse hat stets zwei solche Punkte und außerdem zwei Punkte mit waagerechter Tangente, an denen \(x=x(y)\) versagt. Die roten Kreise in der Grafik markieren die Versagenspunkte für die gewählte unabhängige Variable; im eindimensionalen Diagramm rechts treffen sich die beiden Zweige an den roten Punkten mit unendlicher Steigung.</p>
+  </div>
+
+  <div class="step">
+    <h3>3. Welche Wahl richtig ist, weiß man erst, wenn man die Extrema gefunden hat</h3>
+    <p>Liegt ein Extremum genau dort, wo \(g_y=0\) ist, so ist es ein Randpunkt des Definitionsbereichs von \(f(x)\) und keine Nullstelle von \(f'(x)=0\); beim Lösen von \(f'(x)=0\) wird es daher übersehen. Drücken Sie „Achsenparallel“: Jetzt ist \(F=x^2-y^2\) und die Nebenbedingung lautet \(x^2/4+y^2=1\).</p>
+    <ul>
+      <li>Mit \(x\) als unabhängiger Variable: \(f(x)=\tfrac54x^2-1\), und \(f'(x)=0\) liefert nur das Minimum bei \(x=0\). Das Maximum liegt an den Randpunkten \(x=\pm2\) und wird übersehen.</li>
+      <li>Mit \(y\) als unabhängiger Variable: \(f(y)=4-5y^2\), und \(f'(y)=0\) liefert nur das Maximum bei \(y=0\). Das Minimum liegt an den Randpunkten \(y=\pm1\) und wird ebenfalls übersehen.</li>
+    </ul>
+    <p>Welche Variable man auch wählt, ein Paar von Extrema geht verloren. Drücken Sie nun „Beide um 35° gedreht“: Die Geometrie ist exakt dieselbe, nur als Ganzes gedreht, und keine der beiden Darstellungen trifft auf einen Versagenspunkt. Das Versagen ist also keine Eigenschaft des Problems selbst; es rührt von der Wahl der Koordinaten her.</p>
+  </div>
+
+  <div class="step">
+    <h3>4. Lagrange: die geometrische Bedingung direkt hinschreiben</h3>
+    <p>In einem Extremum ändert sich \(F\) bei Bewegung entlang der Kurve nicht: \(\nabla F\cdot\hat T=0\). Da auch \(\nabla g\) senkrecht auf der Tangente \(\hat T\) steht, müssen die beiden Gradienten parallel sein:</p>
+    \[
+    \nabla F=\lambda\,\nabla g,\qquad g(x,y)=0 .
+    \]
+    <p>Diese drei Gleichungen behandeln \(x\) und \(y\) gleichberechtigt, sodass keine unabhängige Variable im Voraus gewählt werden muss. Einzige Voraussetzung ist \(\nabla g\neq 0\), d. h. die Kurve selbst ist glatt. Achten Sie beim Verschieben von \(P\) auf den Winkel zwischen \(\nabla F\) und \(\nabla g\): Er beträgt nur in den Extrema 0° oder 180°, ganz gleich, welche Darstellung dort versagt.</p>
+    <p>In diesem Beispiel sind sowohl \(F=\mathbf r^{\mathsf T}M\mathbf r\) als auch \(g=\mathbf r^{\mathsf T}G\mathbf r-1\) quadratische Formen, sodass die Lagrange-Bedingung zum verallgemeinerten Eigenwertproblem \(M\mathbf r=\lambda G\mathbf r\) wird. Multipliziert man beide Seiten mit \(\mathbf r^{\mathsf T}\) und verwendet \(\mathbf r^{\mathsf T}G\mathbf r=1\), erhält man \(F=\lambda\): Der Multiplikator selbst ist der Extremwert.</p>
+  </div>
+
+  <div class="note">
+    <b>Zusammenhang mit der Mechanik.</b> Man fasse \(g=0\) als Zwangsbedingung für ein Teilchen auf (etwa eine Perle, die auf einem Draht gleitet) und \(-\nabla F\) als eingeprägte Kraft. Im Gleichgewicht muss die Komponente der eingeprägten Kraft entlang des Drahtes verschwinden, und der zum Draht senkrechte Anteil wird durch die Zwangskraft \(\lambda\nabla g\) ausgeglichen. Der Lagrange-Multiplikator ist der Betrag der Zwangskraft (bis auf einen Faktor \(|\nabla g|\)), und er tritt in genau derselben Weise in den Lagrange'schen Bewegungsgleichungen auf.
+  </div>
+</section>
+</main>
+
+<script id="strings" type="application/json">
+{
+ "statusOk": "OK",
+ "statusWarn": "Fast Versagen",
+ "statusBad": "Versagt",
+ "branchPlus": "Zweig {dv}₊({iv})",
+ "branchMinus": "Zweig {dv}₋({iv})",
+ "breakdown": "{dv}({iv}) versagt",
+ "onedTitle": "Nach Elimination von {dv}: f({iv}) = F({args})",
+ "onedCaption": "Blau und Orange verwenden {dv}₊({iv}) bzw. {dv}₋({iv}). Rote Kreise markieren ∂g/∂{dv} = 0: Dort treffen sich die beiden Zweige mit unendlicher Steigung, und ein dort liegendes Extremum ist ein Randpunkt des Definitionsbereichs und erfüllt daher nicht f′({iv}) = 0.",
+ "rPosition": "Position",
+ "rAngle": "Winkel zwischen ∇F und ∇g",
+ "rParallel": "parallel",
+ "rRate": "Änderungsrate entlang der Kurve ∇F·T̂",
+ "rLambdaNote": "(gleich λ in einem Extremum)",
+ "rIndep": "{iv} unabhängig",
+ "max": "▲ Max.",
+ "min": "▼ Min.",
+ "found": "✓ gefunden",
+ "allOk": "alle 4 Extrema liegen im nutzbaren Bereich",
+ "someBadOne": "{n} der 4 Extrema liegt an oder nahe einem Versagenspunkt",
+ "someBad": "{n} der 4 Extrema liegen an oder nahe einem Versagenspunkt",
+ "summary": "Mit x unabhängig: {dx}. Mit y unabhängig: {dy}. Lagrange-Bedingung ∇F = λ∇g: alle 4 werden gefunden, λ₁ = {l1}, λ₂ = {l2}."
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

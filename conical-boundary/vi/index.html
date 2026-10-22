@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biên hình nón: phổ giá trị riêng</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.27.0/plotly.min.js"></script>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['\\(','\\)']],
+    displayMath: [['\\[','\\]']],
+    tags: 'none',
+  },
+  chtml: {
+    fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2',
+    scale: 1.05,
+    minScale: 0.5,
+  },
+  options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="vi" data-ai-translated>
+
+<nav class="topbar" id="topbar"></nav>
+<div id="ai-notice"></div>
+
+<h1>Bài toán biên hình nón: phổ giá trị riêng và hàm riêng</h1>
+<p class="subtitle">
+  Jackson §3.4 · Điều kiện biên \(P_\nu(\cos\beta) = 0\)
+  xác định phổ \(\{\nu_k\}\) như thế nào
+</p>
+
+<!-- PANEL 1 -->
+<div class="panel">
+  <div class="panel-title">Phổ \(\nu_k(\beta)\), \(k = 1,2,3,4\)</div>
+  <div class="panel-desc">
+    Nghiệm thứ \(k\) của \(P_\nu(\cos\beta)=0\) theo nửa góc ở đỉnh \(\beta\) của hình nón.
+    Các đường chấm nằm ngang: các giá trị nguyên (giới hạn toàn mặt cầu \(\beta\to 180°\)).
+    Đường đứt nét thẳng đứng: \(\beta=90°\) (mặt phẳng dẫn điện; \(\nu_1=1\) chính xác).
+  </div>
+  <div id="plot1" class="plot-div"></div>
+  <p class="plot-note">
+    Khi \(\beta\to 180°\), mỗi \(\nu_k\) tiến tới một số nguyên —
+    ta thu lại phổ Legendre quen thuộc.
+    Với hốc hình nón (\(\beta<90°\)), \(\nu_1>1\) và trường triệt tiêu tại đỉnh.
+    Với mũi nhọn hình nón (\(\beta>90°\)), \(\nu_1<1\) và trường phân kỳ —
+    đây là cơ sở toán học của cột thu lôi.
+  </p>
+</div>
+
+<!-- PANEL 2 -->
+<div class="panel">
+  <div class="panel-title">
+    Các hàm riêng \(P_{\nu_k}(\cos\theta)\) với \(\beta\) đã chọn
+  </div>
+  <div class="panel-desc">
+    <b>Đồ thị trên:</b> trục \(\theta\) được co giãn về \([0,\beta]\) —
+    các không điểm luôn có vẻ lấp đầy miền một cách đều đặn (định lý dao động Sturm).<br>
+    <b>Đồ thị dưới:</b> trục \(\theta\) cố định là \([0°,180°]\) —
+    cho thấy vị trí thực của các không điểm khi \(\beta\) thay đổi.<br>
+    Các đường lưới màu đánh dấu từng không điểm. Trục phía trên: \(\cos\theta\).
+    Đường đứt nét màu đỏ: bề mặt vật dẫn tại \(\theta=\beta\).
+  </div>
+
+  <div class="plot-wrap">
+    <div class="plot-label">
+      Góc nhìn co giãn: \(\theta\in[0,\beta]\)
+    </div>
+    <div id="plot2T" class="plot-div"></div>
+  </div>
+
+  <div class="slider-row" style="margin-top:0.6rem;">
+    <label>Nửa góc ở đỉnh nón \(\beta\)</label>
+    <input type="range" id="betaSlider" min="5" max="175" value="60" step="1">
+    <span class="slider-val" id="betaVal">\(\beta=60°\)</span>
+  </div>
+
+  <div class="plot-wrap">
+    <div class="plot-label">
+      Góc nhìn tuyệt đối: \(\theta\in[0°,180°]\)
+    </div>
+    <div id="plot2B" class="plot-div"></div>
+  </div>
+
+  <div id="nuRow" class="nu-row"></div>
+  <p class="plot-note">
+    Trong góc nhìn co giãn (trên), các không điểm gần như đứng yên —
+    chúng luôn chia \([0,\beta]\) theo những vị trí tương đối xấp xỉ như nhau.
+    Góc nhìn tuyệt đối (dưới) cho thấy các không điểm thực sự dịch chuyển khi \(\beta\) thay đổi.
+    Bên ngoài \(\theta=\beta\), các hàm vẫn tiếp tục là nghiệm của phương trình vi phân,
+    nhưng không còn điều kiện biên nào để sắp xếp chúng.
+  </p>
+</div>
+
+<!-- FURTHER DISCUSSION -->
+<div class="discussion">
+  <h2>Thảo luận mở rộng</h2>
+
+  <p>
+    <b>Vì sao các không điểm gần như cách đều trong \([0,\beta]\)?</b>
+    Các hàm \(P_{\nu_k}(\cos\theta)\) là hàm riêng của một
+    bài toán Sturm–Liouville trên \([0,\beta]\), với các điều kiện biên
+    \(P_{\nu_k}(1)=1\) tại \(\theta=0\) và \(P_{\nu_k}(\cos\beta)=0\)
+    trên bề mặt vật dẫn.
+    <em>Định lý dao động Sturm</em> bảo đảm rằng hàm riêng thứ \(k\)
+    có đúng \(k-1\) không điểm trong khoảng mở \((0,\beta)\).
+    Đây không phải là tính chất đặc biệt của hàm Legendre —
+    nó đúng cho <em>mọi</em> bài toán Sturm–Liouville.
+  </p>
+
+  <p>
+    Tuy nhiên, sự cách đều chỉ đúng một cách <em>tiệm cận</em>: khi \(k\to\infty\),
+    khoảng cách giữa hai không điểm liên tiếp tiến tới \(\beta/k\),
+    nhưng với \(k\) nhỏ thì các không điểm không cách đều chính xác.
+    Bạn có thể kiểm chứng trực tiếp trên hình phía trên:
+    kéo \(\beta\) đến \(90°\) và đọc vị trí các không điểm của hàm riêng ứng với \(k=3\).
+    Chúng nằm gần \(25.3°\) và \(57.5°\), chứ không phải tại các giá trị cách đều
+    \(30°\) và \(60°\).
+    Sự sai lệch này không phải là sai số tính toán — đó là đặc điểm thực sự của
+    các hàm riêng bậc thấp.
+  </p>
+
+  <p>
+    Lý do vật lý ở đây rất có tính gợi mở.
+    Trong giới hạn bước sóng ngắn (\(k\) lớn), hàm riêng dao động
+    nhanh và về mặt địa phương hành xử giống một hàm lượng giác,
+    mà các không điểm của hàm lượng giác thì cách đều chính xác.
+    Đây cũng chính là hiện tượng trong giếng thế vuông sâu vô hạn của cơ học lượng tử:
+    các trạng thái riêng năng lượng cao \(\psi_n(x) \propto \sin(n\pi x/L)\)
+    có các không điểm cách đều hoàn toàn,
+    trong khi các trạng thái năng lượng thấp trong một thế tổng quát hơn thì không.
+    Sự cách đều là tính chất của <em>giới hạn bán cổ điển</em>,
+    chứ không phải của các hàm riêng chính xác ở \(k\) hữu hạn.
+  </p>
+
+  <p>
+    Chính điều kiện biên tại \(\beta\) đã <em>giam</em> cấu trúc này
+    trong đoạn \([0,\beta]\).
+    Nó buộc mỗi hàm riêng phải đổi chiều và quay về không
+    bên trong miền đã cho.
+    Nếu không có nó, các không điểm sẽ không bị giam lại hay được sắp xếp theo bất kỳ cách cụ thể nào.
+  </p>
+
+  <p>
+    <b>Vì sao quy luật bị phá vỡ bên ngoài \(\theta=\beta\)?</b>
+    Khi \(\theta>\beta\), hàm \(P_{\nu_k}(\cos\theta)\) vẫn tiếp tục là một
+    nghiệm của phương trình Legendre, nhưng không còn là hàm riêng của
+    bất kỳ bài toán biên nào. Không có điều kiện nào ràng buộc nó trên \((\beta,\pi]\),
+    nên định lý dao động không cho biết gì về các không điểm của nó ở đó.
+    Cấu trúc ấy — sự cách đều, dao động có trật tự —
+    đã được áp đặt từ bên ngoài. Bỏ biên đi, và nó biến mất.
+  </p>
+
+  <p>
+    <b>Một sự tương tự: nội suy spline trong vật lý nguyên tử.</b>
+    Một kỹ thuật số cổ điển là khớp thế nguyên tử \(V(r)\)
+    bằng một đường cong spline trên một khoảng hữu hạn \([r_{\min},r_{\max}]\).
+    Bên trong khoảng đó, spline thỏa mãn các điều kiện liên tục và trơn
+    tại mỗi nút, và phương trình Schrödinger
+    \[
+      -\frac{\hbar^2}{2m}\psi'' + V(r)\,\psi = E\psi
+    \]
+    có thể được giải một cách đáng tin cậy.
+    Nhưng một spline kéo dài ra ngoài khoảng xác định của nó thì không có ràng buộc nào —
+    nó dao động dữ dội hoặc phân kỳ. Các hàm sóng tính từ nó
+    bên ngoài \(r_{\max}\) là vô nghĩa.
+    Sự tương tự với \(P_{\nu_k}(\cos\theta)\) bên ngoài \(\theta=\beta\) là hoàn toàn chính xác:
+    trong cả hai trường hợp, một khoảng hữu hạn với các điều kiện biên tạo ra những nghiệm có trật tự,
+    có cấu trúc; ra ngoài khoảng đó, trật tự tan biến.
+  </p>
+
+  <p>
+    Tuy nhiên, có một khác biệt quan trọng.
+    Các hàm riêng Sturm–Liouville sở hữu cấu trúc <em>toàn cục</em> mà spline không có:
+    tính trực giao,
+    \[
+      \int_0^\beta P_{\nu_k}(\cos\theta)\,P_{\nu_j}(\cos\theta)\,\sin\theta\,d\theta = 0
+      \qquad (k\neq j),
+    \]
+    và sự phân bố không điểm đều đặn được định lý dao động bảo đảm.
+    Những tính chất này xuất phát từ cấu trúc tự liên hợp của toán tử vi phân —
+    chứ không chỉ từ các điều kiện khớp tại hai đầu mút.
+    Một spline được xây dựng để thỏa mãn các điều kiện địa phương tại các nút;
+    hành vi toàn cục của nó chỉ là ngẫu nhiên.
+    Một hàm riêng thì được <em>xác định một cách toàn cục</em> bởi toán tử và biên —
+    hành vi địa phương là hệ quả, chứ không phải một lựa chọn thiết kế.
+  </p>
+
+  <p class="source">
+    Tài liệu tham khảo: Jackson §3.4;
+    lý thuyết Sturm–Liouville: Courant &amp; Hilbert,
+    <em>Methods of Mathematical Physics</em>, Vol. I, Ch. VI;
+    phương pháp spline trong cấu trúc nguyên tử: Fischer,
+    <em>The Hartree–Fock Method for Atoms</em>.
+  </p>
+</div>
+
+<script id="strings" type="application/json">
+{
+ "axisBeta": "Nửa góc ở đỉnh nón β (độ)",
+ "axisNu": "Giá trị riêng ν",
+ "axisTheta": "θ (độ)"
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

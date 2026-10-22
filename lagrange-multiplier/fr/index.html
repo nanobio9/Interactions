@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pourquoi les multiplicateurs de Lagrange ?</title>
+<meta name="description" content="Leçon interactive : la raison géométrique pour laquelle les multiplicateurs de Lagrange sont plus naturels que l’élimination de variables dans les problèmes d’extremum sous contrainte.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="fr" data-ai-translated>
+<header>
+  <nav class="topbar" id="topbar"></nav>
+  <div id="ai-notice"></div>
+  <h1>Pourquoi les multiplicateurs de Lagrange ?</h1>
+  <p class="lede">Revenons au problème qui nous occupe depuis le début : <b>trouver les extrema de \(F(x,y)\) sur une courbe de contrainte \(g(x,y)=0\).</b> L’idée la plus directe consiste à utiliser la contrainte pour éliminer une variable et à ramener ainsi le problème à la recherche d’un extremum d’une fonction d’une seule variable. Aussi simple qu’elle paraisse, cette méthode repose sur une hypothèse que l’on oublie facilement : il faut d’abord écrire localement la courbe de contrainte sous la forme \(y=y(x)\) ou \(x=x(y)\).</p>
+  <p class="lede">Toute la question est alors : <b>quelle représentation faut-il choisir ?</b> Cela dépend de l’endroit de la courbe où se trouve l’extremum ; or cet endroit est précisément la réponse que nous ignorons encore et que nous cherchons. Ainsi, une étape censée seulement faciliter le calcul, « l’élimination d’une variable », nous conduit dans une impasse : il faudrait connaître la réponse avant de pouvoir choisir la méthode.</p>
+  <p class="lede">Les multiplicateurs de Lagrange proposent une autre approche : <b>au lieu de résoudre d’abord la courbe de contrainte comme fonction de l’une des variables, on travaille directement dans l’espace des \(x,y\), en traitant simultanément la fonction \(F\) et la contrainte \(g=0\).</b></p>
+  <p class="lede">Déplacez le point \(P\) ci-dessous, faites tourner l’ellipse et les lignes de niveau, et observez où chacune des deux approches se trouve bloquée.</p>
+</header>
+
+<main>
+<section class="lab">
+  <div class="card plane-card">
+    <canvas id="plane" aria-label="Plan xy : ellipse de contrainte, lignes de niveau de la fonction objectif et vecteurs gradients"></canvas>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--b1)"></i><span id="lg-b1">branche y₊(x)</span></span>
+      <span><i class="sw" style="background:var(--b2)"></i><span id="lg-b2">branche y₋(x)</span></span>
+      <span><i class="dot" style="border:2px solid var(--bad)"></i><span id="lg-bad">défaillance de y(x)</span></span>
+      <span>▲ maximum　▼ minimum</span>
+      <span><i class="sw" style="background:var(--gradF)"></i>∇F</span>
+      <span><i class="sw" style="background:var(--gradG)"></i>∇g</span>
+      <span><i class="sw" style="background:var(--level)"></i>lignes de niveau de F</span>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <div class="ctrl"><label for="theta">Ellipse θ</label><input id="theta" type="range" min="-90" max="90" step="1"><output id="theta-o"></output></div>
+      <div class="ctrl"><label for="phi">Niveaux φ</label><input id="phi" type="range" min="-90" max="90" step="1"><output id="phi-o"></output></div>
+      <div class="ctrl"><label for="tpar">Point P</label><input id="tpar" type="range" min="0" max="360" step="0.5"><output id="tpar-o"></output></div>
+      <div class="row">
+        <span>Variable indépendante</span>
+        <span class="seg" role="group" aria-label="Variable indépendante">
+          <button type="button" data-indep="x">x : y = y(x)</button>
+          <button type="button" data-indep="y">y : x = x(y)</button>
+        </span>
+      </div>
+      <div class="row">
+        <label class="chk"><input type="checkbox" id="show-grad">Gradients</label>
+        <label class="chk"><input type="checkbox" id="show-tan">Tangente</label>
+        <label class="chk"><input type="checkbox" id="show-lev">Lignes de niveau</label>
+      </div>
+      <div class="presets">
+        <button type="button" data-preset="30,-20">Cas général</button>
+        <button type="button" data-preset="0,0">Alignés sur les axes (deux échecs)</button>
+        <button type="button" data-preset="35,35">Rotation commune 35°</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 id="oned-title">Après élimination de y : f(x) = F(x, y(x))</h3>
+      <canvas id="oned" aria-label="Fonction d’une variable obtenue après élimination"></canvas>
+      <p class="caption" id="oned-cap"></p>
+    </div>
+
+    <div class="card">
+      <h3>Point P</h3>
+      <dl class="readout" id="readout"></dl>
+    </div>
+  </div>
+</section>
+
+<section class="card" style="margin-top:20px">
+  <h3>Extrema : les deux éliminations face à Lagrange</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Point</th><th>(x, y)</th><th>F = λ</th><th id="th-x">x indépendante</th><th id="th-y">y indépendante</th><th>∇F = λ∇g</th></tr></thead>
+      <tbody id="ext-body"></tbody>
+    </table>
+  </div>
+  <p class="summary" id="summary"></p>
+  <p class="caption">Cliquez sur une ligne pour placer P sur cet extremum.</p>
+</section>
+
+<section class="explain courant">
+  <p>Dans la section « Maxima and Minima with Subsidiary Conditions », Courant aborde ce problème à partir d’un exemple concret :</p>
+    <blockquote class="quote" lang="en">
+      <p><b>Maxima and Minima with Subsidiary Conditions</b></p>
+      <p>The problem of determining the maxima and minima of functions of several variables frequently presents itself in a different form. For example, we may wish to find the point of a given surface</p>
+      \[ \phi(x,y,z)=0 \]
+      <p>closest to the origin. We then have to minimize the function</p>
+      \[ f(x,y,z)=\sqrt{x^2+y^2+z^2}, \]
+      <p>where the quantities \(x,y,z\), however, are no longer three independent variables but are connected by the equation of the surface</p>
+      \[ \phi(x,y,z)=0 \]
+      <p>as a subsidiary condition. Such maxima and minima with subsidiary conditions do not, indeed, represent a fundamentally new problem. Thus in our example we only need solve for one of the variables, say \(z\), as a function of the other two, to reduce the problem to that of determining the stationary values of a function of the two independent variables \(x,y\).</p>
+    </blockquote>
+    <blockquote class="quote" lang="en">
+      <p>It is, however, more convenient, and also more elegant, to express the conditions for a stationary value in a symmetrical form, in which no preference is given to anyone of the variables.</p>
+    </blockquote>
+    <p class="cite" lang="en">R. Courant and F. John, <i>Introduction to Calculus and Analysis</i>, Vol. II (Springer, 1989), p. 330.</p>
+  <p>Ce passage de Courant met très clairement en regard les deux approches que nous venons de voir.</p>
+  <p>La première approche est l’<b>élimination d’une variable</b> : on utilise la contrainte \(\phi(x,y,z)=0\) pour exprimer \(z=z(x,y)\), et l’on se ramène à un problème familier d’extremum d’une fonction de plusieurs variables. Cette méthode n’a rien de faux et, en principe, elle permet d’aboutir.</p>
+  <p>Mais Courant propose ensuite une autre voie : puisque \(x,y,z\) jouent des rôles symétriques dans le problème initial, pourquoi faudrait-il distinguer \(z\) pour en faire la variable à éliminer ? Si l’on parvient à <b>exprimer la condition de stationnarité directement sous une forme symétrique, sans privilégier aucune variable</b>, la structure du problème devient au contraire plus claire.</p>
+  <p>C’est précisément la direction que nous allons explorer : <b>comment les multiplicateurs de Lagrange permettent-ils d’exprimer la condition d’extremum sous contrainte directement dans les variables d’origine, sans avoir à éliminer de variable au préalable ?</b></p>
+</section>
+
+<section class="explain">
+  <h2>De l’élimination des variables au parallélisme des gradients</h2>
+
+  <p>Ici, la courbe de contrainte est une ellipse tournée d’un angle \(\theta\), et la fonction objectif est une famille d’hyperboles tournée d’un angle \(\varphi\) :</p>
+  \[
+  g(x,y)=\frac{u^2}{a^2}+\frac{v^2}{b^2}-1=0,\qquad F(x,y)=p^2-q^2,
+  \]
+  \[
+  \begin{pmatrix}u\\v\end{pmatrix}=\begin{pmatrix}\cos\theta&\sin\theta\\-\sin\theta&\cos\theta\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix},\qquad
+  \begin{pmatrix}p\\q\end{pmatrix}=\begin{pmatrix}\cos\varphi&\sin\varphi\\-\sin\varphi&\cos\varphi\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix},
+  \]
+  <p>avec \(a=2,\ b=1\). Tous les points, courbes et valeurs numériques de cette page sont calculés en temps réel à partir de ces paramètres.</p>
+
+  <div class="step">
+    <h3>1. Éliminer une variable, c’est écrire localement la courbe sous la forme y = y(x)</h3>
+    <p>« Résoudre la contrainte en \(y\) puis substituer » revient à choisir un morceau de la courbe et à le représenter par une fonction \(y=y(x)\). Après substitution, on obtient une fonction d’une variable \(f(x)=F(x,y(x))\), dont la condition d’extremum est</p>
+    \[
+    f'(x)=F_x+F_y\,\frac{dy}{dx}=0,\qquad \frac{dy}{dx}=-\frac{g_x}{g_y}.
+    \]
+    <p>Le théorème des fonctions implicites garantit l’existence d’une telle représentation locale partout où \(g_y\neq 0\). Là où \(g_y=0\), ce n’est plus le cas.</p>
+  </div>
+
+  <div class="step">
+    <h3>2. C’est la direction de la tangente qui décide de la représentation utilisable</h3>
+    <p>\(g_y=0\) signifie que \(\nabla g\) est horizontal, donc que la tangente est <b>verticale</b>. En un tel point, la courbe rebrousse chemin en \(x\) : les deux branches \(y_\pm(x)\) s’y rejoignent et \(dy/dx\to\infty\). Une courbe fermée comme l’ellipse possède toujours deux points de ce type, ainsi que deux points à tangente horizontale, où c’est \(x=x(y)\) qui est mise en défaut. Les cercles rouges de la figure marquent les points de défaillance pour la variable indépendante choisie ; dans le graphe à une dimension, à droite, les deux branches se rejoignent aux points rouges avec une pente infinie.</p>
+  </div>
+
+  <div class="step">
+    <h3>3. On ne sait pas laquelle choisir avant d’avoir trouvé les extrema</h3>
+    <p>Si un extremum se trouve exactement là où \(g_y=0\), c’est une extrémité du domaine de définition de \(f(x)\), et non une racine de \(f'(x)=0\) : en résolvant \(f'(x)=0\), on le manque. Appuyez sur « Alignés sur les axes » : on a alors \(F=x^2-y^2\) et la contrainte s’écrit \(x^2/4+y^2=1\).</p>
+    <ul>
+      <li>Avec \(x\) comme variable indépendante : \(f(x)=\tfrac54x^2-1\), et \(f'(x)=0\) ne donne que le minimum en \(x=0\) ; le maximum, situé aux extrémités \(x=\pm2\), est manqué.</li>
+      <li>Avec \(y\) comme variable indépendante : \(f(y)=4-5y^2\), et \(f'(y)=0\) ne donne que le maximum en \(y=0\) ; le minimum, situé aux extrémités \(y=\pm1\), est lui aussi manqué.</li>
+    </ul>
+    <p>Quelle que soit la variable choisie, une paire d’extrema est perdue. Appuyez maintenant sur « Rotation commune 35° » : la géométrie est exactement la même, simplement tournée d’un bloc, et aucune des deux représentations ne rencontre de point de défaillance. La défaillance n’est donc pas une propriété du problème lui-même : elle provient du choix des coordonnées.</p>
+  </div>
+
+  <div class="step">
+    <h3>4. Lagrange : écrire directement la condition géométrique</h3>
+    <p>En un extremum, le taux de variation de \(F\) le long de la courbe est nul : \(\nabla F\cdot\hat T=0\). Comme \(\nabla g\) est lui aussi perpendiculaire à la tangente \(\hat T\), les deux gradients doivent être parallèles :</p>
+    \[
+    \nabla F=\lambda\,\nabla g,\qquad g(x,y)=0 .
+    \]
+    <p>Ces trois équations traitent \(x\) et \(y\) sur un pied d’égalité : inutile de choisir à l’avance une variable indépendante. La seule exigence est \(\nabla g\neq 0\), c’est-à-dire que la courbe elle-même soit régulière. En déplaçant \(P\), observez l’angle entre \(\nabla F\) et \(\nabla g\) : il ne vaut 0° ou 180° qu’aux extrema, quelle que soit la représentation mise en défaut en ce point.</p>
+    <p>Dans cet exemple, \(F=\mathbf r^{\mathsf T}M\mathbf r\) et \(g=\mathbf r^{\mathsf T}G\mathbf r-1\) sont toutes deux des formes quadratiques ; la condition de Lagrange devient donc le problème aux valeurs propres généralisé \(M\mathbf r=\lambda G\mathbf r\). En multipliant les deux membres par \(\mathbf r^{\mathsf T}\) et en utilisant \(\mathbf r^{\mathsf T}G\mathbf r=1\), on obtient \(F=\lambda\) : le multiplicateur est lui-même la valeur extrémale.</p>
+  </div>
+
+  <div class="note">
+    <b>Lien avec la mécanique.</b> Voyez \(g=0\) comme une liaison imposée à une particule (par exemple une perle glissant le long d’un fil) et \(-\nabla F\) comme la force appliquée. À l’équilibre, la composante de la force appliquée le long du fil doit être nulle, et la partie perpendiculaire au fil est compensée par la force de liaison \(\lambda\nabla g\). Le multiplicateur de Lagrange est l’intensité de la force de liaison (à un facteur \(|\nabla g|\) près) ; il intervient exactement de la même manière dans les équations du mouvement de Lagrange.
+  </div>
+</section>
+</main>
+
+<script id="strings" type="application/json">
+{
+ "statusOk": "Valide",
+ "statusWarn": "Presque invalide",
+ "statusBad": "Invalide",
+ "branchPlus": "branche {dv}₊({iv})",
+ "branchMinus": "branche {dv}₋({iv})",
+ "breakdown": "défaillance de {dv}({iv})",
+ "onedTitle": "Après élimination de {dv} : f({iv}) = F({args})",
+ "onedCaption": "Les courbes bleue et orange utilisent respectivement {dv}₊({iv}) et {dv}₋({iv}). Les cercles rouges marquent les points où ∂g/∂{dv} = 0 : les deux branches s’y rejoignent avec une pente infinie, et un extremum situé là est une extrémité du domaine de définition ; il ne vérifie donc pas f′({iv}) = 0.",
+ "rPosition": "Position",
+ "rAngle": "Angle entre ∇F et ∇g",
+ "rParallel": "parallèles",
+ "rRate": "Variation le long de la courbe ∇F·T̂",
+ "rLambdaNote": "(égal à λ en un extremum)",
+ "rIndep": "{iv} indépendante",
+ "max": "▲ max",
+ "min": "▼ min",
+ "found": "✓ trouvé",
+ "allOk": "les 4 extrema sont tous dans la zone valide",
+ "someBadOne": "{n} des 4 extrema est en un point de défaillance ou à proximité",
+ "someBad": "{n} des 4 extrema sont en un point de défaillance ou à proximité",
+ "summary": "Avec x indépendante : {dx}. Avec y indépendante : {dy}. Condition de Lagrange ∇F = λ∇g : les 4 sont trouvés, λ₁ = {l1}, λ₂ = {l2}."
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

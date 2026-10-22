@@ -1,0 +1,34 @@
+/* Shared page chrome: top bar (home link + language menu) and AI-translation notice.
+   Colours fall back across the variable names used by the different pages. */
+.topbar {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  margin-bottom: 12px; min-height: 30px;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.site-home, .lang-menu {
+  border: 1px solid var(--line, var(--border, #d9d7d0));
+  background: var(--surface, var(--panel-bg, #ffffff));
+  color: var(--ink, var(--text, #1d1f24));
+  border-radius: 999px; font-size: 0.88rem; line-height: 1.5;
+}
+.site-home {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 30px; padding: 0; text-decoration: none;
+}
+.lang-picker {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--muted, #666); cursor: pointer;
+}
+.lang-menu { padding: 3px 10px; font-family: inherit; cursor: pointer; max-width: 60vw; }
+.site-home:hover, .site-home:focus-visible, .lang-menu:hover, .lang-menu:focus-visible {
+  border-color: var(--accent, #2a74b5);
+}
+.site-home:hover, .site-home:focus-visible { color: var(--accent, #2a74b5); }
+
+.ai-notice {
+  margin: 0 0 14px; padding: 8px 14px; border-radius: 8px;
+  border: 1px dashed var(--line, var(--border, #d9d7d0));
+  color: var(--muted, #666); font-size: 0.85rem; line-height: 1.6;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.ai-notice a { color: var(--accent, #2a74b5); }

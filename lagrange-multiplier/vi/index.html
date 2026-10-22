@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vì sao cần nhân tử Lagrange?</title>
+<meta name="description" content="Bài học tương tác: lý do hình học khiến phương pháp nhân tử Lagrange tự nhiên hơn việc khử biến trong bài toán cực trị có ràng buộc.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="vi" data-ai-translated>
+<header>
+  <nav class="topbar" id="topbar"></nav>
+  <div id="ai-notice"></div>
+  <h1>Vì sao cần nhân tử Lagrange?</h1>
+  <p class="lede">Hãy quay lại bài toán mà ta vẫn đang xét từ đầu: <b>tìm cực trị của \(F(x,y)\) trên một đường cong ràng buộc \(g(x,y)=0\).</b> Ý tưởng trực tiếp nhất là dùng ràng buộc để khử một biến, đưa bài toán về bài toán cực trị của hàm một biến. Phương pháp này trông đơn giản, nhưng lại dựa trên một tiền đề dễ bị bỏ qua: trước hết bạn phải viết được đường cong ràng buộc, một cách địa phương, dưới dạng \(y=y(x)\) hoặc \(x=x(y)\).</p>
+  <p class="lede">Vấn đề là, <b>nên chọn cách biểu diễn nào?</b> Điều đó phụ thuộc vào việc điểm cực trị cần tìm nằm ở đâu trên đường cong; nhưng chính vị trí đó lại là đáp án mà ta chưa biết và đang đi tìm. Thế là bước “khử biến”, vốn chỉ nhằm cho việc tính toán thuận tiện, lại đẩy ta vào thế khó: phải biết trước đáp án thì mới chọn được phương pháp.</p>
+  <p class="lede">Nhân tử Lagrange đưa ra một hướng tiếp cận khác: <b>không cần giải đường cong ràng buộc thành hàm của một biến nào đó trước, mà làm việc trực tiếp trong không gian \(x,y\), xử lý đồng thời hàm \(F\) và ràng buộc \(g=0\).</b></p>
+  <p class="lede">Hãy kéo điểm \(P\) trong hình bên dưới, xoay elip và các đường mức, để xem mỗi cách làm bị vướng ở đâu.</p>
+</header>
+
+<main>
+<section class="lab">
+  <div class="card plane-card">
+    <canvas id="plane" aria-label="Mặt phẳng xy: elip ràng buộc, các đường mức của hàm mục tiêu và các vectơ gradient"></canvas>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--b1)"></i><span id="lg-b1">nhánh y₊(x)</span></span>
+      <span><i class="sw" style="background:var(--b2)"></i><span id="lg-b2">nhánh y₋(x)</span></span>
+      <span><i class="dot" style="border:2px solid var(--bad)"></i><span id="lg-bad">điểm y(x) mất hiệu lực</span></span>
+      <span>▲ cực đại　▼ cực tiểu</span>
+      <span><i class="sw" style="background:var(--gradF)"></i>∇F</span>
+      <span><i class="sw" style="background:var(--gradG)"></i>∇g</span>
+      <span><i class="sw" style="background:var(--level)"></i>đường mức của F</span>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <div class="ctrl"><label for="theta">Elip θ</label><input id="theta" type="range" min="-90" max="90" step="1"><output id="theta-o"></output></div>
+      <div class="ctrl"><label for="phi">Đường mức φ</label><input id="phi" type="range" min="-90" max="90" step="1"><output id="phi-o"></output></div>
+      <div class="ctrl"><label for="tpar">Vị trí điểm P</label><input id="tpar" type="range" min="0" max="360" step="0.5"><output id="tpar-o"></output></div>
+      <div class="row">
+        <span>Biến độc lập</span>
+        <span class="seg" role="group" aria-label="Biến độc lập">
+          <button type="button" data-indep="x">x: y = y(x)</button>
+          <button type="button" data-indep="y">y: x = x(y)</button>
+        </span>
+      </div>
+      <div class="row">
+        <label class="chk"><input type="checkbox" id="show-grad">Gradient</label>
+        <label class="chk"><input type="checkbox" id="show-tan">Tiếp tuyến</label>
+        <label class="chk"><input type="checkbox" id="show-lev">Đường mức</label>
+      </div>
+      <div class="presets">
+        <button type="button" data-preset="30,-20">Trường hợp tổng quát</button>
+        <button type="button" data-preset="0,0">Căn theo trục (cả hai hỏng)</button>
+        <button type="button" data-preset="35,35">Cùng xoay 35°</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 id="oned-title">Sau khi khử y: f(x) = F(x, y(x))</h3>
+      <canvas id="oned" aria-label="Đồ thị hàm một biến sau khi khử biến"></canvas>
+      <p class="caption" id="oned-cap"></p>
+    </div>
+
+    <div class="card">
+      <h3>Điểm P</h3>
+      <dl class="readout" id="readout"></dl>
+    </div>
+  </div>
+</section>
+
+<section class="card" style="margin-top:20px">
+  <h3>Các điểm cực trị: hai cách khử biến so với Lagrange</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Điểm</th><th>(x, y)</th><th>F = λ</th><th id="th-x">x là biến độc lập</th><th id="th-y">y là biến độc lập</th><th>∇F = λ∇g</th></tr></thead>
+      <tbody id="ext-body"></tbody>
+    </table>
+  </div>
+  <p class="summary" id="summary"></p>
+  <p class="caption">Nhấp vào một hàng bất kỳ để đưa P đến điểm cực trị đó.</p>
+</section>
+
+<section class="explain courant">
+  <p>Trong mục “Maxima and Minima with Subsidiary Conditions”, Courant bắt đầu thảo luận vấn đề này từ một ví dụ cụ thể:</p>
+    <blockquote class="quote" lang="en">
+      <p><b>Maxima and Minima with Subsidiary Conditions</b></p>
+      <p>The problem of determining the maxima and minima of functions of several variables frequently presents itself in a different form. For example, we may wish to find the point of a given surface</p>
+      \[ \phi(x,y,z)=0 \]
+      <p>closest to the origin. We then have to minimize the function</p>
+      \[ f(x,y,z)=\sqrt{x^2+y^2+z^2}, \]
+      <p>where the quantities \(x,y,z\), however, are no longer three independent variables but are connected by the equation of the surface</p>
+      \[ \phi(x,y,z)=0 \]
+      <p>as a subsidiary condition. Such maxima and minima with subsidiary conditions do not, indeed, represent a fundamentally new problem. Thus in our example we only need solve for one of the variables, say \(z\), as a function of the other two, to reduce the problem to that of determining the stationary values of a function of the two independent variables \(x,y\).</p>
+    </blockquote>
+    <blockquote class="quote" lang="en">
+      <p>It is, however, more convenient, and also more elegant, to express the conditions for a stationary value in a symmetrical form, in which no preference is given to anyone of the variables.</p>
+    </blockquote>
+    <p class="cite" lang="en">R. Courant and F. John, <i>Introduction to Calculus and Analysis</i>, Vol. II (Springer, 1989), p. 330.</p>
+  <p>Đoạn văn này của Courant thực ra đã đặt hai cách làm mà ta vừa thấy cạnh nhau một cách rất rõ ràng.</p>
+  <p>Cách thứ nhất là <b>khử biến</b>: dùng ràng buộc \(\phi(x,y,z)=0\) để giải ra \(z=z(x,y)\), khi đó bài toán quay về bài toán cực trị hàm nhiều biến quen thuộc. Phương pháp này không sai, và về nguyên tắc có thể hoàn thành nhiệm vụ.</p>
+  <p>Nhưng Courant tiếp đó đưa ra một lựa chọn khác: vì \(x,y,z\) vốn có vai trò đối xứng trong bài toán, tại sao nhất thiết phải chọn riêng \(z\) làm biến bị khử? Nếu có thể <b>biểu diễn trực tiếp điều kiện dừng dưới dạng đối xứng, không thiên vị bất kỳ biến nào</b>, thì cấu trúc của bài toán lại càng trở nên rõ ràng hơn.</p>
+  <p>Đây chính là hướng mà ta sẽ khám phá tiếp theo: <b>nhân tử Lagrange giúp ta biểu diễn điều kiện cực trị có ràng buộc trực tiếp theo các biến ban đầu, mà không cần khử biến trước, như thế nào?</b></p>
+</section>
+
+<section class="explain">
+  <h2>Từ khử biến đến gradient song song</h2>
+
+  <p>Đường cong ràng buộc ở trang này là một elip xoay một góc \(\theta\), còn hàm mục tiêu là một họ hyperbol xoay một góc \(\varphi\):</p>
+  \[
+  g(x,y)=\frac{u^2}{a^2}+\frac{v^2}{b^2}-1=0,\qquad F(x,y)=p^2-q^2,
+  \]
+  \[
+  \begin{pmatrix}u\\v\end{pmatrix}=\begin{pmatrix}\cos\theta&\sin\theta\\-\sin\theta&\cos\theta\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix},\qquad
+  \begin{pmatrix}p\\q\end{pmatrix}=\begin{pmatrix}\cos\varphi&\sin\varphi\\-\sin\varphi&\cos\varphi\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix},
+  \]
+  <p>trong đó \(a=2,\ b=1\). Mọi điểm, đường cong và giá trị số trên trang đều được tính trực tiếp từ các tham số này.</p>
+
+  <div class="step">
+    <h3>1. Khử biến chính là viết đường cong một cách địa phương dưới dạng y = y(x)</h3>
+    <p>“Giải \(y\) từ ràng buộc rồi thế vào” tương đương với việc chọn một đoạn trên đường cong và biểu diễn nó thành hàm \(y=y(x)\). Sau khi thế vào, ta được hàm một biến \(f(x)=F(x,y(x))\), với điều kiện cực trị là</p>
+    \[
+    f'(x)=F_x+F_y\,\frac{dy}{dx}=0,\qquad \frac{dy}{dx}=-\frac{g_x}{g_y}.
+    \]
+    <p>Định lý hàm ẩn bảo đảm: chỉ cần \(g_y\neq 0\) thì biểu diễn địa phương như vậy tồn tại. Tại những nơi \(g_y=0\) thì không.</p>
+  </div>
+
+  <div class="step">
+    <h3>2. Cách biểu diễn nào dùng được là do hướng tiếp tuyến quyết định</h3>
+    <p>\(g_y=0\) nghĩa là \(\nabla g\) nằm ngang, tức là tiếp tuyến <b>thẳng đứng</b>. Tại những điểm như vậy, đường cong quay ngược lại theo \(x\): hai nhánh \(y_\pm(x)\) nối với nhau tại đó, và \(dy/dx\to\infty\). Một đường cong kín như elip luôn có hai điểm như thế, và cũng luôn có hai điểm có tiếp tuyến nằm ngang, nơi \(x=x(y)\) mất hiệu lực. Các vòng tròn đỏ trên hình phía trên đánh dấu các điểm mất hiệu lực ứng với biến độc lập đang chọn; trong đồ thị một chiều bên phải, hai nhánh nối với nhau tại các điểm đỏ với hệ số góc vô hạn.</p>
+  </div>
+
+  <div class="step">
+    <h3>3. Chưa tìm ra cực trị thì chưa biết nên chọn cách nào</h3>
+    <p>Nếu điểm cực trị rơi đúng vào chỗ \(g_y=0\), thì trên \(f(x)\) nó là điểm đầu mút của miền xác định, chứ không phải nghiệm của \(f'(x)=0\); khi giải \(f'(x)=0\) ta sẽ bỏ sót nó. Hãy nhấn “Căn theo trục”: lúc này \(F=x^2-y^2\), và ràng buộc là \(x^2/4+y^2=1\).</p>
+    <ul>
+      <li>Lấy \(x\) làm biến độc lập: \(f(x)=\tfrac54x^2-1\), \(f'(x)=0\) chỉ cho cực tiểu tại \(x=0\); cực đại nằm ở các đầu mút \(x=\pm2\) và bị bỏ sót.</li>
+      <li>Lấy \(y\) làm biến độc lập: \(f(y)=4-5y^2\), \(f'(y)=0\) chỉ cho cực đại tại \(y=0\); cực tiểu nằm ở các đầu mút \(y=\pm1\) và cũng bị bỏ sót.</li>
+    </ul>
+    <p>Dù chọn biến nào, ta cũng đều bỏ sót một cặp cực trị. Bây giờ hãy nhấn “Cùng xoay 35°”: hình học hoàn toàn như cũ, chỉ là cả hệ được xoay đi một góc, và cả hai cách biểu diễn đều không gặp điểm mất hiệu lực. Như vậy, việc mất hiệu lực hay không không phải là tính chất của bản thân bài toán, mà là hệ quả của việc chọn hệ tọa độ.</p>
+  </div>
+
+  <div class="step">
+    <h3>4. Lagrange: viết trực tiếp điều kiện hình học</h3>
+    <p>Tại điểm cực trị, tốc độ biến thiên của \(F\) khi di chuyển dọc đường cong bằng không: \(\nabla F\cdot\hat T=0\). Vì \(\nabla g\) cũng vuông góc với tiếp tuyến \(\hat T\), nên hai gradient phải song song:</p>
+    \[
+    \nabla F=\lambda\,\nabla g,\qquad g(x,y)=0 .
+    \]
+    <p>Ba phương trình này đối xử bình đẳng với \(x\) và \(y\), nên không cần chọn trước biến độc lập; chỉ đòi hỏi \(\nabla g\neq 0\), tức là bản thân đường cong trơn. Khi kéo \(P\), hãy chú ý góc giữa \(\nabla F\) và \(\nabla g\): góc này chỉ bằng 0° hoặc 180° tại các điểm cực trị, bất kể điểm đó rơi vào chỗ mất hiệu lực của cách biểu diễn nào.</p>
+    <p>Trong ví dụ này, \(F=\mathbf r^{\mathsf T}M\mathbf r\) và \(g=\mathbf r^{\mathsf T}G\mathbf r-1\) đều là dạng toàn phương, nên điều kiện Lagrange trở thành bài toán giá trị riêng suy rộng \(M\mathbf r=\lambda G\mathbf r\). Nhân hai vế với \(\mathbf r^{\mathsf T}\) rồi dùng \(\mathbf r^{\mathsf T}G\mathbf r=1\), ta được \(F=\lambda\): bản thân nhân tử chính là giá trị cực trị.</p>
+  </div>
+
+  <div class="note">
+    <b>Liên hệ với cơ học.</b> Hãy coi \(g=0\) là liên kết đặt lên một chất điểm (ví dụ chuyển động trượt trên một đường ray), và \(-\nabla F\) là ngoại lực. Khi cân bằng, thành phần của ngoại lực dọc theo đường ray phải bằng không, phần còn lại vuông góc với đường ray được cân bằng bởi lực liên kết \(\lambda\nabla g\). Nhân tử Lagrange chính là độ lớn của lực liên kết (sai khác một thừa số \(|\nabla g|\)); khi viết phương trình chuyển động Lagrange, nó xuất hiện theo đúng cách đó.
+  </div>
+</section>
+</main>
+
+<script id="strings" type="application/json">
+{
+ "statusOk": "Dùng được",
+ "statusWarn": "Gần mất hiệu lực",
+ "statusBad": "Mất hiệu lực",
+ "branchPlus": "nhánh {dv}₊({iv})",
+ "branchMinus": "nhánh {dv}₋({iv})",
+ "breakdown": "điểm {dv}({iv}) mất hiệu lực",
+ "onedTitle": "Sau khi khử {dv}: f({iv}) = F({args})",
+ "onedCaption": "Đường màu xanh lam và màu cam lần lượt ứng với việc thế {dv}₊({iv}) và {dv}₋({iv}). Vòng tròn đỏ là điểm có ∂g/∂{dv} = 0: hai nhánh nối với nhau tại đó và hệ số góc phân kỳ; cực trị nằm ở đây là đầu mút của miền xác định, nên không thỏa mãn f′({iv}) = 0.",
+ "rPosition": "Vị trí",
+ "rAngle": "Góc giữa ∇F và ∇g",
+ "rParallel": "song song",
+ "rRate": "Tốc độ biến thiên dọc đường cong ∇F·T̂",
+ "rLambdaNote": "(bằng λ tại điểm cực trị)",
+ "rIndep": "{iv} là biến độc lập",
+ "max": "▲ cực đại",
+ "min": "▼ cực tiểu",
+ "found": "✓ tìm được",
+ "allOk": "cả 4 điểm cực trị đều nằm trong vùng dùng được",
+ "someBadOne": "{n} trong 4 điểm cực trị nằm tại hoặc gần điểm mất hiệu lực",
+ "someBad": "{n} trong 4 điểm cực trị nằm tại hoặc gần điểm mất hiệu lực",
+ "summary": "Lấy x làm biến độc lập: {dx}. Lấy y làm biến độc lập: {dy}. Điều kiện Lagrange ∇F = λ∇g: tìm được cả 4 điểm, λ₁ = {l1}, λ₂ = {l2}."
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

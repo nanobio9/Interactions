@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kegelförmiger Rand: Eigenwertspektrum</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.27.0/plotly.min.js"></script>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['\\(','\\)']],
+    displayMath: [['\\[','\\]']],
+    tags: 'none',
+  },
+  chtml: {
+    fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2',
+    scale: 1.05,
+    minScale: 0.5,
+  },
+  options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="de" data-ai-translated>
+
+<nav class="topbar" id="topbar"></nav>
+<div id="ai-notice"></div>
+
+<h1>Randwertproblem am Kegel – Eigenwertspektrum und Eigenfunktionen</h1>
+<p class="subtitle">
+  Jackson §3.4 · Wie die Randbedingung \(P_\nu(\cos\beta) = 0\)
+  das Spektrum \(\{\nu_k\}\) bestimmt
+</p>
+
+<!-- PANEL 1 -->
+<div class="panel">
+  <div class="panel-title">Spektrum \(\nu_k(\beta)\), \(k = 1,2,3,4\)</div>
+  <div class="panel-desc">
+    Die \(k\)-te Nullstelle von \(P_\nu(\cos\beta)=0\) als Funktion des Kegelhalbwinkels \(\beta\).
+    Gepunktete Horizontalen: ganzzahlige Werte (Grenzfall der vollen Kugel \(\beta\to 180°\)).
+    Gestrichelte Vertikale: \(\beta=90°\) (ebene leitende Fläche; \(\nu_1=1\) exakt).
+  </div>
+  <div id="plot1" class="plot-div"></div>
+  <p class="plot-note">
+    Für \(\beta\to 180°\) strebt jedes \(\nu_k\) gegen eine ganze Zahl –
+    das vertraute Legendre-Spektrum ergibt sich wieder.
+    Für eine kegelförmige Vertiefung (\(\beta<90°\)) ist \(\nu_1>1\), und das Feld verschwindet an der Spitze.
+    Für eine kegelförmige Spitze (\(\beta>90°\)) ist \(\nu_1<1\), und das Feld divergiert –
+    die mathematische Grundlage des Blitzableiters.
+  </p>
+</div>
+
+<!-- PANEL 2 -->
+<div class="panel">
+  <div class="panel-title">
+    Eigenfunktionen \(P_{\nu_k}(\cos\theta)\) für gewähltes \(\beta\)
+  </div>
+  <div class="panel-desc">
+    <b>Oberes Diagramm:</b> \(\theta\)-Achse auf \([0,\beta]\) skaliert –
+    die Nullstellen scheinen den Bereich stets gleichmäßig auszufüllen (Sturmscher Oszillationssatz).<br>
+    <b>Unteres Diagramm:</b> \(\theta\)-Achse fest auf \([0°,180°]\) –
+    zeigt, wo die Nullstellen tatsächlich liegen, wenn sich \(\beta\) ändert.<br>
+    Farbige Gitterlinien markieren die einzelnen Nullstellen. Obere Achse: \(\cos\theta\).
+    Rote gestrichelte Linie: Leiteroberfläche bei \(\theta=\beta\).
+  </div>
+
+  <div class="plot-wrap">
+    <div class="plot-label">
+      Skalierte Ansicht: \(\theta\in[0,\beta]\)
+    </div>
+    <div id="plot2T" class="plot-div"></div>
+  </div>
+
+  <div class="slider-row" style="margin-top:0.6rem;">
+    <label>Kegelhalbwinkel \(\beta\)</label>
+    <input type="range" id="betaSlider" min="5" max="175" value="60" step="1">
+    <span class="slider-val" id="betaVal">\(\beta=60°\)</span>
+  </div>
+
+  <div class="plot-wrap">
+    <div class="plot-label">
+      Absolute Ansicht: \(\theta\in[0°,180°]\)
+    </div>
+    <div id="plot2B" class="plot-div"></div>
+  </div>
+
+  <div id="nuRow" class="nu-row"></div>
+  <p class="plot-note">
+    In der skalierten Ansicht (oben) scheinen die Nullstellen nahezu stillzustehen –
+    sie teilen \([0,\beta]\) stets in ungefähr denselben relativen Positionen.
+    Die absolute Ansicht (unten) zeigt, dass sich die Nullstellen tatsächlich verschieben, wenn sich \(\beta\) ändert.
+    Jenseits von \(\theta=\beta\) setzen sich die Funktionen als Lösungen der Differentialgleichung fort,
+    jedoch ohne eine Randbedingung, die sie ordnet.
+  </p>
+</div>
+
+<!-- FURTHER DISCUSSION -->
+<div class="discussion">
+  <h2>Weiterführende Diskussion</h2>
+
+  <p>
+    <b>Warum sind die Nullstellen in \([0,\beta]\) nahezu äquidistant?</b>
+    Die Funktionen \(P_{\nu_k}(\cos\theta)\) sind Eigenfunktionen eines
+    Sturm-Liouville-Problems auf \([0,\beta]\) mit den Randbedingungen
+    \(P_{\nu_k}(1)=1\) bei \(\theta=0\) und \(P_{\nu_k}(\cos\beta)=0\)
+    auf der leitenden Oberfläche.
+    Der <em>Sturmsche Oszillationssatz</em> garantiert, dass die \(k\)-te Eigenfunktion
+    im offenen Inneren \((0,\beta)\) genau \(k-1\) Nullstellen besitzt.
+    Das ist keine besondere Eigenschaft der Legendre-Funktionen –
+    es gilt für <em>jedes</em> Sturm-Liouville-Problem.
+  </p>
+
+  <p>
+    Die Äquidistanz gilt allerdings nur <em>asymptotisch</em>: Für \(k\to\infty\)
+    strebt der Abstand aufeinanderfolgender Nullstellen gegen \(\beta/k\),
+    für kleine \(k\) sind die Nullstellen jedoch nicht exakt äquidistant.
+    Das lässt sich in der obigen Abbildung direkt überprüfen:
+    Ziehen Sie \(\beta\) auf \(90°\) und lesen Sie die Lage der Nullstellen der Eigenfunktion mit \(k=3\) ab.
+    Sie liegen bei etwa \(25.3°\) und \(57.5°\), nicht bei den äquidistanten Werten
+    \(30°\) und \(60°\).
+    Die Abweichung ist kein numerischer Fehler – sie ist eine echte Eigenschaft der
+    Eigenfunktionen niedriger Ordnung.
+  </p>
+
+  <p>
+    Der physikalische Grund ist aufschlussreich.
+    Im Grenzfall kurzer Wellenlängen (großes \(k\)) oszilliert die Eigenfunktion
+    schnell und verhält sich lokal wie eine trigonometrische Funktion,
+    deren Nullstellen exakt äquidistant sind.
+    Es ist dasselbe Phänomen wie beim unendlich tiefen Potentialtopf der Quantenmechanik:
+    Die hochenergetischen Eigenzustände \(\psi_n(x) \propto \sin(n\pi x/L)\)
+    haben perfekt äquidistante Nullstellen,
+    die niederenergetischen Zustände in einem allgemeineren Potential dagegen nicht.
+    Äquidistanz ist eine Eigenschaft des <em>semiklassischen Grenzfalls</em>,
+    nicht der exakten Eigenfunktionen bei endlichem \(k\).
+  </p>
+
+  <p>
+    Die Randbedingung bei \(\beta\) ist es, die diese Struktur auf das Intervall \([0,\beta]\)
+    <em>beschränkt</em>.
+    Sie zwingt jede Eigenfunktion, innerhalb des vorgegebenen Bereichs
+    umzukehren und auf null zurückzugehen.
+    Ohne sie wären die Nullstellen weder eingegrenzt noch in irgendeiner bestimmten Weise geordnet.
+  </p>
+
+  <p>
+    <b>Warum bricht das Muster jenseits von \(\theta=\beta\) zusammen?</b>
+    Für \(\theta>\beta\) setzt sich die Funktion \(P_{\nu_k}(\cos\theta)\) als
+    Lösung der Legendre-Gleichung fort, ist aber keine Eigenfunktion
+    irgendeines Randwertproblems mehr. Keine Bedingung schränkt sie in \((\beta,\pi]\) ein,
+    daher sagt der Oszillationssatz dort nichts über ihre Nullstellen aus.
+    Die Struktur – die gleichmäßigen Abstände, die geordnete Oszillation –
+    wurde von außen aufgeprägt. Entfernt man den Rand, verschwindet sie.
+  </p>
+
+  <p>
+    <b>Eine Parallele: Spline-Interpolation in der Atomphysik.</b>
+    Ein klassisches numerisches Verfahren approximiert das Atompotential \(V(r)\)
+    durch einen Spline auf einem endlichen Intervall \([r_{\min},r_{\max}]\).
+    Innerhalb dieses Intervalls erfüllt der Spline an jedem Knoten Stetigkeits- und Glattheitsbedingungen,
+    und die Schrödinger-Gleichung
+    \[
+      -\frac{\hbar^2}{2m}\psi'' + V(r)\,\psi = E\psi
+    \]
+    lässt sich zuverlässig lösen.
+    Ein über sein Definitionsintervall hinaus fortgesetzter Spline unterliegt jedoch keinen Bedingungen –
+    er oszilliert wild oder divergiert. Daraus berechnete Wellenfunktionen
+    jenseits von \(r_{\max}\) sind bedeutungslos.
+    Die Parallele zu \(P_{\nu_k}(\cos\theta)\) jenseits von \(\theta=\beta\) ist exakt:
+    In beiden Fällen erzeugt ein endliches Intervall mit Randbedingungen geordnete,
+    strukturierte Lösungen; außerhalb dieses Intervalls löst sich die Ordnung auf.
+  </p>
+
+  <p>
+    Es gibt jedoch einen wichtigen Unterschied.
+    Sturm-Liouville-Eigenfunktionen besitzen eine <em>globale</em> Struktur, die Splines fehlt:
+    Orthogonalität,
+    \[
+      \int_0^\beta P_{\nu_k}(\cos\theta)\,P_{\nu_j}(\cos\theta)\,\sin\theta\,d\theta = 0
+      \qquad (k\neq j),
+    \]
+    und die vom Oszillationssatz garantierte gleichmäßige Verteilung der Nullstellen.
+    Diese folgen aus der selbstadjungierten Struktur des Differentialoperators –
+    nicht bloß aus Anschlussbedingungen an zwei Endpunkten.
+    Ein Spline wird so konstruiert, dass er lokale Bedingungen an den Knoten erfüllt;
+    sein globales Verhalten ergibt sich nur nebenbei.
+    Eine Eigenfunktion wird durch den Operator und den Rand <em>global bestimmt</em> –
+    das lokale Verhalten ist eine Folge, keine Konstruktionsentscheidung.
+  </p>
+
+  <p class="source">
+    Literatur: Jackson §3.4;
+    Sturm-Liouville-Theorie: Courant &amp; Hilbert,
+    <em>Methods of Mathematical Physics</em>, Vol. I, Ch. VI;
+    Spline-Methoden in der Atomstruktur: Fischer,
+    <em>The Hartree–Fock Method for Atoms</em>.
+  </p>
+</div>
+
+<script id="strings" type="application/json">
+{
+ "axisBeta": "Kegelhalbwinkel β (Grad)",
+ "axisNu": "Eigenwert ν",
+ "axisTheta": "θ (Grad)"
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Batas Kerucut: Spektrum Nilai Eigen</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.27.0/plotly.min.js"></script>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['\\(','\\)']],
+    displayMath: [['\\[','\\]']],
+    tags: 'none',
+  },
+  chtml: {
+    fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2',
+    scale: 1.05,
+    minScale: 0.5,
+  },
+  options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="id" data-ai-translated>
+
+<nav class="topbar" id="topbar"></nav>
+<div id="ai-notice"></div>
+
+<h1>Masalah Batas Kerucut — Spektrum Nilai Eigen dan Fungsi Eigen</h1>
+<p class="subtitle">
+  Jackson §3.4 · Bagaimana syarat batas \(P_\nu(\cos\beta) = 0\)
+  menentukan spektrum \(\{\nu_k\}\)
+</p>
+
+<!-- PANEL 1 -->
+<div class="panel">
+  <div class="panel-title">Spektrum \(\nu_k(\beta)\), \(k = 1,2,3,4\)</div>
+  <div class="panel-desc">
+    Akar ke-\(k\) dari \(P_\nu(\cos\beta)=0\) sebagai fungsi setengah sudut kerucut \(\beta\).
+    Garis mendatar bertitik: nilai bilangan bulat (limit bola penuh \(\beta\to 180°\)).
+    Garis tegak putus-putus: \(\beta=90°\) (bidang konduktor datar; \(\nu_1=1\) tepat).
+  </div>
+  <div id="plot1" class="plot-div"></div>
+  <p class="plot-note">
+    Ketika \(\beta\to 180°\), setiap \(\nu_k\) mendekati bilangan bulat —
+    spektrum Legendre yang sudah dikenal diperoleh kembali.
+    Untuk lubang kerucut (\(\beta<90°\)), \(\nu_1>1\) dan medan lenyap di ujungnya.
+    Untuk ujung runcing kerucut (\(\beta>90°\)), \(\nu_1<1\) dan medan divergen —
+    inilah dasar matematis penangkal petir.
+  </p>
+</div>
+
+<!-- PANEL 2 -->
+<div class="panel">
+  <div class="panel-title">
+    Fungsi eigen \(P_{\nu_k}(\cos\theta)\) untuk \(\beta\) terpilih
+  </div>
+  <div class="panel-desc">
+    <b>Grafik atas:</b> sumbu \(\theta\) diskalakan ke \([0,\beta]\) —
+    titik-titik nol selalu tampak mengisi domain secara merata (teorema osilasi Sturm).<br>
+    <b>Grafik bawah:</b> sumbu \(\theta\) tetap pada \([0°,180°]\) —
+    memperlihatkan letak fisis titik-titik nol ketika \(\beta\) berubah.<br>
+    Garis tipis berwarna menandai setiap titik nol. Sumbu atas: \(\cos\theta\).
+    Garis merah putus-putus: permukaan konduktor di \(\theta=\beta\).
+  </div>
+
+  <div class="plot-wrap">
+    <div class="plot-label">
+      Tampilan terskala: \(\theta\in[0,\beta]\)
+    </div>
+    <div id="plot2T" class="plot-div"></div>
+  </div>
+
+  <div class="slider-row" style="margin-top:0.6rem;">
+    <label>Setengah sudut kerucut \(\beta\)</label>
+    <input type="range" id="betaSlider" min="5" max="175" value="60" step="1">
+    <span class="slider-val" id="betaVal">\(\beta=60°\)</span>
+  </div>
+
+  <div class="plot-wrap">
+    <div class="plot-label">
+      Tampilan mutlak: \(\theta\in[0°,180°]\)
+    </div>
+    <div id="plot2B" class="plot-div"></div>
+  </div>
+
+  <div id="nuRow" class="nu-row"></div>
+  <p class="plot-note">
+    Pada tampilan terskala (atas), titik-titik nol tampak hampir diam —
+    mereka selalu membagi \([0,\beta]\) pada posisi relatif yang kurang lebih sama.
+    Tampilan mutlak (bawah) menunjukkan bahwa titik-titik nol secara fisis bergeser ketika \(\beta\) berubah.
+    Di luar \(\theta=\beta\), fungsi-fungsi ini tetap merupakan solusi persamaan diferensial,
+    tetapi tanpa syarat batas yang mengaturnya.
+  </p>
+</div>
+
+<!-- FURTHER DISCUSSION -->
+<div class="discussion">
+  <h2>Pembahasan Lanjutan</h2>
+
+  <p>
+    <b>Mengapa titik-titik nol hampir berjarak sama di dalam \([0,\beta]\)?</b>
+    Fungsi \(P_{\nu_k}(\cos\theta)\) adalah fungsi eigen dari suatu
+    masalah Sturm–Liouville pada \([0,\beta]\), dengan syarat batas
+    \(P_{\nu_k}(1)=1\) di \(\theta=0\) dan \(P_{\nu_k}(\cos\beta)=0\)
+    pada permukaan konduktor.
+    <em>Teorema osilasi Sturm</em> menjamin bahwa fungsi eigen ke-\(k\)
+    memiliki tepat \(k-1\) titik nol di bagian dalam terbuka \((0,\beta)\).
+    Ini bukan sifat khusus fungsi Legendre —
+    sifat ini berlaku untuk <em>setiap</em> masalah Sturm–Liouville.
+  </p>
+
+  <p>
+    Namun, jarak yang sama itu hanya berlaku secara <em>asimtotik</em>: ketika \(k\to\infty\),
+    jarak antara titik-titik nol yang berurutan mendekati \(\beta/k\),
+    tetapi untuk \(k\) kecil titik-titik nol tidak tepat berjarak sama.
+    Anda dapat memeriksanya langsung pada gambar di atas:
+    geser \(\beta\) ke \(90°\) dan baca letak titik nol fungsi eigen \(k=3\).
+    Titik-titik itu jatuh di sekitar \(25.3°\) dan \(57.5°\), bukan pada nilai berjarak sama
+    \(30°\) dan \(60°\).
+    Selisih ini bukan galat numerik — melainkan ciri yang sesungguhnya dari
+    fungsi eigen orde rendah.
+  </p>
+
+  <p>
+    Alasan fisisnya cukup mencerahkan.
+    Dalam limit panjang gelombang pendek (\(k\) besar), fungsi eigen berosilasi
+    dengan cepat dan secara lokal berperilaku seperti fungsi trigonometri,
+    yang titik-titik nolnya tepat berjarak sama.
+    Ini adalah fenomena yang sama dengan sumur potensial tak hingga dalam mekanika kuantum:
+    keadaan eigen berenergi tinggi \(\psi_n(x) \propto \sin(n\pi x/L)\)
+    memiliki titik-titik nol yang berjarak sama secara sempurna,
+    sedangkan keadaan berenergi rendah dalam potensial yang lebih umum tidak demikian.
+    Jarak yang sama adalah sifat <em>limit semiklasik</em>,
+    bukan sifat fungsi eigen eksak pada \(k\) berhingga.
+  </p>
+
+  <p>
+    Syarat batas di \(\beta\)-lah yang <em>mengurung</em> struktur ini
+    di dalam selang \([0,\beta]\).
+    Syarat itu memaksa setiap fungsi eigen berbalik arah dan kembali ke nol
+    di dalam domain yang ditentukan.
+    Tanpanya, titik-titik nol tidak akan terkurung ataupun tertata dengan cara tertentu.
+  </p>
+
+  <p>
+    <b>Mengapa pola ini rusak di luar \(\theta=\beta\)?</b>
+    Untuk \(\theta>\beta\), fungsi \(P_{\nu_k}(\cos\theta)\) tetap merupakan
+    solusi persamaan Legendre, tetapi tidak lagi menjadi fungsi eigen dari
+    masalah nilai batas mana pun. Tidak ada syarat yang membatasinya di \((\beta,\pi]\),
+    sehingga teorema osilasi tidak mengatakan apa pun tentang titik-titik nolnya di sana.
+    Struktur itu — jarak yang sama, osilasi yang tertata —
+    dipaksakan dari luar. Hilangkan batasnya, maka struktur itu pun lenyap.
+  </p>
+
+  <p>
+    <b>Sebuah analogi: interpolasi spline dalam fisika atom.</b>
+    Sebuah teknik numerik klasik mencocokkan potensial atom \(V(r)\)
+    dengan kurva spline pada selang berhingga \([r_{\min},r_{\max}]\).
+    Di dalam selang itu, spline memenuhi syarat kontinuitas dan kemulusan
+    di setiap simpul, dan persamaan Schrödinger
+    \[
+      -\frac{\hbar^2}{2m}\psi'' + V(r)\,\psi = E\psi
+    \]
+    dapat diselesaikan dengan andal.
+    Namun spline yang diperpanjang di luar selang definisinya tidak memiliki kendala apa pun —
+    ia berosilasi liar atau divergen. Fungsi gelombang yang dihitung darinya
+    di luar \(r_{\max}\) tidak bermakna.
+    Kesejajarannya dengan \(P_{\nu_k}(\cos\theta)\) di luar \(\theta=\beta\) tepat sekali:
+    dalam kedua kasus, selang berhingga dengan syarat batas menghasilkan solusi yang
+    teratur dan terstruktur; di luar selang itu, keteraturan tersebut menguap.
+  </p>
+
+  <p>
+    Namun, ada satu perbedaan penting.
+    Fungsi eigen Sturm–Liouville memiliki struktur <em>global</em> yang tidak dimiliki spline:
+    ortogonalitas,
+    \[
+      \int_0^\beta P_{\nu_k}(\cos\theta)\,P_{\nu_j}(\cos\theta)\,\sin\theta\,d\theta = 0
+      \qquad (k\neq j),
+    \]
+    serta jarak titik nol yang merata yang dijamin oleh teorema osilasi.
+    Sifat-sifat ini berasal dari struktur swa-adjoin operator diferensialnya —
+    bukan sekadar dari syarat pencocokan di dua titik ujung.
+    Spline dikonstruksi untuk memenuhi syarat lokal di simpul-simpulnya;
+    perilaku globalnya hanyalah kebetulan.
+    Fungsi eigen <em>ditentukan secara global</em> oleh operator dan batasnya —
+    perilaku lokalnya adalah konsekuensi, bukan pilihan rancangan.
+  </p>
+
+  <p class="source">
+    Referensi: Jackson §3.4;
+    teori Sturm–Liouville: Courant &amp; Hilbert,
+    <em>Methods of Mathematical Physics</em>, Vol. I, Ch. VI;
+    metode spline dalam struktur atom: Fischer,
+    <em>The Hartree–Fock Method for Atoms</em>.
+  </p>
+</div>
+
+<script id="strings" type="application/json">
+{
+ "axisBeta": "Setengah sudut kerucut β (derajat)",
+ "axisNu": "Nilai eigen ν",
+ "axisTheta": "θ (derajat)"
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

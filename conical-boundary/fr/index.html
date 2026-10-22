@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Frontière conique : spectre des valeurs propres</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.27.0/plotly.min.js"></script>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['\\(','\\)']],
+    displayMath: [['\\[','\\]']],
+    tags: 'none',
+  },
+  chtml: {
+    fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2',
+    scale: 1.05,
+    minScale: 0.5,
+  },
+  options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="fr" data-ai-translated>
+
+<nav class="topbar" id="topbar"></nav>
+<div id="ai-notice"></div>
+
+<h1>Problème à frontière conique — spectre des valeurs propres et fonctions propres</h1>
+<p class="subtitle">
+  Jackson §3.4 · Comment la condition aux limites \(P_\nu(\cos\beta) = 0\)
+  détermine le spectre \(\{\nu_k\}\)
+</p>
+
+<!-- PANEL 1 -->
+<div class="panel">
+  <div class="panel-title">Spectre \(\nu_k(\beta)\), \(k = 1,2,3,4\)</div>
+  <div class="panel-desc">
+    La \(k\)-ième racine de \(P_\nu(\cos\beta)=0\) en fonction du demi-angle au sommet \(\beta\) du cône.
+    Horizontales en pointillés : valeurs entières (limite de la sphère complète, \(\beta\to 180°\)).
+    Verticale en tirets : \(\beta=90°\) (plan conducteur ; \(\nu_1=1\) exactement).
+  </div>
+  <div id="plot1" class="plot-div"></div>
+  <p class="plot-note">
+    Lorsque \(\beta\to 180°\), chaque \(\nu_k\) tend vers un entier —
+    on retrouve le spectre de Legendre habituel.
+    Pour un creux conique (\(\beta<90°\)), \(\nu_1>1\) et le champ s’annule à la pointe.
+    Pour une pointe conique (\(\beta>90°\)), \(\nu_1<1\) et le champ diverge —
+    c’est le fondement mathématique du paratonnerre.
+  </p>
+</div>
+
+<!-- PANEL 2 -->
+<div class="panel">
+  <div class="panel-title">
+    Fonctions propres \(P_{\nu_k}(\cos\theta)\) pour un \(\beta\) donné
+  </div>
+  <div class="panel-desc">
+    <b>Graphe du haut :</b> axe \(\theta\) ramené à \([0,\beta]\) —
+    les zéros semblent toujours remplir le domaine uniformément (théorème d’oscillation de Sturm).<br>
+    <b>Graphe du bas :</b> axe \(\theta\) fixé à \([0°,180°]\) —
+    montre où se trouvent réellement les zéros lorsque \(\beta\) varie.<br>
+    Des lignes fines colorées marquent chaque zéro. Axe supérieur : \(\cos\theta\).
+    Ligne rouge en tirets : surface du conducteur en \(\theta=\beta\).
+  </div>
+
+  <div class="plot-wrap">
+    <div class="plot-label">
+      Vue normalisée : \(\theta\in[0,\beta]\)
+    </div>
+    <div id="plot2T" class="plot-div"></div>
+  </div>
+
+  <div class="slider-row" style="margin-top:0.6rem;">
+    <label>Demi-angle du cône \(\beta\)</label>
+    <input type="range" id="betaSlider" min="5" max="175" value="60" step="1">
+    <span class="slider-val" id="betaVal">\(\beta=60°\)</span>
+  </div>
+
+  <div class="plot-wrap">
+    <div class="plot-label">
+      Vue absolue : \(\theta\in[0°,180°]\)
+    </div>
+    <div id="plot2B" class="plot-div"></div>
+  </div>
+
+  <div id="nuRow" class="nu-row"></div>
+  <p class="plot-note">
+    Dans la vue normalisée (en haut), les zéros paraissent presque immobiles —
+    ils divisent toujours \([0,\beta]\) selon à peu près les mêmes positions relatives.
+    La vue absolue (en bas) montre que les zéros se déplacent physiquement lorsque \(\beta\) varie.
+    Au-delà de \(\theta=\beta\), les fonctions se prolongent comme solutions de l’équation différentielle,
+    mais aucune condition aux limites ne vient plus les organiser.
+  </p>
+</div>
+
+<!-- FURTHER DISCUSSION -->
+<div class="discussion">
+  <h2>Pour aller plus loin</h2>
+
+  <p>
+    <b>Pourquoi les zéros sont-ils presque équidistants dans \([0,\beta]\) ?</b>
+    Les fonctions \(P_{\nu_k}(\cos\theta)\) sont les fonctions propres d’un
+    problème de Sturm–Liouville sur \([0,\beta]\), avec pour conditions aux limites
+    \(P_{\nu_k}(1)=1\) en \(\theta=0\) et \(P_{\nu_k}(\cos\beta)=0\)
+    sur la surface conductrice.
+    Le <em>théorème d’oscillation de Sturm</em> garantit que la \(k\)-ième fonction propre
+    possède exactement \(k-1\) zéros dans l’intervalle ouvert \((0,\beta)\).
+    Ce n’est pas une propriété particulière des fonctions de Legendre —
+    elle vaut pour <em>tout</em> problème de Sturm–Liouville.
+  </p>
+
+  <p>
+    L’équidistance n’est toutefois qu’<em>asymptotique</em> : lorsque \(k\to\infty\),
+    l’écart entre zéros consécutifs tend vers \(\beta/k\),
+    mais pour de petites valeurs de \(k\) les zéros ne sont pas exactement équidistants.
+    Vous pouvez le vérifier directement sur la figure ci-dessus :
+    amenez \(\beta\) à \(90°\) et relevez la position des zéros de la fonction propre \(k=3\).
+    Ils se situent vers \(25.3°\) et \(57.5°\), et non aux valeurs équidistantes
+    \(30°\) et \(60°\).
+    Cet écart n’est pas une erreur numérique — c’est une caractéristique réelle des
+    fonctions propres d’ordre bas.
+  </p>
+
+  <p>
+    La raison physique est instructive.
+    Dans la limite des courtes longueurs d’onde (\(k\) grand), la fonction propre oscille
+    rapidement et se comporte localement comme une fonction trigonométrique,
+    dont les zéros sont exactement équidistants.
+    C’est le même phénomène que pour le puits de potentiel infini en mécanique quantique :
+    les états propres de haute énergie \(\psi_n(x) \propto \sin(n\pi x/L)\)
+    ont des zéros parfaitement équidistants,
+    alors que ce n’est pas le cas des états de basse énergie dans un potentiel plus général.
+    L’équidistance est une propriété de la <em>limite semi-classique</em>,
+    et non des fonctions propres exactes à \(k\) fini.
+  </p>
+
+  <p>
+    C’est la condition aux limites en \(\beta\) qui <em>confine</em> cette structure
+    à l’intervalle \([0,\beta]\).
+    Elle oblige chaque fonction propre à rebrousser chemin et à revenir à zéro
+    à l’intérieur du domaine prescrit.
+    Sans elle, les zéros ne seraient ni confinés ni organisés de manière particulière.
+  </p>
+
+  <p>
+    <b>Pourquoi la régularité disparaît-elle au-delà de \(\theta=\beta\) ?</b>
+    Pour \(\theta>\beta\), la fonction \(P_{\nu_k}(\cos\theta)\) se prolonge en tant que
+    solution de l’équation de Legendre, mais elle n’est plus fonction propre
+    d’aucun problème aux limites. Aucune condition ne la contraint dans \((\beta,\pi]\),
+    si bien que le théorème d’oscillation ne dit rien de ses zéros dans cette région.
+    La structure — l’équidistance, l’oscillation organisée —
+    était imposée de l’extérieur. Supprimez la frontière, et elle disparaît.
+  </p>
+
+  <p>
+    <b>Un parallèle : l’interpolation par splines en physique atomique.</b>
+    Une technique numérique classique consiste à ajuster le potentiel atomique \(V(r)\)
+    par une courbe spline sur un intervalle fini \([r_{\min},r_{\max}]\).
+    À l’intérieur de cet intervalle, la spline satisfait des conditions de continuité et de régularité
+    en chaque nœud, et l’équation de Schrödinger
+    \[
+      -\frac{\hbar^2}{2m}\psi'' + V(r)\,\psi = E\psi
+    \]
+    peut être résolue de manière fiable.
+    Mais une spline prolongée au-delà de son intervalle de définition n’est soumise à aucune contrainte —
+    elle oscille violemment ou diverge. Les fonctions d’onde calculées à partir d’elle
+    au-delà de \(r_{\max}\) n’ont aucun sens.
+    Le parallèle avec \(P_{\nu_k}(\cos\theta)\) au-delà de \(\theta=\beta\) est exact :
+    dans les deux cas, un intervalle fini muni de conditions aux limites engendre des solutions
+    ordonnées et structurées ; hors de cet intervalle, l’ordre s’évanouit.
+  </p>
+
+  <p>
+    Il existe cependant une différence importante.
+    Les fonctions propres de Sturm–Liouville possèdent une structure <em>globale</em> que les splines n’ont pas :
+    l’orthogonalité,
+    \[
+      \int_0^\beta P_{\nu_k}(\cos\theta)\,P_{\nu_j}(\cos\theta)\,\sin\theta\,d\theta = 0
+      \qquad (k\neq j),
+    \]
+    et la répartition uniforme des zéros garantie par le théorème d’oscillation.
+    Ces propriétés découlent du caractère autoadjoint de l’opérateur différentiel —
+    et pas seulement de conditions de raccordement aux deux extrémités.
+    Une spline est construite pour satisfaire des conditions locales aux nœuds ;
+    son comportement global est accessoire.
+    Une fonction propre est <em>déterminée globalement</em> par l’opérateur et la frontière —
+    le comportement local en est une conséquence, non un choix de conception.
+  </p>
+
+  <p class="source">
+    Références : Jackson §3.4 ;
+    théorie de Sturm–Liouville : Courant &amp; Hilbert,
+    <em>Methods of Mathematical Physics</em>, Vol. I, Ch. VI ;
+    méthodes de splines en structure atomique : Fischer,
+    <em>The Hartree–Fock Method for Atoms</em>.
+  </p>
+</div>
+
+<script id="strings" type="application/json">
+{
+ "axisBeta": "Demi-angle du cône β (degrés)",
+ "axisNu": "Valeur propre ν",
+ "axisTheta": "θ (degrés)"
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contorno cônico: espectro de autovalores</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.27.0/plotly.min.js"></script>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['\\(','\\)']],
+    displayMath: [['\\[','\\]']],
+    tags: 'none',
+  },
+  chtml: {
+    fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2',
+    scale: 1.05,
+    minScale: 0.5,
+  },
+  options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="pt" data-ai-translated>
+
+<nav class="topbar" id="topbar"></nav>
+<div id="ai-notice"></div>
+
+<h1>Problema com contorno cônico — espectro de autovalores e autofunções</h1>
+<p class="subtitle">
+  Jackson §3.4 · Como a condição de contorno \(P_\nu(\cos\beta) = 0\)
+  determina o espectro \(\{\nu_k\}\)
+</p>
+
+<!-- PANEL 1 -->
+<div class="panel">
+  <div class="panel-title">Espectro \(\nu_k(\beta)\), \(k = 1,2,3,4\)</div>
+  <div class="panel-desc">
+    A \(k\)-ésima raiz de \(P_\nu(\cos\beta)=0\) em função do semiângulo do cone \(\beta\).
+    Linhas horizontais pontilhadas: valores inteiros (limite da esfera completa \(\beta\to 180°\)).
+    Linha vertical tracejada: \(\beta=90°\) (plano condutor; \(\nu_1=1\) exatamente).
+  </div>
+  <div id="plot1" class="plot-div"></div>
+  <p class="plot-note">
+    Quando \(\beta\to 180°\), cada \(\nu_k\) tende a um inteiro —
+    recupera-se o conhecido espectro de Legendre.
+    Para uma cavidade cônica (\(\beta<90°\)), \(\nu_1>1\) e o campo se anula no vértice.
+    Para uma ponta cônica (\(\beta>90°\)), \(\nu_1<1\) e o campo diverge —
+    a base matemática dos para-raios.
+  </p>
+</div>
+
+<!-- PANEL 2 -->
+<div class="panel">
+  <div class="panel-title">
+    Autofunções \(P_{\nu_k}(\cos\theta)\) para \(\beta\) selecionado
+  </div>
+  <div class="panel-desc">
+    <b>Gráfico superior:</b> eixo \(\theta\) reescalado para \([0,\beta]\) —
+    os zeros sempre parecem preencher o domínio uniformemente (teorema de oscilação de Sturm).<br>
+    <b>Gráfico inferior:</b> eixo \(\theta\) fixo em \([0°,180°]\) —
+    mostra onde os zeros estão de fato à medida que \(\beta\) varia.<br>
+    Linhas finas coloridas marcam cada zero. Eixo superior: \(\cos\theta\).
+    Linha vermelha tracejada: superfície do condutor em \(\theta=\beta\).
+  </div>
+
+  <div class="plot-wrap">
+    <div class="plot-label">
+      Visão reescalada: \(\theta\in[0,\beta]\)
+    </div>
+    <div id="plot2T" class="plot-div"></div>
+  </div>
+
+  <div class="slider-row" style="margin-top:0.6rem;">
+    <label>Semiângulo do cone \(\beta\)</label>
+    <input type="range" id="betaSlider" min="5" max="175" value="60" step="1">
+    <span class="slider-val" id="betaVal">\(\beta=60°\)</span>
+  </div>
+
+  <div class="plot-wrap">
+    <div class="plot-label">
+      Visão absoluta: \(\theta\in[0°,180°]\)
+    </div>
+    <div id="plot2B" class="plot-div"></div>
+  </div>
+
+  <div id="nuRow" class="nu-row"></div>
+  <p class="plot-note">
+    Na visão reescalada (em cima), os zeros parecem quase parados —
+    eles sempre dividem \([0,\beta]\) em posições relativas aproximadamente iguais.
+    A visão absoluta (embaixo) mostra que os zeros se deslocam de fato quando \(\beta\) varia.
+    Além de \(\theta=\beta\), as funções continuam como soluções da equação diferencial,
+    mas sem nenhuma condição de contorno que as organize.
+  </p>
+</div>
+
+<!-- FURTHER DISCUSSION -->
+<div class="discussion">
+  <h2>Discussão complementar</h2>
+
+  <p>
+    <b>Por que os zeros são quase igualmente espaçados dentro de \([0,\beta]\)?</b>
+    As funções \(P_{\nu_k}(\cos\theta)\) são autofunções de um
+    problema de Sturm–Liouville em \([0,\beta]\), com condições de contorno
+    \(P_{\nu_k}(1)=1\) em \(\theta=0\) e \(P_{\nu_k}(\cos\beta)=0\)
+    na superfície condutora.
+    O <em>teorema de oscilação de Sturm</em> garante que a \(k\)-ésima autofunção
+    tem exatamente \(k-1\) zeros no interior aberto \((0,\beta)\).
+    Essa não é uma propriedade especial das funções de Legendre —
+    ela vale para <em>todo</em> problema de Sturm–Liouville.
+  </p>
+
+  <p>
+    O espaçamento igual, porém, é apenas <em>assintótico</em>: quando \(k\to\infty\),
+    a distância entre zeros consecutivos tende a \(\beta/k\),
+    mas para \(k\) pequeno os zeros não são exatamente equidistantes.
+    Você pode verificar isso diretamente na figura acima:
+    arraste \(\beta\) até \(90°\) e leia as posições dos zeros da autofunção com \(k=3\).
+    Eles ficam perto de \(25.3°\) e \(57.5°\), e não nos valores equidistantes
+    \(30°\) e \(60°\).
+    A discrepância não é um erro numérico — é uma característica genuína das
+    autofunções de ordem baixa.
+  </p>
+
+  <p>
+    A razão física é instrutiva.
+    No limite de comprimento de onda curto (\(k\) grande), a autofunção oscila
+    rapidamente e se comporta localmente como uma função trigonométrica,
+    cujos zeros são exatamente equidistantes.
+    É o mesmo fenômeno do poço quadrado infinito da mecânica quântica:
+    os autoestados de alta energia \(\psi_n(x) \propto \sin(n\pi x/L)\)
+    têm zeros perfeitamente equidistantes,
+    enquanto os estados de baixa energia num potencial mais geral não os têm.
+    O espaçamento igual é uma propriedade do <em>limite semiclássico</em>,
+    e não das autofunções exatas com \(k\) finito.
+  </p>
+
+  <p>
+    É a condição de contorno em \(\beta\) que <em>confina</em> essa estrutura
+    ao intervalo \([0,\beta]\).
+    Ela obriga cada autofunção a fazer a volta e retornar a zero
+    dentro do domínio prescrito.
+    Sem ela, os zeros não ficariam confinados nem organizados de nenhuma maneira particular.
+  </p>
+
+  <p>
+    <b>Por que o padrão se desfaz além de \(\theta=\beta\)?</b>
+    Para \(\theta>\beta\), a função \(P_{\nu_k}(\cos\theta)\) continua sendo uma
+    solução da equação de Legendre, mas deixa de ser autofunção de
+    qualquer problema de valor de contorno. Nenhuma condição a restringe em \((\beta,\pi]\),
+    de modo que o teorema de oscilação nada diz sobre seus zeros ali.
+    A estrutura — o espaçamento uniforme, a oscilação organizada —
+    foi imposta de fora. Removido o contorno, ela desaparece.
+  </p>
+
+  <p>
+    <b>Um paralelo: interpolação por splines em física atômica.</b>
+    Uma técnica numérica clássica ajusta o potencial atômico \(V(r)\)
+    por uma curva spline em um intervalo finito \([r_{\min},r_{\max}]\).
+    Dentro desse intervalo, a spline satisfaz condições de continuidade e suavidade
+    em cada nó, e a equação de Schrödinger
+    \[
+      -\frac{\hbar^2}{2m}\psi'' + V(r)\,\psi = E\psi
+    \]
+    pode ser resolvida de forma confiável.
+    Mas uma spline estendida além do seu intervalo de definição não tem restrições —
+    ela oscila descontroladamente ou diverge. As funções de onda calculadas a partir dela
+    além de \(r_{\max}\) não têm significado.
+    O paralelo com \(P_{\nu_k}(\cos\theta)\) além de \(\theta=\beta\) é exato:
+    em ambos os casos, um intervalo finito com condições de contorno gera soluções
+    ordenadas e estruturadas; fora desse intervalo, a ordem se dissipa.
+  </p>
+
+  <p>
+    Há, no entanto, uma diferença importante.
+    As autofunções de Sturm–Liouville possuem uma estrutura <em>global</em> que as splines não têm:
+    a ortogonalidade,
+    \[
+      \int_0^\beta P_{\nu_k}(\cos\theta)\,P_{\nu_j}(\cos\theta)\,\sin\theta\,d\theta = 0
+      \qquad (k\neq j),
+    \]
+    e o espaçamento uniforme dos zeros garantido pelo teorema de oscilação.
+    Essas propriedades decorrem da estrutura autoadjunta do operador diferencial —
+    e não apenas de condições de ajuste em dois extremos.
+    Uma spline é construída para satisfazer condições locais nos nós;
+    seu comportamento global é acidental.
+    Uma autofunção é <em>determinada globalmente</em> pelo operador e pelo contorno —
+    o comportamento local é uma consequência, não uma escolha de projeto.
+  </p>
+
+  <p class="source">
+    Referências: Jackson §3.4;
+    teoria de Sturm–Liouville: Courant &amp; Hilbert,
+    <em>Methods of Mathematical Physics</em>, Vol. I, Cap. VI;
+    métodos de splines em estrutura atômica: Fischer,
+    <em>The Hartree–Fock Method for Atoms</em>.
+  </p>
+</div>
+
+<script id="strings" type="application/json">
+{
+ "axisBeta": "Semiângulo do cone β (graus)",
+ "axisNu": "Autovalor ν",
+ "axisTheta": "θ (graus)"
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>
