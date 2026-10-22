@@ -32,3 +32,47 @@
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 .ai-notice a { color: var(--accent, #2a74b5); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Site-wide dark-green theme
+   Loaded after each page's own style.css → overrides page-level variables.
+   Colour channels are restricted to {00,33,66,99,cc,ff} (web-safe palette).
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root {
+  /* ── Page structure ────────────────────────────────────────────────────── */
+  --bg:         #003300;   /* deep dark green (page background)   */
+  --surface:    #006633;   /* cards / panels                      */
+  --panel-bg:   #006633;   /* alias used by conical-boundary      */
+  --ink:        #ffffff;   /* primary text                        */
+  --text:       #ffffff;   /* alias used by conical-boundary      */
+  --muted:      #99cc99;   /* secondary / muted text              */
+  --line:       #336633;   /* borders, dividers                   */
+  --border:     #336633;   /* alias used by conical-boundary      */
+  --accent:     #99ffcc;   /* links, focus rings, highlights      */
+
+  /* ── Canvas / Plotly chart structure ───────────────────────────────────── */
+  --grid:       #006600;   /* canvas grid lines                   */
+  --axis:       #336633;   /* canvas axis lines                   */
+
+  /* ── Lagrange-multiplier data colours (light, readable on dark green) ─── */
+  --b1:         #66ccff;   /* branch y₊(x)        */
+  --b2:         #ffcc66;   /* branch y₋(x)        */
+  --bad:        #ff6666;   /* breakdown / error   */
+  --warn:       #ffcc33;   /* warning             */
+  --ok:         #99ff99;   /* ok / valid          */
+  --gradF:      #66ff99;   /* ∇F arrow            */
+  --gradG:      #cc99ff;   /* ∇g arrow            */
+  --level:      #99cccc;   /* level curve (dim)   */
+  --level-hi:   #66ff99;   /* level curve at P    */
+  --ext:        #ffffff;   /* extremum markers    */
+  --chip-ok-bg:   #003300;
+  --chip-warn-bg: #333300;
+  --chip-bad-bg:  #330000;
+
+  /* ── Conical-boundary Plotly line colours ──────────────────────────────── */
+  --chart-c1:   #66ccff;   /* ν₁ spectrum curve   */
+  --chart-c2:   #ff9999;   /* ν₂ spectrum curve   */
+  --chart-c3:   #99ff99;   /* ν₃ spectrum curve   */
+  --chart-c4:   #cc99ff;   /* ν₄ spectrum curve   */
+  --chart-cond: #ff6666;   /* conductor line      */
+}

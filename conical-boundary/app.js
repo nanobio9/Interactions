@@ -87,14 +87,15 @@ function findZerosOf(nu, beta) {
   return zeros;
 }
 
-// ── Colours / theme ───────────────────────────────────────────────────────────
-const COLORS = ['#2c5f8a','#c0392b','#27ae60','#8e44ad'];
-const isDark  = window.matchMedia('(prefers-color-scheme: dark)').matches;
-const paperBg = isDark ? '#1a1a1a' : '#ffffff';
-const plotBg  = isDark ? '#252525' : '#f8f9fa';
-const gridC   = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.1)';
-const fontC   = isDark ? '#e8e8e8' : '#1a1a1a';
-const mutedC  = isDark ? '#777'    : '#aaa';
+// ── Colours / theme (read from CSS custom properties) ─────────────────────
+function cssVar(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+const COLORS  = ['--chart-c1','--chart-c2','--chart-c3','--chart-c4'].map(cssVar);
+const condC   = cssVar('--chart-cond') || '#ff6666';
+const paperBg = cssVar('--bg')         || '#003300';
+const plotBg  = cssVar('--bg')         || '#003300';
+const gridC   = 'rgba(255,255,255,0.12)';
+const fontC   = (cssVar('--ink') || cssVar('--text')) || '#ffffff';
+const mutedC  = cssVar('--muted')      || '#99cc99';
 
 // Tick arrays at 15° intervals
 function thetaTicks(maxDeg, step=15) {
@@ -219,7 +220,7 @@ function applyShapesAnnotations(lay, allZeros, betaDeg, xMaxDeg) {
   lay.shapes = [
     // conductor line
     {type:'line',x0:betaDeg,x1:betaDeg,y0:-1.3,y1:1.3,
-     line:{color:'#c0392b',width:1.8,dash:'dash'}},
+     line:{color:condC,width:1.8,dash:'dash'}},
     // zero mesh lines
     ...allZeros.flatMap((zeros,k)=>
       zeros.map(z=>({
@@ -231,7 +232,7 @@ function applyShapesAnnotations(lay, allZeros, betaDeg, xMaxDeg) {
   const anchor = betaDeg < xMaxDeg*0.85 ? 'left' : 'right';
   lay.annotations = [
     {x:betaDeg,y:1.28,text:'θ=β',showarrow:false,
-     font:{size:10,color:'#c0392b'},xanchor:anchor},
+     font:{size:10,color:condC},xanchor:anchor},
     ...allZeros.flatMap((zeros,k)=>
       zeros.slice(0,-1).map(z=>({
         x:z, y:-1.22,
