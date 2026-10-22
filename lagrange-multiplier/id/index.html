@@ -8,7 +8,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
-<link rel="stylesheet" href="../style.css">
 <link rel="stylesheet" href="../../shared/site.css">
 </head>
 <body data-lang="id" data-ai-translated>
@@ -27,13 +26,13 @@
   <div class="card plane-card">
     <canvas id="plane" aria-label="Bidang xy: elips kendala, kurva ketinggian fungsi objektif, dan vektor gradien"></canvas>
     <div class="legend">
-      <span><i class="sw" style="background:var(--b1)"></i><span id="lg-b1">cabang y₊(x)</span></span>
-      <span><i class="sw" style="background:var(--b2)"></i><span id="lg-b2">cabang y₋(x)</span></span>
-      <span><i class="dot" style="border:2px solid var(--bad)"></i><span id="lg-bad">titik gagal y(x)</span></span>
+      <span><i class="sw branch-positive"></i><span id="lg-b1">cabang y₊(x)</span></span>
+      <span><i class="sw branch-negative"></i><span id="lg-b2">cabang y₋(x)</span></span>
+      <span><i class="dot branch-invalid"></i><span id="lg-bad">titik gagal y(x)</span></span>
       <span>▲ maksimum　▼ minimum</span>
-      <span><i class="sw" style="background:var(--gradF)"></i>∇F</span>
-      <span><i class="sw" style="background:var(--gradG)"></i>∇g</span>
-      <span><i class="sw" style="background:var(--level)"></i>kurva ketinggian F</span>
+      <span><i class="sw gradient-objective"></i>∇F</span>
+      <span><i class="sw gradient-constraint"></i>∇g</span>
+      <span><i class="sw level-curve"></i>kurva ketinggian F</span>
     </div>
   </div>
 
@@ -74,7 +73,7 @@
   </div>
 </section>
 
-<section class="card" style="margin-top:20px">
+<section class="card results-card">
   <h3>Titik ekstrem: dua cara eliminasi vs. Lagrange</h3>
   <div class="table-wrap">
     <table>

@@ -8,7 +8,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
-<link rel="stylesheet" href="../style.css">
 <link rel="stylesheet" href="../../shared/site.css">
 </head>
 <body data-lang="vi" data-ai-translated>
@@ -27,13 +26,13 @@
   <div class="card plane-card">
     <canvas id="plane" aria-label="Mặt phẳng xy: elip ràng buộc, các đường mức của hàm mục tiêu và các vectơ gradient"></canvas>
     <div class="legend">
-      <span><i class="sw" style="background:var(--b1)"></i><span id="lg-b1">nhánh y₊(x)</span></span>
-      <span><i class="sw" style="background:var(--b2)"></i><span id="lg-b2">nhánh y₋(x)</span></span>
-      <span><i class="dot" style="border:2px solid var(--bad)"></i><span id="lg-bad">điểm y(x) mất hiệu lực</span></span>
+      <span><i class="sw branch-positive"></i><span id="lg-b1">nhánh y₊(x)</span></span>
+      <span><i class="sw branch-negative"></i><span id="lg-b2">nhánh y₋(x)</span></span>
+      <span><i class="dot branch-invalid"></i><span id="lg-bad">điểm y(x) mất hiệu lực</span></span>
       <span>▲ cực đại　▼ cực tiểu</span>
-      <span><i class="sw" style="background:var(--gradF)"></i>∇F</span>
-      <span><i class="sw" style="background:var(--gradG)"></i>∇g</span>
-      <span><i class="sw" style="background:var(--level)"></i>đường mức của F</span>
+      <span><i class="sw gradient-objective"></i>∇F</span>
+      <span><i class="sw gradient-constraint"></i>∇g</span>
+      <span><i class="sw level-curve"></i>đường mức của F</span>
     </div>
   </div>
 
@@ -74,7 +73,7 @@
   </div>
 </section>
 
-<section class="card" style="margin-top:20px">
+<section class="card results-card">
   <h3>Các điểm cực trị: hai cách khử biến so với Lagrange</h3>
   <div class="table-wrap">
     <table>
