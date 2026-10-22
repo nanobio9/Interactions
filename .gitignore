@@ -1,0 +1,2 @@
+# Temporary files: any directory named temp, at any level, stays out of the repo
+temp/
