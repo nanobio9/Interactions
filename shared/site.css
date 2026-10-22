@@ -41,8 +41,8 @@
 :root {
   /* ── Page structure ────────────────────────────────────────────────────── */
   --bg:         #003300;   /* deep dark green (page background)   */
-  --surface:    #006633;   /* cards / panels                      */
-  --panel-bg:   #006633;   /* alias used by conical-boundary      */
+  --surface:    #004400;   /* cards / panels                      */
+  --panel-bg:   #004400;   /* alias used by conical-boundary      */
   --ink:        #ffffff;   /* primary text                        */
   --text:       #ffffff;   /* alias used by conical-boundary      */
   --muted:      #99cc99;   /* secondary / muted text              */
