@@ -11,7 +11,7 @@
 (() => {
   // Menu order and native names
   const LANGS = [
-    ['zh', '繁體中文'],
+    ['zh', '正體中文'],
     ['en', 'English'],
     ['ja', '日本語'],
     ['ko', '한국어'],
