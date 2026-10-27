@@ -1,7 +1,7 @@
 :root {
   color-scheme: dark;
-  --bg: #003300;
-  --surface: #004c00;
+  --bg: #001000;
+  --surface: #002200;
   --ink: #b0b0a4;
   --text: var(--ink);
   --muted: #99cc99;
