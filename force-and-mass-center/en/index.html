@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Force-Center and Center-of-Mass Frames</title>
+<meta name="description" content="Interactive demo: the same two-body Kepler orbit seen in the force-center frame (relative coordinate r) and in the center-of-mass frame (m₁ and m₂).">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="en">
+<header>
+  <nav class="topbar" id="topbar"></nav>
+  <div id="ai-notice"></div>
+  <h1>Force-Center and Center-of-Mass Frames</h1>
+  <p class="lede">In a two-body gravitational system, both bodies orbit their common center of mass—not each other, and not a fixed point. The equivalent one-body description tracks only the relative coordinate \(\mathbf{r} = \mathbf{r}_1 - \mathbf{r}_2\), which always traces a clean conic section regardless of the mass ratio. Use the sliders below to see what the same orbit looks like from two different vantage points.</p>
+  <p class="lede">When we reduce the two-body central-force problem to an equivalent one-body problem, students often assume this simplification requires one mass to be much larger than the other. It does not. The center-of-mass coordinate \(\mathbf{R}\) drops out of the Lagrangian because it is <em>cyclic</em>—a consequence of the structure of the kinetic energy alone, independent of any mass ratio. We use the COM frame because the math tells us to, not because \(m_2 \gg m_1\).</p>
+</header>
+
+<main>
+<section class="frames">
+  <div class="card frame-card">
+    <h3>Force-center frame</h3>
+    <canvas id="fc-canvas" class="orbit-canvas" aria-label="Force-center frame: the relative coordinate r orbiting the force center"></canvas>
+  </div>
+
+  <div class="card frame-controls">
+    <div class="ctrl"><label for="q">Mass ratio \(q = m_1/m_2\)</label><input id="q" type="range" min="0.05" max="1" step="0.01" value="0.3"><output id="q-o" for="q"></output></div>
+    <div class="ctrl"><label for="ecc">Eccentricity \(\varepsilon\)</label><input id="ecc" type="range" min="0" max="0.95" step="0.01" value="0.5"><output id="ecc-o" for="ecc"></output></div>
+    <div class="row">
+      <button type="button" class="btn" id="play"></button>
+      <span class="caption">Semi-latus rectum fixed at \(\alpha = 1\); each frame is scaled to fit.</span>
+    </div>
+  </div>
+
+  <div class="card frame-card">
+    <h3>Center-of-mass frame</h3>
+    <canvas id="cm-canvas" class="orbit-canvas" aria-label="Center-of-mass frame: m1 and m2 orbiting their common center of mass"></canvas>
+  </div>
+</section>
+</main>
+
+<script id="strings" type="application/json">
+{
+ "forceCenter": "force center",
+ "r": "r",
+ "m1": "m_1",
+ "m2": "m_2",
+ "cm": "CM",
+ "alpha": "α",
+ "play": "Play",
+ "pause": "Pause"
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

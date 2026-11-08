@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>力心座標系與質心座標系</title>
+<meta name="description" content="互動演示：同一個雙體 Kepler 軌道，分別在力心座標系（相對座標 r）與質心座標系（m₁ 與 m₂）中看起來的樣子。">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="tw" data-ai-translated>
+<header>
+  <nav class="topbar" id="topbar"></nav>
+  <div id="ai-notice"></div>
+  <h1>力心座標系與質心座標系</h1>
+  <p class="lede">在雙體重力系統中，兩個物體都繞著它們共同的質心運行——既不是互相繞行，也不是繞著某個固定點。等效的單體描述只追蹤相對座標 \(\mathbf{r} = \mathbf{r}_1 - \mathbf{r}_2\)，不論質量比為何，它的軌跡永遠是一條乾淨的圓錐曲線。用下方的滑桿，看看同一條軌道從兩個不同的觀點看起來是什麼樣子。</p>
+  <p class="lede">把雙體連心力問題化約為等效的單體問題時，學生常以為這個簡化必須要求其中一個質量遠大於另一個。其實不然。質心座標 \(\mathbf{R}\) 之所以從 Lagrangian 中消失，是因為它是<em>循環座標</em>（cyclic）——這只來自動能本身的結構，與任何質量比都無關。我們使用質心座標系，是因為數學告訴我們該這麼做，而不是因為 \(m_2 \gg m_1\)。</p>
+</header>
+
+<main>
+<section class="frames">
+  <div class="card frame-card">
+    <h3>力心座標系</h3>
+    <canvas id="fc-canvas" class="orbit-canvas" aria-label="力心座標系：相對座標 r 繞力心運行"></canvas>
+  </div>
+
+  <div class="card frame-controls">
+    <div class="ctrl"><label for="q">質量比 \(q = m_1/m_2\)</label><input id="q" type="range" min="0.05" max="1" step="0.01" value="0.3"><output id="q-o" for="q"></output></div>
+    <div class="ctrl"><label for="ecc">離心率 \(\varepsilon\)</label><input id="ecc" type="range" min="0" max="0.95" step="0.01" value="0.5"><output id="ecc-o" for="ecc"></output></div>
+    <div class="row">
+      <button type="button" class="btn" id="play"></button>
+      <span class="caption">半正焦弦固定為 \(\alpha = 1\)；各畫面自動縮放。</span>
+    </div>
+  </div>
+
+  <div class="card frame-card">
+    <h3>質心座標系</h3>
+    <canvas id="cm-canvas" class="orbit-canvas" aria-label="質心座標系：m1 與 m2 繞共同質心運行"></canvas>
+  </div>
+</section>
+</main>
+
+<script id="strings" type="application/json">
+{
+ "forceCenter": "力心",
+ "r": "r",
+ "m1": "m_1",
+ "m2": "m_2",
+ "cm": "質心",
+ "alpha": "α",
+ "play": "播放",
+ "pause": "暫停"
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

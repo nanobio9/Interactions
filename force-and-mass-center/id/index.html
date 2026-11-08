@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kerangka Pusat Gaya dan Pusat Massa</title>
+<meta name="description" content="Demo interaktif: orbit Kepler dua benda yang sama dilihat dalam kerangka pusat gaya (koordinat relatif r) dan dalam kerangka pusat massa (m₁ dan m₂).">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="id" data-ai-translated>
+<header>
+  <nav class="topbar" id="topbar"></nav>
+  <div id="ai-notice"></div>
+  <h1>Kerangka Pusat Gaya dan Pusat Massa</h1>
+  <p class="lede">Dalam sistem gravitasi dua benda, kedua benda mengorbit pusat massa bersama mereka — bukan saling mengorbit, dan bukan mengorbit titik tetap. Deskripsi setara satu benda hanya melacak koordinat relatif \(\mathbf{r} = \mathbf{r}_1 - \mathbf{r}_2\), yang selalu membentuk irisan kerucut yang rapi, berapa pun rasio massanya. Gunakan penggeser di bawah untuk melihat bagaimana orbit yang sama tampak dari dua sudut pandang yang berbeda.</p>
+  <p class="lede">Ketika kita mereduksi masalah gaya sentral dua benda menjadi masalah satu benda yang setara, mahasiswa sering mengira penyederhanaan ini mengharuskan salah satu massa jauh lebih besar daripada yang lain. Tidak demikian. Koordinat pusat massa \(\mathbf{R}\) hilang dari Lagrangian karena koordinat itu <em>siklik</em> — akibat dari struktur energi kinetik semata, tidak bergantung pada rasio massa apa pun. Kita menggunakan kerangka pusat massa karena matematika menuntun kita ke sana, bukan karena \(m_2 \gg m_1\).</p>
+</header>
+
+<main>
+<section class="frames">
+  <div class="card frame-card">
+    <h3>Kerangka pusat gaya</h3>
+    <canvas id="fc-canvas" class="orbit-canvas" aria-label="Kerangka pusat gaya: koordinat relatif r mengorbit pusat gaya"></canvas>
+  </div>
+
+  <div class="card frame-controls">
+    <div class="ctrl"><label for="q">Rasio massa \(q = m_1/m_2\)</label><input id="q" type="range" min="0.05" max="1" step="0.01" value="0.3"><output id="q-o" for="q"></output></div>
+    <div class="ctrl"><label for="ecc">Eksentrisitas \(\varepsilon\)</label><input id="ecc" type="range" min="0" max="0.95" step="0.01" value="0.5"><output id="ecc-o" for="ecc"></output></div>
+    <div class="row">
+      <button type="button" class="btn" id="play"></button>
+      <span class="caption">Semi-latus rectum ditetapkan \(\alpha = 1\); setiap gambar diskalakan otomatis.</span>
+    </div>
+  </div>
+
+  <div class="card frame-card">
+    <h3>Kerangka pusat massa</h3>
+    <canvas id="cm-canvas" class="orbit-canvas" aria-label="Kerangka pusat massa: m1 dan m2 mengorbit pusat massa bersama"></canvas>
+  </div>
+</section>
+</main>
+
+<script id="strings" type="application/json">
+{
+ "forceCenter": "pusat gaya",
+ "r": "r",
+ "m1": "m_1",
+ "m2": "m_2",
+ "cm": "PM",
+ "alpha": "α",
+ "play": "Putar",
+ "pause": "Jeda"
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

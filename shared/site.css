@@ -287,8 +287,19 @@ tbody tr:hover td { background: color-mix(in srgb, var(--accent) 18%, transparen
 .cite { margin-top: -0.2em; color: var(--muted); font-size: 0.85rem; text-align: right; }
 .katex-display { overflow-x: auto; overflow-y: hidden; padding: 2px 0; }
 
+/* Force-and-mass-center page */
+.frames { display: grid; gap: 14px; margin-top: 24px; }
+.frame-card { padding: 10px; }
+.frame-card h3 { margin: 2px 4px 8px; color: var(--muted); }
+.orbit-canvas { height: clamp(220px, 34vh, 400px); touch-action: auto; }
+.frame-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 28px; }
+.frame-controls .ctrl { grid-template-columns: minmax(6em, max-content) minmax(0, 1fr) 3em; }
+.frame-controls .row { grid-column: 1 / -1; margin-top: 4px; }
+.frame-controls .caption { margin: 0; }
+
 @media (max-width: 900px) {
   .lab { grid-template-columns: minmax(0, 1fr); }
+  .frame-controls { grid-template-columns: minmax(0, 1fr); }
 }
 
 @media (max-width: 600px) {

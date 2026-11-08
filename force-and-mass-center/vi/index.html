@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hệ quy chiếu tâm lực và hệ quy chiếu khối tâm</title>
+<meta name="description" content="Minh họa tương tác: cùng một quỹ đạo Kepler hai vật được nhìn trong hệ quy chiếu tâm lực (tọa độ tương đối r) và trong hệ quy chiếu khối tâm (m₁ và m₂).">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="vi" data-ai-translated>
+<header>
+  <nav class="topbar" id="topbar"></nav>
+  <div id="ai-notice"></div>
+  <h1>Hệ quy chiếu tâm lực và hệ quy chiếu khối tâm</h1>
+  <p class="lede">Trong một hệ hấp dẫn hai vật, cả hai vật đều quay quanh khối tâm chung của chúng — không phải quay quanh nhau, cũng không phải quanh một điểm cố định. Cách mô tả tương đương bằng một vật chỉ theo dõi tọa độ tương đối \(\mathbf{r} = \mathbf{r}_1 - \mathbf{r}_2\), và tọa độ này luôn vạch ra một đường conic gọn gàng, bất kể tỉ số khối lượng. Hãy dùng các thanh trượt bên dưới để xem cùng một quỹ đạo trông như thế nào từ hai góc nhìn khác nhau.</p>
+  <p class="lede">Khi đưa bài toán hai vật chịu lực xuyên tâm về bài toán một vật tương đương, sinh viên thường cho rằng sự đơn giản hóa này đòi hỏi một khối lượng phải lớn hơn rất nhiều so với khối lượng kia. Không phải vậy. Tọa độ khối tâm \(\mathbf{R}\) biến mất khỏi hàm Lagrange vì nó là tọa độ <em>cyclic</em> — hệ quả chỉ của cấu trúc động năng, không phụ thuộc vào bất kỳ tỉ số khối lượng nào. Chúng ta dùng hệ khối tâm vì toán học bảo ta làm vậy, chứ không phải vì \(m_2 \gg m_1\).</p>
+</header>
+
+<main>
+<section class="frames">
+  <div class="card frame-card">
+    <h3>Hệ quy chiếu tâm lực</h3>
+    <canvas id="fc-canvas" class="orbit-canvas" aria-label="Hệ quy chiếu tâm lực: tọa độ tương đối r quay quanh tâm lực"></canvas>
+  </div>
+
+  <div class="card frame-controls">
+    <div class="ctrl"><label for="q">Tỉ số khối lượng \(q = m_1/m_2\)</label><input id="q" type="range" min="0.05" max="1" step="0.01" value="0.3"><output id="q-o" for="q"></output></div>
+    <div class="ctrl"><label for="ecc">Tâm sai \(\varepsilon\)</label><input id="ecc" type="range" min="0" max="0.95" step="0.01" value="0.5"><output id="ecc-o" for="ecc"></output></div>
+    <div class="row">
+      <button type="button" class="btn" id="play"></button>
+      <span class="caption">Nửa dây cung tiêu (semi-latus rectum) được cố định ở \(\alpha = 1\); mỗi hình tự động co giãn cho vừa khung.</span>
+    </div>
+  </div>
+
+  <div class="card frame-card">
+    <h3>Hệ quy chiếu khối tâm</h3>
+    <canvas id="cm-canvas" class="orbit-canvas" aria-label="Hệ quy chiếu khối tâm: m1 và m2 quay quanh khối tâm chung"></canvas>
+  </div>
+</section>
+</main>
+
+<script id="strings" type="application/json">
+{
+ "forceCenter": "tâm lực",
+ "r": "r",
+ "m1": "m_1",
+ "m2": "m_2",
+ "cm": "khối tâm",
+ "alpha": "α",
+ "play": "Phát",
+ "pause": "Tạm dừng"
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

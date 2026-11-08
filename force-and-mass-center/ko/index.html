@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>힘의 중심 좌표계와 질량중심 좌표계</title>
+<meta name="description" content="인터랙티브 데모: 같은 이체 케플러 궤도를 힘의 중심 좌표계(상대 좌표 r)와 질량중심 좌표계(m₁과 m₂)에서 비교합니다.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="ko" data-ai-translated>
+<header>
+  <nav class="topbar" id="topbar"></nav>
+  <div id="ai-notice"></div>
+  <h1>힘의 중심 좌표계와 질량중심 좌표계</h1>
+  <p class="lede">이체 중력계에서 두 물체는 모두 공통의 질량중심을 공전합니다. 서로를 도는 것도, 고정된 점을 도는 것도 아닙니다. 등가 일체 기술은 상대 좌표 \(\mathbf{r} = \mathbf{r}_1 - \mathbf{r}_2\)만 추적하며, 이 좌표는 질량비와 관계없이 항상 깔끔한 원뿔곡선을 그립니다. 아래 슬라이더로 같은 궤도가 서로 다른 두 관점에서 어떻게 보이는지 확인해 보세요.</p>
+  <p class="lede">이체 중심력 문제를 등가 일체 문제로 환원할 때, 학생들은 흔히 이 단순화를 위해 한 질량이 다른 질량보다 훨씬 커야 한다고 생각합니다. 그렇지 않습니다. 질량중심 좌표 \(\mathbf{R}\)가 라그랑지안에서 빠지는 것은 그것이 <em>순환 좌표</em>이기 때문입니다. 이는 오직 운동 에너지의 구조에서 나오는 성질로, 질량비와는 무관합니다. 우리가 질량중심 좌표계를 쓰는 것은 수학이 그렇게 하라고 알려 주기 때문이지, \(m_2 \gg m_1\)이기 때문이 아닙니다.</p>
+</header>
+
+<main>
+<section class="frames">
+  <div class="card frame-card">
+    <h3>힘의 중심 좌표계</h3>
+    <canvas id="fc-canvas" class="orbit-canvas" aria-label="힘의 중심 좌표계: 힘의 중심을 도는 상대 좌표 r"></canvas>
+  </div>
+
+  <div class="card frame-controls">
+    <div class="ctrl"><label for="q">질량비 \(q = m_1/m_2\)</label><input id="q" type="range" min="0.05" max="1" step="0.01" value="0.3"><output id="q-o" for="q"></output></div>
+    <div class="ctrl"><label for="ecc">이심률 \(\varepsilon\)</label><input id="ecc" type="range" min="0" max="0.95" step="0.01" value="0.5"><output id="ecc-o" for="ecc"></output></div>
+    <div class="row">
+      <button type="button" class="btn" id="play"></button>
+      <span class="caption">반통경은 \(\alpha = 1\)로 고정했으며, 각 그림은 자동으로 축척이 조정됩니다.</span>
+    </div>
+  </div>
+
+  <div class="card frame-card">
+    <h3>질량중심 좌표계</h3>
+    <canvas id="cm-canvas" class="orbit-canvas" aria-label="질량중심 좌표계: 공통 질량중심을 도는 m1과 m2"></canvas>
+  </div>
+</section>
+</main>
+
+<script id="strings" type="application/json">
+{
+ "forceCenter": "힘의 중심",
+ "r": "r",
+ "m1": "m_1",
+ "m2": "m_2",
+ "cm": "질량중심",
+ "alpha": "α",
+ "play": "재생",
+ "pause": "일시정지"
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

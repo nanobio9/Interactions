@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sistemas del centro de fuerza y del centro de masa</title>
+<meta name="description" content="Demostración interactiva: la misma órbita kepleriana de dos cuerpos vista en el sistema del centro de fuerza (coordenada relativa r) y en el del centro de masa (m₁ y m₂).">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="es" data-ai-translated>
+<header>
+  <nav class="topbar" id="topbar"></nav>
+  <div id="ai-notice"></div>
+  <h1>Sistemas del centro de fuerza y del centro de masa</h1>
+  <p class="lede">En un sistema gravitatorio de dos cuerpos, ambos cuerpos orbitan alrededor de su centro de masa común, no uno alrededor del otro ni alrededor de un punto fijo. La descripción equivalente de un solo cuerpo sigue únicamente la coordenada relativa \(\mathbf{r} = \mathbf{r}_1 - \mathbf{r}_2\), que siempre traza una cónica limpia, sea cual sea la razón de masas. Use los deslizadores de abajo para ver cómo se ve la misma órbita desde dos puntos de vista distintos.</p>
+  <p class="lede">Cuando reducimos el problema de dos cuerpos con fuerza central a un problema equivalente de un cuerpo, los estudiantes suelen suponer que esta simplificación exige que una masa sea mucho mayor que la otra. No es así. La coordenada del centro de masa \(\mathbf{R}\) desaparece del lagrangiano porque es <em>cíclica</em>, una consecuencia exclusiva de la estructura de la energía cinética, independiente de cualquier razón de masas. Usamos el sistema del centro de masa porque las matemáticas nos lo indican, no porque \(m_2 \gg m_1\).</p>
+</header>
+
+<main>
+<section class="frames">
+  <div class="card frame-card">
+    <h3>Sistema del centro de fuerza</h3>
+    <canvas id="fc-canvas" class="orbit-canvas" aria-label="Sistema del centro de fuerza: la coordenada relativa r orbitando el centro de fuerza"></canvas>
+  </div>
+
+  <div class="card frame-controls">
+    <div class="ctrl"><label for="q">Razón de masas \(q = m_1/m_2\)</label><input id="q" type="range" min="0.05" max="1" step="0.01" value="0.3"><output id="q-o" for="q"></output></div>
+    <div class="ctrl"><label for="ecc">Excentricidad \(\varepsilon\)</label><input id="ecc" type="range" min="0" max="0.95" step="0.01" value="0.5"><output id="ecc-o" for="ecc"></output></div>
+    <div class="row">
+      <button type="button" class="btn" id="play"></button>
+      <span class="caption">Semilado recto fijo en \(\alpha = 1\); cada figura se escala automáticamente.</span>
+    </div>
+  </div>
+
+  <div class="card frame-card">
+    <h3>Sistema del centro de masa</h3>
+    <canvas id="cm-canvas" class="orbit-canvas" aria-label="Sistema del centro de masa: m1 y m2 orbitando su centro de masa común"></canvas>
+  </div>
+</section>
+</main>
+
+<script id="strings" type="application/json">
+{
+ "forceCenter": "centro de fuerza",
+ "r": "r",
+ "m1": "m_1",
+ "m2": "m_2",
+ "cm": "CM",
+ "alpha": "α",
+ "play": "Reproducir",
+ "pause": "Pausa"
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>
