@@ -2,11 +2,13 @@
 //   - top bar with a home link and a language menu  (fills <nav id="topbar">)
 //   - AI-translation notice                         (fills <div id="ai-notice">)
 //
-// Each page directory provides langs.js, which sets
+// Each page directory (and the site root, for the home page) provides
+// langs.js, which sets
 //   window.PAGE_LANGS = { default: 'en', available: ['en', 'tw', ...] };
-// Every language lives in a subdirectory named by its code (en/, tw/, ja/, ...),
-// so every page is two levels below the site root. The page directory's own
-// index.html only redirects to the default language.
+// Every language lives in a subdirectory named by its code (en/, tw/, ja/, ...).
+// The directory's own index.html redirects to the visitor's saved language
+// (see lang-redirect.js), falling back to the default.
+// A language picked from the menu is saved in localStorage under LANG_KEY.
 // Each HTML file declares its own language with <body data-lang="ja">, and
 // adds data-ai-translated when the version has not been reviewed by the author.
 (() => {
@@ -52,16 +54,20 @@
     id: 'Halaman ini diterjemahkan oleh AI dari <a href="{orig}">versi aslinya</a>. Jika Anda menemukan kesalahan, mohon <a href="{contact}">beri tahu kami</a>.',
   };
 
+  const LANG_KEY = 'interactions-lang';   // also read by lang-redirect.js
   const page = window.PAGE_LANGS || { default: 'en', available: ['en'] };
   const lang = document.body.dataset.lang || page.default;
-  const siteRoot = '../../';
-  const urlFor = code => '../' + code + '/';
+  const isHome = document.body.classList.contains('home-page');
+  // site.js lives in <site root>/shared/, so the root is one level above it
+  const siteRoot = new URL('../', document.currentScript.src).href;
+  const homeFor = code => siteRoot + code + '/';
+  const urlFor = code => '../' + code + '/';   // sibling language directory
 
   const bar = document.getElementById('topbar');
   if (bar) {
     const home = document.createElement('a');
     home.className = 'site-home';
-    home.href = siteRoot;
+    home.href = homeFor(lang);
     home.innerHTML = ICON_HOME;
     home.title = HOME[lang] || HOME.en;
     home.setAttribute('aria-label', home.title);
@@ -76,14 +82,18 @@
       opt.dataset.href = urlFor(code);
       menu.add(opt);
     }
-    menu.addEventListener('change', () => { location.href = menu.selectedOptions[0].dataset.href; });
+    menu.addEventListener('change', () => {
+      try { localStorage.setItem(LANG_KEY, menu.value); } catch (e) { /* storage blocked: still switch */ }
+      location.href = menu.selectedOptions[0].dataset.href;
+    });
 
     const picker = document.createElement('label');
     picker.className = 'lang-picker';
     picker.innerHTML = ICON_GLOBE;
     picker.append(menu);
 
-    bar.replaceChildren(home, picker);
+    if (isHome) bar.replaceChildren(picker);
+    else bar.replaceChildren(home, picker);
   }
 
   const box = document.getElementById('ai-notice');
@@ -91,6 +101,6 @@
     box.className = 'ai-notice';
     box.innerHTML = (NOTICE[lang] || NOTICE.en)
       .replace('{orig}', urlFor(page.default))
-      .replace('{contact}', siteRoot + '#contact');
+      .replace('{contact}', homeFor(lang) + '#contact');
   }
 })();

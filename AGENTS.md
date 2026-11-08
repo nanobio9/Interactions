@@ -12,10 +12,12 @@
 ## Page directories and languages
 
 - Every interactive page directory has the same layout: `app.js` (shared by all languages), `langs.js` (`default: 'en'` plus the available codes), and one subdirectory per language, each holding its own `index.html`: `en/`, `tw/` (Traditional Chinese, `<html lang="zh-Hant">`), `ja/`, `ko/`, `fr/`, `de/`, `es/`, `pt/`, `vi/`, `id/`.
-- English is the default. The page directory's own `index.html` only redirects to `en/`; it holds no content.
+- English is the default. The page directory's own `index.html` holds no content: it loads its `langs.js` and `shared/lang-redirect.js`, which forward to the language the visitor last picked from the menu (saved in `localStorage` by `shared/site.js`), or to `en/` on a first visit or when that language is missing.
+- The home page follows the same layout at the site root: `langs.js`, a redirecting `index.html`, and one `<code>/index.html` per language whose cards link to each page's version in the same language.
+- A direct link to a language version (e.g. `conical-boundary/ja/`) always opens that language; only the redirecting `index.html` files use the saved choice.
 - Each language page links `../../shared/site.css`, `../langs.js`, `../../shared/site.js` and `../app.js`, and declares `<body data-lang="<code>">`; add `data-ai-translated` unless the author has reviewed that version.
 - User-visible strings drawn by `app.js` come from the page's `<script id="strings" type="application/json">` block, never from `app.js` itself.
-- New pages get a card on the site home page (`index.html`) under the right course heading.
+- New pages get a card on every language version of the home page (`<code>/index.html` at the site root) under the right course heading.
 - Run `python3 -I tools/check_translations.py` from the repository root after any change to a page's languages or structure.
 
 ## Before finishing a web change

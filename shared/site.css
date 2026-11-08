@@ -139,6 +139,7 @@ select { color: var(--ink); }
 
 /* Homepage */
 .home-page main { max-width: 760px; padding: 24px 0 0; }
+.home-page .topbar { justify-content: flex-end; }
 .home-page h1 { margin-bottom: 4px; }
 .home-page .lede { margin-bottom: 32px; color: var(--muted); }
 .home-page h2 {
