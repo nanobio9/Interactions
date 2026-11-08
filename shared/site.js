@@ -3,15 +3,16 @@
 //   - AI-translation notice                         (fills <div id="ai-notice">)
 //
 // Each page directory provides langs.js, which sets
-//   window.PAGE_LANGS = { default: 'zh', available: ['zh', 'en', ...] };
-// The default language lives at the page directory itself; every other
-// language lives in a subdirectory named by its code (e.g. ja/).
+//   window.PAGE_LANGS = { default: 'en', available: ['en', 'tw', ...] };
+// Every language lives in a subdirectory named by its code (en/, tw/, ja/, ...),
+// so every page is two levels below the site root. The page directory's own
+// index.html only redirects to the default language.
 // Each HTML file declares its own language with <body data-lang="ja">, and
 // adds data-ai-translated when the version has not been reviewed by the author.
 (() => {
   // Menu order and native names
   const LANGS = [
-    ['zh', '正體中文'],
+    ['tw', '正體中文'],
     ['en', 'English'],
     ['ja', '日本語'],
     ['ko', '한국어'],
@@ -25,7 +26,7 @@
 
   // Accessible name and tooltip of the home icon
   const HOME = {
-    zh: '首頁', en: 'Home', ja: 'ホーム', ko: '홈', fr: 'Accueil',
+    tw: '首頁', en: 'Home', ja: 'ホーム', ko: '홈', fr: 'Accueil',
     de: 'Startseite', es: 'Inicio', pt: 'Início', vi: 'Trang chủ', id: 'Beranda',
   };
 
@@ -33,13 +34,13 @@
   const ICON_GLOBE = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>';
 
   const MENU_LABEL = {
-    zh: '語言', en: 'Language', ja: '言語', ko: '언어', fr: 'Langue',
+    tw: '語言', en: 'Language', ja: '言語', ko: '언어', fr: 'Langue',
     de: 'Sprache', es: 'Idioma', pt: 'Idioma', vi: 'Ngôn ngữ', id: 'Bahasa',
   };
 
   // {orig} → link to the original-language version, {contact} → link to the contact section
   const NOTICE = {
-    zh: '本頁由 AI 從<a href="{orig}">原文</a>翻譯而成，如有錯誤，敬請<a href="{contact}">來信指正</a>。',
+    tw: '本頁由 AI 從<a href="{orig}">原文</a>翻譯而成，如有錯誤，敬請<a href="{contact}">來信指正</a>。',
     en: 'This page was translated by AI from the <a href="{orig}">original</a>. If you spot an error, please <a href="{contact}">let us know</a>.',
     ja: 'このページは<a href="{orig}">原文</a>から AI によって翻訳されました。誤りにお気づきの場合は<a href="{contact}">ご連絡ください</a>。',
     ko: '이 페이지는 <a href="{orig}">원문</a>을 AI가 번역한 것입니다. 오류를 발견하시면 <a href="{contact}">알려 주세요</a>.',
@@ -53,9 +54,8 @@
 
   const page = window.PAGE_LANGS || { default: 'en', available: ['en'] };
   const lang = document.body.dataset.lang || page.default;
-  const pageRoot = lang === page.default ? './' : '../';
-  const siteRoot = pageRoot + '../';
-  const urlFor = code => pageRoot + (code === page.default ? '' : code + '/');
+  const siteRoot = '../../';
+  const urlFor = code => '../' + code + '/';
 
   const bar = document.getElementById('topbar');
   if (bar) {
@@ -72,10 +72,11 @@
     for (const [code, name] of LANGS) {
       if (!page.available.includes(code)) continue;
       const opt = new Option(name, code, false, code === lang);
-      opt.lang = code === 'zh' ? 'zh-Hant' : code;
+      opt.lang = code === 'tw' ? 'zh-Hant' : code;
+      opt.dataset.href = urlFor(code);
       menu.add(opt);
     }
-    menu.addEventListener('change', () => { location.href = urlFor(menu.value); });
+    menu.addEventListener('change', () => { location.href = menu.selectedOptions[0].dataset.href; });
 
     const picker = document.createElement('label');
     picker.className = 'lang-picker';
