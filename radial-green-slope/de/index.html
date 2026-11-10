@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unstetigkeit der Steigung der radialen Green-Funktion</title>
+<meta name="description" content="Interaktive Demonstration: der Steigungssprung der radialen Green-Funktion g_l(r, r′) bei r = r′ im äußeren Dirichlet-Problem einer geerdeten Kugel.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="de" data-ai-translated>
+<header>
+  <nav class="topbar" id="topbar"></nav>
+  <div id="ai-notice"></div>
+  <h1>Unstetigkeit der Steigung der radialen Green-Funktion</h1>
+  <p class="lede">Betrachten wir das „äußere“ Dirichlet-Problem: das Potential außerhalb einer geerdeten leitenden Kugel vom Radius \(a\). Ihre Green-Funktion lässt sich mit der Spiegelladungsmethode direkt angeben (Jackson, Abschnitt 2.6). Entwickelt man sowohl den Term der Punktquelle als auch den ihres Spiegelbilds nach Kugelflächenfunktionen, so erhält man Jacksons Gl. (3.114):</p>
+  \[ G(\mathbf{x},\mathbf{x}')=4\pi\sum_{l,m}\frac{1}{2l+1}\,g_l(r,r')\,Y^*_{lm}(\theta',\phi')\,Y_{lm}(\theta,\phi), \]
+  <p class="lede">wobei sich die radiale Green-Funktion, Gl. (3.115), in einer Zeile schreiben lässt:</p>
+  \[ g_l(r,r')=\frac{r_<^l}{r_>^{l+1}}-\frac{1}{a}\left(\frac{a^2}{r\,r'}\right)^{l+1}=\frac{1}{r_>}\left(\frac{r_<}{r_>}\right)^{l}\left[1-\left(\frac{a}{r_<}\right)^{2l+1}\right]. \]
+  <p class="lede">Für einen festen Quellradius \(r'\) verschwindet \(g_l\) auf der Kugel \(r=a\), fällt für \(r\to\infty\) ab und ist bei \(r=r'\) stetig. Ihre Steigung springt dort jedoch:</p>
+  \[ \left.\frac{\partial g_l}{\partial r}\right|_{r=r'^+}-\left.\frac{\partial g_l}{\partial r}\right|_{r=r'^-}=-\frac{2l+1}{r'^2}, \]
+  <p class="lede">unabhängig von \(a\). Dieser Knick ist die radiale Spur der Punktquelle: Genau ihn verlangt das \(\delta(r-r')\) auf der rechten Seite der Radialgleichung. Wählen Sie unten \(l\) und \(r'\) (Längen in Einheiten von \(a\)) und beobachten Sie die beiden einseitigen Tangenten bei \(r=r'\).</p>
+</header>
+
+<main>
+<section class="lab">
+  <div class="card plane-card">
+    <canvas id="green-plot" class="green-canvas" aria-label="Graph der radialen Green-Funktion g_l(r, r′) über r von 0 bis 8a"></canvas>
+    <div class="legend">
+      <span><i class="sw branch-positive"></i>\(r&lt;r'\)</span>
+      <span><i class="sw branch-negative"></i>\(r&gt;r'\)</span>
+      <span>Gestrichelt: einseitige Tangenten bei \(r=r'\)</span>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <div class="row">
+        <span>Multipolordnung \(l\)</span>
+        <span class="seg" role="group" aria-label="l">
+          <button type="button" data-l="0">0</button>
+          <button type="button" data-l="1">1</button>
+          <button type="button" data-l="2">2</button>
+          <button type="button" data-l="3">3</button>
+          <button type="button" data-l="4">4</button>
+          <button type="button" data-l="5">5</button>
+          <button type="button" data-l="6">6</button>
+        </span>
+      </div>
+      <div class="ctrl"><label for="rp">Quellradius \(r'/a\)</label><input id="rp" type="range" min="1" max="4" step="0.01" value="2"><output id="rp-o" for="rp"></output></div>
+    </div>
+
+    <div class="card">
+      <h3>Bei \(r=r'\)</h3>
+      <dl class="readout">
+        <dt>\(g_l(r',r')\)</dt><dd id="o-g"></dd>
+        <dt>\(\partial_r g_l(r'^-)\)</dt><dd id="o-sl"></dd>
+        <dt>\(\partial_r g_l(r'^+)\)</dt><dd id="o-sr"></dd>
+        <dt>\(\Delta\,\partial_r g_l\)</dt><dd id="o-jump"></dd>
+        <dt>\(-(2l+1)/r'^2\)</dt><dd id="o-pred"></dd>
+      </dl>
+      <p class="caption">Für \(r'=a\) liegt die Quelle auf der geerdeten Kugel, und \(g_l\) verschwindet identisch; für \(r'\) knapp oberhalb von \(a\) beträgt der Steigungssprung trotzdem \(-(2l+1)/a^2\).</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<script id="strings" type="application/json">
+{
+ "inside": "Kugelinneres"
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

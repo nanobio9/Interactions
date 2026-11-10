@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sự gián đoạn độ dốc của hàm Green theo bán kính</title>
+<meta name="description" content="Minh họa tương tác: bước nhảy độ dốc tại r = r′ của hàm Green theo bán kính g_l(r, r′) trong bài toán Dirichlet bên ngoài một quả cầu nối đất.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="vi" data-ai-translated>
+<header>
+  <nav class="topbar" id="topbar"></nav>
+  <div id="ai-notice"></div>
+  <h1>Sự gián đoạn độ dốc của hàm Green theo bán kính</h1>
+  <p class="lede">Xét bài toán Dirichlet "bên ngoài": thế bên ngoài một quả cầu dẫn điện nối đất bán kính \(a\). Hàm Green của cấu hình này có thể viết ngay bằng phương pháp ảnh (Jackson, mục 2.6). Khai triển cả số hạng nguồn điểm lẫn số hạng ảnh của nó theo các hàm điều hòa cầu, ta được phương trình (3.114) của Jackson:</p>
+  \[ G(\mathbf{x},\mathbf{x}')=4\pi\sum_{l,m}\frac{1}{2l+1}\,g_l(r,r')\,Y^*_{lm}(\theta',\phi')\,Y_{lm}(\theta,\phi), \]
+  <p class="lede">trong đó hàm Green theo bán kính, phương trình (3.115), có thể viết gọn trên một dòng:</p>
+  \[ g_l(r,r')=\frac{r_<^l}{r_>^{l+1}}-\frac{1}{a}\left(\frac{a^2}{r\,r'}\right)^{l+1}=\frac{1}{r_>}\left(\frac{r_<}{r_>}\right)^{l}\left[1-\left(\frac{a}{r_<}\right)^{2l+1}\right]. \]
+  <p class="lede">Với bán kính nguồn \(r'\) cố định, \(g_l\) bằng không trên mặt cầu \(r=a\), giảm dần khi \(r\to\infty\) và liên tục tại \(r=r'\). Tuy nhiên, độ dốc của nó nhảy tại đó:</p>
+  \[ \left.\frac{\partial g_l}{\partial r}\right|_{r=r'^+}-\left.\frac{\partial g_l}{\partial r}\right|_{r=r'^-}=-\frac{2l+1}{r'^2}, \]
+  <p class="lede">không phụ thuộc vào \(a\). Chỗ gãy này là dấu vết theo bán kính của nguồn điểm: đó chính là điều mà \(\delta(r-r')\) ở vế phải của phương trình bán kính đòi hỏi. Hãy chọn \(l\) và \(r'\) bên dưới (độ dài tính theo đơn vị \(a\)) và quan sát hai tiếp tuyến một phía tại \(r=r'\).</p>
+</header>
+
+<main>
+<section class="lab">
+  <div class="card plane-card">
+    <canvas id="green-plot" class="green-canvas" aria-label="Đồ thị hàm Green theo bán kính g_l(r, r′) theo r, từ 0 đến 8a"></canvas>
+    <div class="legend">
+      <span><i class="sw branch-positive"></i>\(r&lt;r'\)</span>
+      <span><i class="sw branch-negative"></i>\(r&gt;r'\)</span>
+      <span>Nét đứt: tiếp tuyến một phía tại \(r=r'\)</span>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <div class="row">
+        <span>Bậc đa cực \(l\)</span>
+        <span class="seg" role="group" aria-label="l">
+          <button type="button" data-l="0">0</button>
+          <button type="button" data-l="1">1</button>
+          <button type="button" data-l="2">2</button>
+          <button type="button" data-l="3">3</button>
+          <button type="button" data-l="4">4</button>
+          <button type="button" data-l="5">5</button>
+          <button type="button" data-l="6">6</button>
+        </span>
+      </div>
+      <div class="ctrl"><label for="rp">Bán kính nguồn \(r'/a\)</label><input id="rp" type="range" min="1" max="4" step="0.01" value="2"><output id="rp-o" for="rp"></output></div>
+    </div>
+
+    <div class="card">
+      <h3>Tại \(r=r'\)</h3>
+      <dl class="readout">
+        <dt>\(g_l(r',r')\)</dt><dd id="o-g"></dd>
+        <dt>\(\partial_r g_l(r'^-)\)</dt><dd id="o-sl"></dd>
+        <dt>\(\partial_r g_l(r'^+)\)</dt><dd id="o-sr"></dd>
+        <dt>\(\Delta\,\partial_r g_l\)</dt><dd id="o-jump"></dd>
+        <dt>\(-(2l+1)/r'^2\)</dt><dd id="o-pred"></dd>
+      </dl>
+      <p class="caption">Khi \(r'=a\), nguồn nằm trên mặt cầu nối đất và \(g_l\) đồng nhất bằng không; khi \(r'\) chỉ lớn hơn \(a\) một chút, bước nhảy độ dốc vẫn là \(-(2l+1)/a^2\).</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<script id="strings" type="application/json">
+{
+ "inside": "bên trong quả cầu"
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

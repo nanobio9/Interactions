@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>徑向 Green 函數的斜率不連續</title>
+<meta name="description" content="互動演示：接地球外部 Dirichlet 問題中，徑向 Green 函數 g_l(r, r′) 在 r = r′ 處的斜率跳躍。">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="tw" data-ai-translated>
+<header>
+  <nav class="topbar" id="topbar"></nav>
+  <div id="ai-notice"></div>
+  <h1>徑向 Green 函數的斜率不連續</h1>
+  <p class="lede">考慮「外部」Dirichlet 問題：求半徑為 \(a\) 的接地導體球外的電位。這個幾何的 Green 函數可以用鏡像法直接寫出（Jackson 第 2.6 節）。把點源項與其鏡像項都用球諧函數展開，就得到 Jackson 式 (3.114)：</p>
+  \[ G(\mathbf{x},\mathbf{x}')=4\pi\sum_{l,m}\frac{1}{2l+1}\,g_l(r,r')\,Y^*_{lm}(\theta',\phi')\,Y_{lm}(\theta,\phi), \]
+  <p class="lede">其中徑向 Green 函數，也就是式 (3.115)，可以寫成一行：</p>
+  \[ g_l(r,r')=\frac{r_<^l}{r_>^{l+1}}-\frac{1}{a}\left(\frac{a^2}{r\,r'}\right)^{l+1}=\frac{1}{r_>}\left(\frac{r_<}{r_>}\right)^{l}\left[1-\left(\frac{a}{r_<}\right)^{2l+1}\right]. \]
+  <p class="lede">固定源點半徑 \(r'\) 時，\(g_l\) 在球面 \(r=a\) 上為零，在 \(r\to\infty\) 時趨近於零，並且在 \(r=r'\) 處連續。但它的斜率在那裡會跳躍：</p>
+  \[ \left.\frac{\partial g_l}{\partial r}\right|_{r=r'^+}-\left.\frac{\partial g_l}{\partial r}\right|_{r=r'^-}=-\frac{2l+1}{r'^2}, \]
+  <p class="lede">這個跳躍與 \(a\) 無關。這個折角正是點源在徑向留下的痕跡：徑向方程式右邊的 \(\delta(r-r')\) 所要求的就是它。在下方選擇 \(l\) 與 \(r'\)（長度以 \(a\) 為單位），觀察 \(r=r'\) 兩側的單邊切線。</p>
+</header>
+
+<main>
+<section class="lab">
+  <div class="card plane-card">
+    <canvas id="green-plot" class="green-canvas" aria-label="徑向 Green 函數 g_l(r, r′) 對 r 的圖形，r 從 0 到 8a"></canvas>
+    <div class="legend">
+      <span><i class="sw branch-positive"></i>\(r&lt;r'\)</span>
+      <span><i class="sw branch-negative"></i>\(r&gt;r'\)</span>
+      <span>虛線：\(r=r'\) 處的單邊切線</span>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <div class="row">
+        <span>多極階數 \(l\)</span>
+        <span class="seg" role="group" aria-label="l">
+          <button type="button" data-l="0">0</button>
+          <button type="button" data-l="1">1</button>
+          <button type="button" data-l="2">2</button>
+          <button type="button" data-l="3">3</button>
+          <button type="button" data-l="4">4</button>
+          <button type="button" data-l="5">5</button>
+          <button type="button" data-l="6">6</button>
+        </span>
+      </div>
+      <div class="ctrl"><label for="rp">源點半徑 \(r'/a\)</label><input id="rp" type="range" min="1" max="4" step="0.01" value="2"><output id="rp-o" for="rp"></output></div>
+    </div>
+
+    <div class="card">
+      <h3>在 \(r=r'\) 處</h3>
+      <dl class="readout">
+        <dt>\(g_l(r',r')\)</dt><dd id="o-g"></dd>
+        <dt>\(\partial_r g_l(r'^-)\)</dt><dd id="o-sl"></dd>
+        <dt>\(\partial_r g_l(r'^+)\)</dt><dd id="o-sr"></dd>
+        <dt>\(\Delta\,\partial_r g_l\)</dt><dd id="o-jump"></dd>
+        <dt>\(-(2l+1)/r'^2\)</dt><dd id="o-pred"></dd>
+      </dl>
+      <p class="caption">當 \(r'=a\) 時，源點落在接地球面上，\(g_l\) 恆為零；但只要 \(r'\) 略大於 \(a\)，斜率跳躍仍是 \(-(2l+1)/a^2\)。</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<script id="strings" type="application/json">
+{
+ "inside": "球內"
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

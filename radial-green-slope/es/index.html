@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Discontinuidad en la pendiente de la función de Green radial</title>
+<meta name="description" content="Demostración interactiva: el salto de pendiente en r = r′ de la función de Green radial g_l(r, r′) para el problema de Dirichlet exterior a una esfera conectada a tierra.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="es" data-ai-translated>
+<header>
+  <nav class="topbar" id="topbar"></nav>
+  <div id="ai-notice"></div>
+  <h1>Discontinuidad en la pendiente de la función de Green radial</h1>
+  <p class="lede">Consideremos el problema de Dirichlet «exterior»: el potencial fuera de una esfera conductora de radio \(a\) conectada a tierra. Su función de Green se escribe directamente con el método de imágenes (Jackson, sección 2.6). Al desarrollar en armónicos esféricos tanto el término de la fuente puntual como el de su imagen, se obtiene la ecuación (3.114) de Jackson:</p>
+  \[ G(\mathbf{x},\mathbf{x}')=4\pi\sum_{l,m}\frac{1}{2l+1}\,g_l(r,r')\,Y^*_{lm}(\theta',\phi')\,Y_{lm}(\theta,\phi), \]
+  <p class="lede">donde la función de Green radial, ecuación (3.115), puede escribirse en una sola línea:</p>
+  \[ g_l(r,r')=\frac{r_<^l}{r_>^{l+1}}-\frac{1}{a}\left(\frac{a^2}{r\,r'}\right)^{l+1}=\frac{1}{r_>}\left(\frac{r_<}{r_>}\right)^{l}\left[1-\left(\frac{a}{r_<}\right)^{2l+1}\right]. \]
+  <p class="lede">Para un radio de la fuente \(r'\) fijo, \(g_l\) se anula sobre la esfera \(r=a\), decae cuando \(r\to\infty\) y es continua en \(r=r'\). Su pendiente, en cambio, salta allí:</p>
+  \[ \left.\frac{\partial g_l}{\partial r}\right|_{r=r'^+}-\left.\frac{\partial g_l}{\partial r}\right|_{r=r'^-}=-\frac{2l+1}{r'^2}, \]
+  <p class="lede">independientemente de \(a\). Este quiebre es la huella radial de la fuente puntual: es exactamente lo que exige la \(\delta(r-r')\) del lado derecho de la ecuación radial. Elija \(l\) y \(r'\) abajo (longitudes en unidades de \(a\)) y observe las dos tangentes laterales en \(r=r'\).</p>
+</header>
+
+<main>
+<section class="lab">
+  <div class="card plane-card">
+    <canvas id="green-plot" class="green-canvas" aria-label="Gráfica de la función de Green radial g_l(r, r′) frente a r, de 0 a 8a"></canvas>
+    <div class="legend">
+      <span><i class="sw branch-positive"></i>\(r&lt;r'\)</span>
+      <span><i class="sw branch-negative"></i>\(r&gt;r'\)</span>
+      <span>Trazos: tangentes laterales en \(r=r'\)</span>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <div class="row">
+        <span>Orden multipolar \(l\)</span>
+        <span class="seg" role="group" aria-label="l">
+          <button type="button" data-l="0">0</button>
+          <button type="button" data-l="1">1</button>
+          <button type="button" data-l="2">2</button>
+          <button type="button" data-l="3">3</button>
+          <button type="button" data-l="4">4</button>
+          <button type="button" data-l="5">5</button>
+          <button type="button" data-l="6">6</button>
+        </span>
+      </div>
+      <div class="ctrl"><label for="rp">Radio de la fuente \(r'/a\)</label><input id="rp" type="range" min="1" max="4" step="0.01" value="2"><output id="rp-o" for="rp"></output></div>
+    </div>
+
+    <div class="card">
+      <h3>En \(r=r'\)</h3>
+      <dl class="readout">
+        <dt>\(g_l(r',r')\)</dt><dd id="o-g"></dd>
+        <dt>\(\partial_r g_l(r'^-)\)</dt><dd id="o-sl"></dd>
+        <dt>\(\partial_r g_l(r'^+)\)</dt><dd id="o-sr"></dd>
+        <dt>\(\Delta\,\partial_r g_l\)</dt><dd id="o-jump"></dd>
+        <dt>\(-(2l+1)/r'^2\)</dt><dd id="o-pred"></dd>
+      </dl>
+      <p class="caption">Para \(r'=a\), la fuente está sobre la esfera conectada a tierra y \(g_l\) se anula idénticamente; para \(r'\) apenas mayor que \(a\), el salto de pendiente sigue siendo \(-(2l+1)/a^2\).</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<script id="strings" type="application/json">
+{
+ "inside": "interior de la esfera"
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

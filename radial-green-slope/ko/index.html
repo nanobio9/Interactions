@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>지름 그린 함수 기울기의 불연속</title>
+<meta name="description" content="인터랙티브 데모: 접지된 구의 외부 디리클레 문제에서 지름 그린 함수 g_l(r, r′)의 기울기가 r = r′에서 뛰는 모습.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="ko" data-ai-translated>
+<header>
+  <nav class="topbar" id="topbar"></nav>
+  <div id="ai-notice"></div>
+  <h1>지름 그린 함수 기울기의 불연속</h1>
+  <p class="lede">"외부" 디리클레 문제, 즉 반지름 \(a\)인 접지된 도체 구 바깥의 전위를 생각해 봅시다. 이 기하의 그린 함수는 영상법으로 바로 쓸 수 있습니다(Jackson 2.6절). 점원 항과 그 영상 항을 모두 구면 조화 함수로 전개하면 Jackson의 식 (3.114)를 얻습니다.</p>
+  \[ G(\mathbf{x},\mathbf{x}')=4\pi\sum_{l,m}\frac{1}{2l+1}\,g_l(r,r')\,Y^*_{lm}(\theta',\phi')\,Y_{lm}(\theta,\phi), \]
+  <p class="lede">여기서 지름 그린 함수, 즉 식 (3.115)는 한 줄로 쓸 수 있습니다.</p>
+  \[ g_l(r,r')=\frac{r_<^l}{r_>^{l+1}}-\frac{1}{a}\left(\frac{a^2}{r\,r'}\right)^{l+1}=\frac{1}{r_>}\left(\frac{r_<}{r_>}\right)^{l}\left[1-\left(\frac{a}{r_<}\right)^{2l+1}\right]. \]
+  <p class="lede">원천의 반지름 \(r'\)을 고정하면, \(g_l\)은 구면 \(r=a\)에서 0이 되고, \(r\to\infty\)에서 감소하며, \(r=r'\)에서 연속입니다. 그러나 기울기는 그곳에서 뜁니다.</p>
+  \[ \left.\frac{\partial g_l}{\partial r}\right|_{r=r'^+}-\left.\frac{\partial g_l}{\partial r}\right|_{r=r'^-}=-\frac{2l+1}{r'^2}, \]
+  <p class="lede">이 도약은 \(a\)와 무관합니다. 이 꺾임은 점원이 지름 방향에 남긴 흔적이며, 지름 방정식 우변의 \(\delta(r-r')\)이 바로 이것을 요구합니다. 아래에서 \(l\)과 \(r'\)(길이 단위는 \(a\))을 골라 \(r=r'\)에서의 양쪽 한쪽 접선을 관찰해 보세요.</p>
+</header>
+
+<main>
+<section class="lab">
+  <div class="card plane-card">
+    <canvas id="green-plot" class="green-canvas" aria-label="지름 그린 함수 g_l(r, r′)를 r에 대해 0부터 8a까지 그린 그래프"></canvas>
+    <div class="legend">
+      <span><i class="sw branch-positive"></i>\(r&lt;r'\)</span>
+      <span><i class="sw branch-negative"></i>\(r&gt;r'\)</span>
+      <span>점선: \(r=r'\)에서의 한쪽 접선</span>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <div class="row">
+        <span>다중극 차수 \(l\)</span>
+        <span class="seg" role="group" aria-label="l">
+          <button type="button" data-l="0">0</button>
+          <button type="button" data-l="1">1</button>
+          <button type="button" data-l="2">2</button>
+          <button type="button" data-l="3">3</button>
+          <button type="button" data-l="4">4</button>
+          <button type="button" data-l="5">5</button>
+          <button type="button" data-l="6">6</button>
+        </span>
+      </div>
+      <div class="ctrl"><label for="rp">원천 반지름 \(r'/a\)</label><input id="rp" type="range" min="1" max="4" step="0.01" value="2"><output id="rp-o" for="rp"></output></div>
+    </div>
+
+    <div class="card">
+      <h3>\(r=r'\)에서</h3>
+      <dl class="readout">
+        <dt>\(g_l(r',r')\)</dt><dd id="o-g"></dd>
+        <dt>\(\partial_r g_l(r'^-)\)</dt><dd id="o-sl"></dd>
+        <dt>\(\partial_r g_l(r'^+)\)</dt><dd id="o-sr"></dd>
+        <dt>\(\Delta\,\partial_r g_l\)</dt><dd id="o-jump"></dd>
+        <dt>\(-(2l+1)/r'^2\)</dt><dd id="o-pred"></dd>
+      </dl>
+      <p class="caption">\(r'=a\)이면 원천이 접지된 구면 위에 놓여 \(g_l\)이 항등적으로 0이 됩니다. 그래도 \(r'\)이 \(a\)보다 조금만 크면 기울기 도약은 여전히 \(-(2l+1)/a^2\)입니다.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<script id="strings" type="application/json">
+{
+ "inside": "구 내부"
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

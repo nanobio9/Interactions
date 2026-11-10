@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Discontinuité de la pente de la fonction de Green radiale</title>
+<meta name="description" content="Démonstration interactive : le saut de pente en r = r′ de la fonction de Green radiale g_l(r, r′) pour le problème de Dirichlet extérieur à une sphère mise à la terre.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="fr" data-ai-translated>
+<header>
+  <nav class="topbar" id="topbar"></nav>
+  <div id="ai-notice"></div>
+  <h1>Discontinuité de la pente de la fonction de Green radiale</h1>
+  <p class="lede">Considérons le problème de Dirichlet « extérieur » : le potentiel à l’extérieur d’une sphère conductrice de rayon \(a\) mise à la terre. Sa fonction de Green s’écrit directement par la méthode des images (Jackson, section 2.6). En développant en harmoniques sphériques à la fois le terme de la source ponctuelle et celui de son image, on obtient l’équation (3.114) de Jackson :</p>
+  \[ G(\mathbf{x},\mathbf{x}')=4\pi\sum_{l,m}\frac{1}{2l+1}\,g_l(r,r')\,Y^*_{lm}(\theta',\phi')\,Y_{lm}(\theta,\phi), \]
+  <p class="lede">où la fonction de Green radiale, équation (3.115), s’écrit en une ligne :</p>
+  \[ g_l(r,r')=\frac{r_<^l}{r_>^{l+1}}-\frac{1}{a}\left(\frac{a^2}{r\,r'}\right)^{l+1}=\frac{1}{r_>}\left(\frac{r_<}{r_>}\right)^{l}\left[1-\left(\frac{a}{r_<}\right)^{2l+1}\right]. \]
+  <p class="lede">Pour un rayon de source \(r'\) fixé, \(g_l\) s’annule sur la sphère \(r=a\), décroît quand \(r\to\infty\) et est continue en \(r=r'\). Sa pente, en revanche, y subit un saut :</p>
+  \[ \left.\frac{\partial g_l}{\partial r}\right|_{r=r'^+}-\left.\frac{\partial g_l}{\partial r}\right|_{r=r'^-}=-\frac{2l+1}{r'^2}, \]
+  <p class="lede">indépendant de \(a\). Ce coude est la trace radiale de la source ponctuelle : c’est précisément ce qu’exige le \(\delta(r-r')\) au second membre de l’équation radiale. Choisissez \(l\) et \(r'\) ci-dessous (longueurs en unités de \(a\)) et observez les deux tangentes unilatérales en \(r=r'\).</p>
+</header>
+
+<main>
+<section class="lab">
+  <div class="card plane-card">
+    <canvas id="green-plot" class="green-canvas" aria-label="Graphe de la fonction de Green radiale g_l(r, r′) en fonction de r, de 0 à 8a"></canvas>
+    <div class="legend">
+      <span><i class="sw branch-positive"></i>\(r&lt;r'\)</span>
+      <span><i class="sw branch-negative"></i>\(r&gt;r'\)</span>
+      <span>Tirets : tangentes unilatérales en \(r=r'\)</span>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <div class="row">
+        <span>Ordre multipolaire \(l\)</span>
+        <span class="seg" role="group" aria-label="l">
+          <button type="button" data-l="0">0</button>
+          <button type="button" data-l="1">1</button>
+          <button type="button" data-l="2">2</button>
+          <button type="button" data-l="3">3</button>
+          <button type="button" data-l="4">4</button>
+          <button type="button" data-l="5">5</button>
+          <button type="button" data-l="6">6</button>
+        </span>
+      </div>
+      <div class="ctrl"><label for="rp">Rayon de la source \(r'/a\)</label><input id="rp" type="range" min="1" max="4" step="0.01" value="2"><output id="rp-o" for="rp"></output></div>
+    </div>
+
+    <div class="card">
+      <h3>En \(r=r'\)</h3>
+      <dl class="readout">
+        <dt>\(g_l(r',r')\)</dt><dd id="o-g"></dd>
+        <dt>\(\partial_r g_l(r'^-)\)</dt><dd id="o-sl"></dd>
+        <dt>\(\partial_r g_l(r'^+)\)</dt><dd id="o-sr"></dd>
+        <dt>\(\Delta\,\partial_r g_l\)</dt><dd id="o-jump"></dd>
+        <dt>\(-(2l+1)/r'^2\)</dt><dd id="o-pred"></dd>
+      </dl>
+      <p class="caption">Pour \(r'=a\), la source est sur la sphère mise à la terre et \(g_l\) est identiquement nulle ; pour \(r'\) juste au-dessus de \(a\), le saut de pente vaut toujours \(-(2l+1)/a^2\).</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<script id="strings" type="application/json">
+{
+ "inside": "intérieur de la sphère"
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

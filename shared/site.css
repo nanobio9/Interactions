@@ -237,7 +237,7 @@ canvas { display: block; width: 100%; touch-action: none; }
 #plane.dragging { cursor: grabbing; }
 #oned { height: 230px; }
 .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; padding: 8px 4px 2px; color: var(--muted); font-size: 0.82rem; }
-.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend > span { display: inline-flex; align-items: center; gap: 6px; }
 .sw { display: inline-block; width: 18px; height: 3px; border-radius: 2px; }
 .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; }
 .branch-positive { background: var(--b1); }
@@ -297,6 +297,9 @@ tbody tr:hover td { background: color-mix(in srgb, var(--accent) 18%, transparen
 .frame-controls .ctrl { grid-template-columns: minmax(6em, max-content) minmax(0, 1fr) 3em; }
 .frame-controls .row { grid-column: 1 / -1; margin-top: 4px; }
 .frame-controls .caption { margin: 0; }
+
+/* Radial-green-slope page */
+.green-canvas { aspect-ratio: 3 / 2; touch-action: auto; }
 
 @media (max-width: 900px) {
   .lab { grid-template-columns: minmax(0, 1fr); }

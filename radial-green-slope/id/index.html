@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diskontinuitas Kemiringan Fungsi Green Radial</title>
+<meta name="description" content="Demo interaktif: lompatan kemiringan di r = r′ pada fungsi Green radial g_l(r, r′) untuk masalah Dirichlet di luar bola yang dibumikan.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../../shared/site.css">
+</head>
+<body data-lang="id" data-ai-translated>
+<header>
+  <nav class="topbar" id="topbar"></nav>
+  <div id="ai-notice"></div>
+  <h1>Diskontinuitas Kemiringan Fungsi Green Radial</h1>
+  <p class="lede">Tinjau masalah Dirichlet "eksterior": potensial di luar bola konduktor berjari-jari \(a\) yang dibumikan. Fungsi Green untuk geometri ini dapat langsung dituliskan dengan metode bayangan (Jackson, Subbab 2.6). Dengan menguraikan suku sumber titik maupun suku bayangannya dalam harmonik bola, diperoleh persamaan (3.114) Jackson:</p>
+  \[ G(\mathbf{x},\mathbf{x}')=4\pi\sum_{l,m}\frac{1}{2l+1}\,g_l(r,r')\,Y^*_{lm}(\theta',\phi')\,Y_{lm}(\theta,\phi), \]
+  <p class="lede">dengan fungsi Green radial, persamaan (3.115), yang dapat ditulis dalam satu baris:</p>
+  \[ g_l(r,r')=\frac{r_<^l}{r_>^{l+1}}-\frac{1}{a}\left(\frac{a^2}{r\,r'}\right)^{l+1}=\frac{1}{r_>}\left(\frac{r_<}{r_>}\right)^{l}\left[1-\left(\frac{a}{r_<}\right)^{2l+1}\right]. \]
+  <p class="lede">Untuk jari-jari sumber \(r'\) tetap, \(g_l\) bernilai nol pada bola \(r=a\), meluruh ketika \(r\to\infty\), dan kontinu di \(r=r'\). Namun, kemiringannya melompat di sana:</p>
+  \[ \left.\frac{\partial g_l}{\partial r}\right|_{r=r'^+}-\left.\frac{\partial g_l}{\partial r}\right|_{r=r'^-}=-\frac{2l+1}{r'^2}, \]
+  <p class="lede">tidak bergantung pada \(a\). Tekukan ini adalah jejak radial dari sumber titik: inilah yang dituntut oleh \(\delta(r-r')\) di ruas kanan persamaan radial. Pilih \(l\) dan \(r'\) di bawah (panjang dalam satuan \(a\)) dan amati kedua garis singgung satu sisi di \(r=r'\).</p>
+</header>
+
+<main>
+<section class="lab">
+  <div class="card plane-card">
+    <canvas id="green-plot" class="green-canvas" aria-label="Grafik fungsi Green radial g_l(r, r′) terhadap r, dari 0 sampai 8a"></canvas>
+    <div class="legend">
+      <span><i class="sw branch-positive"></i>\(r&lt;r'\)</span>
+      <span><i class="sw branch-negative"></i>\(r&gt;r'\)</span>
+      <span>Putus-putus: garis singgung satu sisi di \(r=r'\)</span>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <div class="row">
+        <span>Orde multipol \(l\)</span>
+        <span class="seg" role="group" aria-label="l">
+          <button type="button" data-l="0">0</button>
+          <button type="button" data-l="1">1</button>
+          <button type="button" data-l="2">2</button>
+          <button type="button" data-l="3">3</button>
+          <button type="button" data-l="4">4</button>
+          <button type="button" data-l="5">5</button>
+          <button type="button" data-l="6">6</button>
+        </span>
+      </div>
+      <div class="ctrl"><label for="rp">Jari-jari sumber \(r'/a\)</label><input id="rp" type="range" min="1" max="4" step="0.01" value="2"><output id="rp-o" for="rp"></output></div>
+    </div>
+
+    <div class="card">
+      <h3>Di \(r=r'\)</h3>
+      <dl class="readout">
+        <dt>\(g_l(r',r')\)</dt><dd id="o-g"></dd>
+        <dt>\(\partial_r g_l(r'^-)\)</dt><dd id="o-sl"></dd>
+        <dt>\(\partial_r g_l(r'^+)\)</dt><dd id="o-sr"></dd>
+        <dt>\(\Delta\,\partial_r g_l\)</dt><dd id="o-jump"></dd>
+        <dt>\(-(2l+1)/r'^2\)</dt><dd id="o-pred"></dd>
+      </dl>
+      <p class="caption">Untuk \(r'=a\), sumber berada pada bola yang dibumikan dan \(g_l\) identik nol; untuk \(r'\) sedikit di atas \(a\), lompatan kemiringan tetap \(-(2l+1)/a^2\).</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<script id="strings" type="application/json">
+{
+ "inside": "bagian dalam bola"
+}
+</script>
+<script src="../langs.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>
